@@ -6,9 +6,9 @@ import API_BASE_URL from './apiConfig';
 const AuthContext = createContext();
 
 async function fetchMe(role, token) {
-  let endpoint = '/auth/me';
-  if (role === 'ADMIN') endpoint = '/admin/me';
-  else if (role === 'MEMBER') endpoint = '/member/auth/me';
+  let endpoint = '/api/auth/me';
+  if (role === 'ADMIN') endpoint = '/api/admin/me';
+  else if (role === 'MEMBER') endpoint = '/api/member/auth/me';
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
