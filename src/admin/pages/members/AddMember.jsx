@@ -10,7 +10,7 @@ import { useAuth } from '../../../shared/AuthContext';
 import { useToast } from '../../../shared/ToastContext';
 import API_BASE_URL from '../../../shared/apiConfig';
 
-const API_BASE = `${API_BASE_URL}/admin/members`;
+const API_BASE = `${API_BASE_URL}/api/admin/members`;
 
 const INITIAL_FORM = {
   fullName: '',
@@ -616,8 +616,11 @@ const AddMember = () => {
                                 });
                                 const data = await res.json();
                                 if (res.ok && data.success) {
-                                  const memberPortalUrl = `http://localhost:5173/member/dashboard?session=${data.token}`;
-                                  window.open(memberPortalUrl, '_blank');
+                                  const memberPortalUrl = `${window.location.origin.replace(window.location.hostname, 'localhost')}/member/dashboard?session=${data.token}`;
+                                  // For production, use the actual frontend URL
+                                  const prodUrl = `https://ngo-frontend-blue.vercel.app/member/dashboard?session=${data.token}`;
+                                  const finalUrl = window.location.hostname === 'localhost' ? memberPortalUrl : prodUrl;
+                                  window.open(finalUrl, '_blank');
                                   toast.success(`Logged in as ${member.fullName}`);
                                 } else {
                                   toast.error(data.message || 'Failed to login as member');

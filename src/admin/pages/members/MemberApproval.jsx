@@ -9,7 +9,7 @@ import { useAuth } from '../../../shared/AuthContext';
 import { useToast } from '../../../shared/ToastContext';
 import API_BASE_URL from '../../../shared/apiConfig';
 
-const API_BASE = `${API_BASE_URL}/admin/members`;
+const API_BASE = `${API_BASE_URL}/api/admin/members`;
 
 const MemberApproval = () => {
   const { token } = useAuth();

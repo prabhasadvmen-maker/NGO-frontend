@@ -39,7 +39,7 @@ const Dashboard = () => {
     if (token) {
       const fetchStats = async () => {
         try {
-          const res = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } });
+          const res = await fetch(`${API_BASE_URL}/api/admin/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } });
           const data = await res.json();
           if (data.success) setStats(data.data);
         } catch (e) {
