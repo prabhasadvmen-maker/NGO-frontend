@@ -5,7 +5,9 @@ import { useAuth } from '../../shared/AuthContext';
 import { useToast } from '../../shared/ToastContext';
 import { COLORS } from '../../shared/colors';
 
-const API = 'http://localhost:5000/api';
+import API_BASE_URL from '../../shared/apiConfig';
+
+const API = `${API_BASE_URL}/api`;
 
 const Modal = ({ onClose, children }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">

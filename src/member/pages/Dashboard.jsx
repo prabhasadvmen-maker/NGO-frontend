@@ -4,8 +4,9 @@ import Layout from '../components/Layout';
 import StatsCard from '../../shared/components/StatsCard';
 import { COLORS } from '../../shared/colors';
 import { useAuth } from '../../shared/AuthContext';
+import API_BASE_URL from '../../shared/apiConfig';
 
-const API = 'http://localhost:5000/api';
+const API = `${API_BASE_URL}/api`;
 
 const Dashboard = () => {
   const { token, user } = useAuth();

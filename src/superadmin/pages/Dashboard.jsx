@@ -6,7 +6,9 @@ import { COLORS } from '../../shared/colors';
 import { useSidebar } from '../../shared/SidebarContext';
 import { useAuth } from '../../shared/AuthContext';
 
-const API = 'http://localhost:5000/api';
+import API_BASE_URL from '../../shared/apiConfig';
+
+const API = `${API_BASE_URL}/api`;
 
 const getLast6Months = () => {
   const months = [];
