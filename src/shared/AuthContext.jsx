@@ -1,14 +1,15 @@
 import React, { createContext, useState, useContext, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getRoleFromPath, getToken, saveToken, clearToken } from './tokenStorage';
+import API_BASE_URL from './apiConfig';
 
 const AuthContext = createContext();
 
 async function fetchMe(role, token) {
-  let endpoint = '/api/auth/me';
-  if (role === 'ADMIN') endpoint = '/api/admin/me';
-  else if (role === 'MEMBER') endpoint = '/api/member/auth/me';
-  const res = await fetch(`http://localhost:5000${endpoint}`, {
+  let endpoint = '/auth/me';
+  if (role === 'ADMIN') endpoint = '/admin/me';
+  else if (role === 'MEMBER') endpoint = '/member/auth/me';
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error('Failed to fetch user');
@@ -89,7 +90,7 @@ export const AuthProvider = ({ children }) => {
         let endpoint = '/api/auth/login';
         if (role === 'ADMIN') endpoint = '/api/admin/login';
         else if (role === 'MEMBER') endpoint = '/api/member/auth/login';
-        const res = await fetch(`http://localhost:5000${endpoint}`, {
+        const res = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),

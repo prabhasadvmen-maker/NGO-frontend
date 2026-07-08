@@ -3,8 +3,7 @@ import { Users, HandHeart, FolderKanban, CalendarDays, Heart, UserCheck, Trendin
 import Layout from '../components/Layout';
 import { useAuth } from '../../shared/AuthContext';
 import { COLORS } from '../../shared/colors';
-
-const API = 'http://localhost:5000/api';
+import API_BASE_URL from '../../shared/apiConfig';
 
 const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
   <div className="rounded-2xl p-5 flex items-center gap-4 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1 hover:shadow-xl cursor-pointer"
@@ -40,7 +39,7 @@ const Dashboard = () => {
     if (token) {
       const fetchStats = async () => {
         try {
-          const res = await fetch(`${API}/admin/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } });
+          const res = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } });
           const data = await res.json();
           if (data.success) setStats(data.data);
         } catch (e) {

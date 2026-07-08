@@ -3,8 +3,7 @@ import { User, Phone, Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'luci
 import { useNavigate, Link } from 'react-router-dom';
 import { COLORS } from '../../shared/colors';
 import { useToast } from '../../shared/ToastContext';
-
-const API = 'http://localhost:5000/api/member/auth';
+import API_BASE_URL from '../../shared/apiConfig';
 
 const MemberRegister = () => {
   const navigate = useNavigate();
@@ -75,7 +74,7 @@ const MemberRegister = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API}/register`, {
+      const res = await fetch(`${API_BASE_URL}/member/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

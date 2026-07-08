@@ -7,8 +7,9 @@ import {
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
 import { useToast } from '../../../shared/ToastContext';
+import API_BASE_URL from '../../../shared/apiConfig';
 
-const API_BASE = 'http://localhost:5000/api/admin/members';
+const API_BASE = `${API_BASE_URL}/admin/members`;
 
 const MembersList = () => {
   const { token } = useAuth();
