@@ -11,9 +11,10 @@ export const useToast = () => {
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
+  const toastCounterRef = React.useRef(0);
 
   const addToast = useCallback((message, type = 'success', duration = 3500) => {
-    const id = Date.now();
+    const id = `${Date.now()}-${++toastCounterRef.current}`;
     setToasts(prev => [...prev, { id, message, type, duration }]);
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), duration);
     return id;

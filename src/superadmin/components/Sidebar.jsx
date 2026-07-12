@@ -6,7 +6,7 @@ import {
   DollarSign, FolderKanban, CalendarDays, Megaphone,
   Award, CreditCard, Wallet, BarChart3, Globe, MessageSquare,
   Image, FileText, ClipboardList, Settings, Database,
-  Plug, Bot, User, HelpCircle, ChevronDown, ChevronRight
+  Plug, Bot, User, HelpCircle, ChevronDown, ChevronRight, Gift
 } from 'lucide-react';
 import { COLORS } from '../../shared/colors';
 import { useSidebar } from '../../shared/SidebarContext';
@@ -20,9 +20,10 @@ const NAV_GROUPS = [
   {
     label: 'Organization',
     items: [
-      { path: '/org/profile',      label: 'NGO Profile',   icon: Building2 },
-      { path: '/org/branches',     label: 'Branches',      icon: GitBranch },
-      { path: '/org/departments',  label: 'Departments',   icon: Layers },
+      { path: '/org/profile',           label: 'NGO Profile',       icon: Building2 },
+      { path: '/org/branches',          label: 'Branches',          icon: GitBranch },
+      { path: '/org/departments',       label: 'Departments',       icon: Layers },
+      { path: '/org/membership-types',  label: 'Membership Types',  icon: Users },
     ],
   },
   {

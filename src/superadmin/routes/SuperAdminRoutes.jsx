@@ -4,10 +4,14 @@ import ProtectedRoute from '../../shared/ProtectedRoute';
 import SuperAdminLogin from '../auth/SuperAdminLogin';
 import Dashboard from '../pages/Dashboard';
 import Admins from '../pages/Admins';
+import MembershipTypes from '../pages/MembershipTypes';
 import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import Help from '../pages/Help';
 import ComingSoon from '../pages/ComingSoon';
+import NGOProfile from '../pages/NGOProfile';
+import Branches from '../pages/Branches';
+import Departments from '../pages/Departments';
 
 const SA = (element) => <ProtectedRoute role="super_admin">{element}</ProtectedRoute>;
 const CS = (title) => SA(<ComingSoon title={title} />);
@@ -15,9 +19,10 @@ const CS = (title) => SA(<ComingSoon title={title} />);
 const SuperAdminRoutes = () => [
   <Route key="superadmin-login" path="/superadmin/login" element={<SuperAdminLogin />} />,
   <Route key="dashboard" path="/dashboard" element={SA(<Dashboard />)} />,
-  <Route key="org-profile" path="/org/profile" element={CS('NGO Profile')} />,
-  <Route key="org-branches" path="/org/branches" element={CS('Branches')} />,
-  <Route key="org-departments" path="/org/departments" element={CS('Departments')} />,
+  <Route key="org-profile" path="/org/profile" element={SA(<NGOProfile />)} />,
+  <Route key="org-branches" path="/org/branches" element={SA(<Branches />)} />,
+  <Route key="org-departments" path="/org/departments" element={SA(<Departments />)} />,
+  <Route key="org-membership-types" path="/org/membership-types" element={SA(<MembershipTypes />)} />,
   <Route key="users-admins" path="/users/admins" element={SA(<Admins />)} />,
   <Route key="users-members" path="/users/members" element={CS('Members')} />,
   <Route key="users-volunteers" path="/users/volunteers" element={CS('Volunteers')} />,

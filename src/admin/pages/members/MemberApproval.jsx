@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   CheckCircle, XCircle, Search, Loader2, Users, FileText, Eye, X,
   ChevronLeft, ChevronRight, AlertCircle, User, Phone, Mail, Calendar,
-  MapPin, Briefcase, CreditCard, Lock, ShieldCheck
+  MapPin, Briefcase, CreditCard, Lock, ShieldCheck, Settings
 } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
@@ -27,6 +27,7 @@ const MemberApproval = () => {
   const [viewingMember, setViewingMember] = useState(null);
   const [approving, setApproving] = useState(false);
   const [rejecting, setRejecting] = useState(false);
+  const [activeDropdownId, setActiveDropdownId] = useState(null);
 
   const fetchMembers = useCallback(async () => {
     if (!token) return;
@@ -60,9 +61,16 @@ const MemberApproval = () => {
     setPage(1);
   }, [search, statusFilter]);
 
+  useEffect(() => {
+    const handleOutsideClick = () => setActiveDropdownId(null);
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, []);
+
   const handleViewClick = (member) => {
     setViewingMember(member);
     setIsViewOpen(true);
+    setActiveDropdownId(null);
   };
 
   const handleApprove = async (memberId) => {
@@ -128,6 +136,11 @@ const MemberApproval = () => {
     } finally {
       setRejecting(false);
     }
+  };
+
+  const handleDropdownToggle = (e, memberId) => {
+    e.stopPropagation();
+    setActiveDropdownId(prev => (prev === memberId ? null : memberId));
   };
 
   const getInitials = (name) => {
@@ -253,36 +266,64 @@ const MemberApproval = () => {
                       <td className="px-4 py-3.5 text-gray-400 font-semibold text-xs">
                         {member.createdAt ? new Date(member.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
                       </td>
-                      <td className="px-4 py-3.5 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => handleViewClick(member)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer active:scale-95"
+                      <td className="px-4 py-3.5 text-right relative">
+                        <button
+                          onClick={(e) => handleDropdownToggle(e, member._id)}
+                          className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-all cursor-pointer shadow-sm text-gray-600 hover:text-green-700 active:scale-95 inline-flex items-center justify-center"
+                          title="Actions Menu"
+                        >
+                          <Settings size={16} className={activeDropdownId === member._id ? 'animate-spin-slow text-[#1B5E20]' : ''} />
+                        </button>
+
+                        {activeDropdownId === member._id && (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="absolute right-4 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-scale-up"
+                            style={{
+                              boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)'
+                            }}
                           >
-                            View
-                          </button>
-                          {member.status === 'Pending' && (
-                            <>
-                              {!member.email && (
-                                <span className="text-xs text-red-600 font-semibold">⚠ Email required</span>
-                              )}
-                              <button
-                                onClick={() => handleApprove(member._id)}
-                                disabled={approving || !member.email}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-green-600 hover:bg-green-700 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
-                              >
-                                Approve
-                              </button>
-                              <button
-                                onClick={() => handleReject(member._id)}
-                                disabled={rejecting}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
-                              >
-                                Reject
-                              </button>
-                            </>
-                          )}
-                        </div>
+                            {/* View Profile */}
+                            <button
+                              onClick={() => {
+                                handleViewClick(member);
+                              }}
+                              className="w-full px-4 py-2.5 text-left text-xs font-bold text-gray-600 hover:text-[#1B5E20] hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer"
+                            >
+                              <Eye size={14} className="text-gray-400" /> View Profile
+                            </button>
+
+                            {member.status === 'Pending' && (
+                              <>
+                                <div className="border-t border-gray-100 my-1"></div>
+
+                                {/* Approve */}
+                                <button
+                                  onClick={() => {
+                                    handleApprove(member._id);
+                                    setActiveDropdownId(null);
+                                  }}
+                                  disabled={approving || !member.email}
+                                  className="w-full px-4 py-2.5 text-left text-xs font-bold text-green-600 hover:bg-green-50 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  <CheckCircle size={14} className="text-green-400" /> Approve
+                                </button>
+
+                                {/* Reject */}
+                                <button
+                                  onClick={() => {
+                                    handleReject(member._id);
+                                    setActiveDropdownId(null);
+                                  }}
+                                  disabled={rejecting}
+                                  className="w-full px-4 py-2.5 text-left text-xs font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  <XCircle size={14} className="text-red-400" /> Reject
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}

@@ -37,6 +37,10 @@ const AddMember = () => {
   const { token } = useAuth();
   const { toast } = useToast();
 
+  // Membership Types state
+  const [membershipTypes, setMembershipTypes] = useState([]);
+  const [loadingTypes, setLoadingTypes] = useState(true);
+
   // Table & Fetching state
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,6 +79,25 @@ const AddMember = () => {
   const [editPhotoPreview, setEditPhotoPreview] = useState(null);
   const [editSubmitting, setEditSubmitting] = useState(false);
 
+  // Fetch Membership Types from Public API
+  const fetchMembershipTypes = useCallback(async () => {
+    if (!token) return;
+    setLoadingTypes(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/membership-types`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const resData = await res.json();
+      if (resData.success) {
+        setMembershipTypes(resData.data);
+      }
+    } catch (err) {
+      console.error('Error fetching membership types:', err);
+    } finally {
+      setLoadingTypes(false);
+    }
+  }, [token]);
+
   // Fetch Members List
   const fetchMembers = useCallback(async () => {
     if (!token) return;
@@ -101,8 +124,9 @@ const AddMember = () => {
   }, [token, page, search, statusFilter, typeFilter, toast]);
 
   useEffect(() => {
+    fetchMembershipTypes();
     fetchMembers();
-  }, [fetchMembers]);
+  }, [fetchMembershipTypes, fetchMembers]);
 
   // Reset page when search or filters change
   useEffect(() => {
@@ -133,6 +157,12 @@ const AddMember = () => {
           }
 
           const { uploadUrl, key } = data;
+
+          // Validate uploadUrl host to prevent open redirect / SSRF vulnerability
+          const parsedUrl = new URL(uploadUrl);
+          if (!parsedUrl.hostname.endsWith('r2.cloudflarestorage.com')) {
+            throw new Error('Security Error: Invalid upload destination domain');
+          }
 
           // PUT File directly to Cloudflare R2
           const xhr = new XMLHttpRequest();
@@ -251,6 +281,28 @@ const AddMember = () => {
 
   const handleInputChange = (e, isEdit = false) => {
     const { name, value } = e.target;
+    
+    // Auto-populate membershipFee when membershipType changes
+    if (name === 'membershipType') {
+      const selectedType = membershipTypes.find(t => t.name === value);
+      if (selectedType) {
+        if (isEdit) {
+          setEditFormData(prev => ({
+            ...prev,
+            [name]: value,
+            membershipFee: selectedType.annualFee.toString()
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            [name]: value,
+            membershipFee: selectedType.annualFee.toString()
+          }));
+        }
+        return;
+      }
+    }
+    
     if (isEdit) {
       setEditFormData(prev => ({ ...prev, [name]: value }));
       if (editFormErrors[name]) {
@@ -456,9 +508,9 @@ const AddMember = () => {
           <div>
             <h1 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
               <Users className="text-[#1B5E20]" size={28} />
-              Members Directory
+              All Members
             </h1>
-            <p className="text-sm text-gray-500 font-semibold mt-1">View all registered members and manage their profiles</p>
+            <p className="text-sm text-gray-500 font-semibold mt-1">View all registered members in the system</p>
           </div>
 
           <button
@@ -519,18 +571,15 @@ const AddMember = () => {
                   <option value="Inactive">Inactive</option>
                 </select>
 
-                {/* Filter by Membership Type */}
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                   className="rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-gray-50 px-3 py-2 text-xs transition-all cursor-pointer"
                 >
                   <option value="">All Types</option>
-                  <option value="General">General</option>
-                  <option value="Life">Life</option>
-                  <option value="Honorary">Honorary</option>
-                  <option value="Student">Student</option>
-                  <option value="Corporate">Corporate</option>
+                  {membershipTypes.map(type => (
+                    <option key={type._id} value={type.name}>{type.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -1182,12 +1231,14 @@ const AddMember = () => {
                       value={formData.membershipType}
                       onChange={handleInputChange}
                       className="w-full rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-gray-50 px-4 py-3 text-sm cursor-pointer"
+                      disabled={loadingTypes}
                     >
-                      <option value="General">General</option>
-                      <option value="Life">Life</option>
-                      <option value="Honorary">Honorary</option>
-                      <option value="Student">Student</option>
-                      <option value="Corporate">Corporate</option>
+                      <option value="">Select Membership Type</option>
+                      {membershipTypes.map(type => (
+                        <option key={type._id} value={type.name}>
+                          {type.name} - ₹{type.annualFee}/year
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -1198,16 +1249,10 @@ const AddMember = () => {
                       type="number"
                       name="membershipFee"
                       value={formData.membershipFee}
-                      onChange={handleInputChange}
-                      placeholder="0"
-                      min="0"
-                      className="w-full rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-gray-50 px-4 py-3 text-sm"
+                      readOnly
+                      className="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm cursor-not-allowed text-gray-600"
                     />
-                    {formErrors.membershipFee && (
-                      <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
-                        <AlertCircle size={12} /> {formErrors.membershipFee}
-                      </p>
-                    )}
+                    <p className="text-[10px] text-gray-400 mt-1">Auto-populated from membership type</p>
                   </div>
 
                   {/* Joining Date */}
@@ -1559,12 +1604,14 @@ const AddMember = () => {
                       value={editFormData.membershipType}
                       onChange={(e) => handleInputChange(e, true)}
                       className="w-full rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-gray-50 px-4 py-3 text-sm cursor-pointer"
+                      disabled={loadingTypes}
                     >
-                      <option value="General">General</option>
-                      <option value="Life">Life</option>
-                      <option value="Honorary">Honorary</option>
-                      <option value="Student">Student</option>
-                      <option value="Corporate">Corporate</option>
+                      <option value="">Select Membership Type</option>
+                      {membershipTypes.map(type => (
+                        <option key={type._id} value={type.name}>
+                          {type.name} - ₹{type.annualFee}/year
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -1575,14 +1622,10 @@ const AddMember = () => {
                       type="number"
                       name="membershipFee"
                       value={editFormData.membershipFee}
-                      onChange={(e) => handleInputChange(e, true)}
-                      className="w-full rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-gray-50 px-4 py-3 text-sm"
+                      readOnly
+                      className="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm cursor-not-allowed text-gray-600"
                     />
-                    {editFormErrors.membershipFee && (
-                      <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
-                        <AlertCircle size={12} /> {editFormErrors.membershipFee}
-                      </p>
-                    )}
+                    <p className="text-[10px] text-gray-400 mt-1">Auto-populated from membership type</p>
                   </div>
 
                   {/* Joining Date */}

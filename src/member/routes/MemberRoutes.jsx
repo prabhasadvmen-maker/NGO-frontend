@@ -5,6 +5,7 @@ import MemberLogin from '../auth/MemberLogin';
 import MemberRegister from '../auth/MemberRegister';
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
+import MyMembership from '../pages/MyMembership';
 import ComingSoon from '../pages/ComingSoon';
 
 const M = (element) => <ProtectedRoute role="member">{element}</ProtectedRoute>;
@@ -15,7 +16,7 @@ const MemberRoutes = () => [
   <Route key="member-register" path="/member/register" element={<MemberRegister />} />,
   <Route key="member-dashboard" path="/member/dashboard" element={M(<Dashboard />)} />,
   <Route key="member-profile" path="/member/profile" element={M(<Profile />)} />,
-  <Route key="member-membership" path="/member/membership" element={CS('My Membership')} />,
+  <Route key="member-membership" path="/member/membership" element={M(<MyMembership />)} />,
   <Route key="member-donations" path="/member/donations" element={CS('My Donations')} />,
   <Route key="member-receipts" path="/member/receipts" element={CS('My Receipts')} />,
   <Route key="member-certificates" path="/member/certificates" element={CS('My Certificates')} />,

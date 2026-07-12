@@ -23,6 +23,8 @@ const MembersList = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
+  const [membershipTypes, setMembershipTypes] = useState([]);
+  const [loadingTypes, setLoadingTypes] = useState(true);
 
   const [activeDropdownId, setActiveDropdownId] = useState(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -52,9 +54,28 @@ const MembersList = () => {
     }
   }, [token, page, search, statusFilter, typeFilter, toast]);
 
+  const fetchMembershipTypes = useCallback(async () => {
+    if (!token) return;
+    setLoadingTypes(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/membership-types`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const resData = await res.json();
+      if (resData.success) {
+        setMembershipTypes(resData.data);
+      }
+    } catch (err) {
+      console.error('Error fetching membership types:', err);
+    } finally {
+      setLoadingTypes(false);
+    }
+  }, [token]);
+
   useEffect(() => {
     fetchMembers();
-  }, [fetchMembers]);
+    fetchMembershipTypes();
+  }, [fetchMembers, fetchMembershipTypes]);
 
   useEffect(() => {
     setPage(1);
@@ -164,13 +185,12 @@ const MembersList = () => {
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                   className="rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-gray-50 px-3 py-2 text-xs transition-all cursor-pointer"
+                  disabled={loadingTypes}
                 >
                   <option value="">All Types</option>
-                  <option value="General">General</option>
-                  <option value="Life">Life</option>
-                  <option value="Honorary">Honorary</option>
-                  <option value="Student">Student</option>
-                  <option value="Corporate">Corporate</option>
+                  {membershipTypes.map(type => (
+                    <option key={type._id} value={type.name}>{type.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -252,14 +272,15 @@ const MembersList = () => {
                         <button
                           onClick={(e) => handleDropdownToggle(e, member._id)}
                           className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-all cursor-pointer shadow-sm text-gray-600 hover:text-green-700 active:scale-95 inline-flex items-center justify-center"
+                          title="Actions Menu"
                         >
-                          <Settings size={16} />
+                          <Settings size={16} className={activeDropdownId === member._id ? 'animate-spin-slow text-[#1B5E20]' : ''} />
                         </button>
 
                         {activeDropdownId === member._id && (
                           <div
                             onClick={(e) => e.stopPropagation()}
-                            className="absolute right-4 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50"
+                            className="absolute right-4 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-scale-up"
                             style={{
                               boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)'
                             }}
@@ -272,28 +293,6 @@ const MembersList = () => {
                               className="w-full px-4 py-2.5 text-left text-xs font-bold text-gray-600 hover:text-[#1B5E20] hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer"
                             >
                               <Eye size={14} className="text-gray-400" /> View Profile
-                            </button>
-
-                            <button
-                              onClick={() => {
-                                toast.success('Edit feature coming soon');
-                                setActiveDropdownId(null);
-                              }}
-                              className="w-full px-4 py-2.5 text-left text-xs font-bold text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer"
-                            >
-                              <Edit2 size={14} className="text-gray-400" /> Edit Profile
-                            </button>
-
-                            <div className="border-t border-gray-100 my-1"></div>
-
-                            <button
-                              onClick={() => {
-                                handleDeleteClick(member._id);
-                                setActiveDropdownId(null);
-                              }}
-                              className="w-full px-4 py-2.5 text-left text-xs font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer"
-                            >
-                              <Trash2 size={14} className="text-red-400" /> Delete Member
                             </button>
                           </div>
                         )}
