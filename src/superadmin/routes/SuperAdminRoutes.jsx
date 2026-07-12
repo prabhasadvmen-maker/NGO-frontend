@@ -14,6 +14,7 @@ import Branches from '../pages/Branches';
 import Departments from '../pages/Departments';
 import Members from '../pages/Members';
 import Volunteers from '../pages/Volunteers';
+import Beneficiaries from '../pages/Beneficiaries';
 
 const SA = (element) => <ProtectedRoute role="super_admin">{element}</ProtectedRoute>;
 const CS = (title) => SA(<ComingSoon title={title} />);
@@ -28,7 +29,7 @@ const SuperAdminRoutes = () => [
   <Route key="users-admins" path="/users/admins" element={SA(<Admins />)} />,
   <Route key="users-members" path="/users/members" element={SA(<Members />)} />,
   <Route key="users-volunteers" path="/users/volunteers" element={SA(<Volunteers />)} />,
-  <Route key="users-beneficiaries" path="/users/beneficiaries" element={CS('Beneficiaries')} />,
+  <Route key="users-beneficiaries" path="/users/beneficiaries" element={SA(<Beneficiaries />)} />,
   <Route key="donations" path="/donations" element={CS('Donations')} />,
   <Route key="projects" path="/projects" element={CS('Projects')} />,
   <Route key="events" path="/events" element={CS('Events')} />,

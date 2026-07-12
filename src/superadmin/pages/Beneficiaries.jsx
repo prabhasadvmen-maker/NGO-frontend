@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { 
   Users, Eye, Pencil, Trash2, ToggleLeft, ToggleRight, X, Search, 
   Settings, Loader2, Calendar, Mail, Phone, MapPin, User, Landmark, ShieldAlert,
-  ArrowRight, ShieldCheck, Heart, Wrench, RefreshCw, Camera, Plus
+  ArrowRight, ShieldCheck, Heart, Wrench, RefreshCw, Camera, Plus, FileText
 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useAuth } from '../../shared/AuthContext';
@@ -29,7 +29,7 @@ const ModalHeader = ({ title, onClose }) => (
   </div>
 );
 
-const ActionMenu = ({ volunteer, onView, onEdit, onDelete, onToggle }) => {
+const ActionMenu = ({ beneficiary, onView, onEdit, onDelete, onToggle }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -46,21 +46,21 @@ const ActionMenu = ({ volunteer, onView, onEdit, onDelete, onToggle }) => {
       </button>
       {open && (
         <div className="absolute right-0 mt-1 w-44 rounded-xl border border-gray-100 bg-white shadow-lg z-10 overflow-hidden">
-          <button onClick={() => { onView(volunteer); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+          <button onClick={() => { onView(beneficiary); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
             <Eye size={14} className="text-blue-500" /> View Details
           </button>
-          <button onClick={() => { onEdit(volunteer); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+          <button onClick={() => { onEdit(beneficiary); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
             <Pencil size={14} className="text-green-600" /> Edit Info
           </button>
-          <button onClick={() => { onToggle(volunteer._id); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-            {volunteer.status === 'Active' ? (
+          <button onClick={() => { onToggle(beneficiary._id); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+            {beneficiary.status === 'Active' ? (
               <><ToggleLeft size={14} className="text-amber-500" /> Deactivate</>
             ) : (
               <><ToggleRight size={14} className="text-green-500" /> Activate</>
             )}
           </button>
           <div className="border-t border-gray-100" />
-          <button onClick={() => { onDelete(volunteer); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+          <button onClick={() => { onDelete(beneficiary); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
             <Trash2 size={14} /> Delete
           </button>
         </div>
@@ -69,18 +69,18 @@ const ActionMenu = ({ volunteer, onView, onEdit, onDelete, onToggle }) => {
   );
 };
 
-const Volunteers = () => {
+const Beneficiaries = () => {
   const { token } = useAuth();
   const { toast } = useToast();
 
-  const [volunteers, setVolunteers] = useState([]);
+  const [beneficiaries, setBeneficiaries] = useState([]);
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
-    totalVolunteers: 0,
-    activeVolunteers: 0,
-    pendingVolunteers: 0,
-    skillsBreakdown: []
+    totalBeneficiaries: 0,
+    activeBeneficiaries: 0,
+    inactiveBeneficiaries: 0,
+    categoriesBreakdown: []
   });
 
   const [uploading, setUploading] = useState(false);
@@ -95,16 +95,16 @@ const Volunteers = () => {
   const [search, setSearch] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedAvailability, setSelectedAvailability] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(10);
 
   // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
-  const [viewVolunteer, setViewVolunteer] = useState(null);
-  const [editVolunteer, setEditVolunteer] = useState(null);
-  const [deleteVolunteer, setDeleteVolunteer] = useState(null);
+  const [viewBeneficiary, setViewBeneficiary] = useState(null);
+  const [editBeneficiary, setEditBeneficiary] = useState(null);
+  const [deleteBeneficiary, setDeleteBeneficiary] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   // Form states
@@ -119,10 +119,11 @@ const Volunteers = () => {
     district: '',
     state: '',
     pinCode: '',
-    skills: '',
-    availability: 'Part-time',
+    category: 'Healthcare',
+    needsIdentified: '',
+    supportReceived: '',
     branch: '',
-    status: 'Pending',
+    status: 'Active',
     profilePhoto: null
   });
 
@@ -137,10 +138,11 @@ const Volunteers = () => {
     district: '',
     state: '',
     pinCode: '',
-    skills: '',
-    availability: '',
+    category: 'Healthcare',
+    needsIdentified: '',
+    supportReceived: '',
     branch: '',
-    status: '',
+    status: 'Active',
     profilePhoto: null
   });
 
@@ -163,7 +165,7 @@ const Volunteers = () => {
   // Fetch stats values
   const fetchStats = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/superadmin/volunteers/stats`, { headers });
+      const res = await fetch(`${API}/superadmin/beneficiaries/stats`, { headers });
       const data = await res.json();
       if (data.success) setStats(data.data);
     } catch (err) {
@@ -171,8 +173,8 @@ const Volunteers = () => {
     }
   }, [headers]);
 
-  // Main volunteers listing query
-  const fetchVolunteers = useCallback(async () => {
+  // Main beneficiaries listing query
+  const fetchBeneficiaries = useCallback(async () => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams({
@@ -180,24 +182,24 @@ const Volunteers = () => {
         limit,
         search,
         status: selectedStatus,
-        availability: selectedAvailability,
+        category: selectedCategory,
         branch: selectedBranch
       });
-      const res = await fetch(`${API}/superadmin/volunteers?${queryParams}`, { headers });
+      const res = await fetch(`${API}/superadmin/beneficiaries?${queryParams}`, { headers });
       const data = await res.json();
       if (data.success) {
-        setVolunteers(data.data);
+        setBeneficiaries(data.data);
         setTotalPages(data.pagination.totalPages);
       } else {
-        toast.error(data.message || 'Failed to fetch volunteers');
+        toast.error(data.message || 'Failed to fetch beneficiaries');
       }
     } catch (err) {
-      console.error('Fetch volunteers error:', err);
-      toast.error('Network error loading volunteers');
+      console.error('Fetch beneficiaries error:', err);
+      toast.error('Network error loading beneficiaries');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, search, selectedStatus, selectedAvailability, selectedBranch, headers, toast]);
+  }, [page, limit, search, selectedStatus, selectedCategory, selectedBranch, headers, toast]);
 
   useEffect(() => {
     if (token) {
@@ -208,33 +210,14 @@ const Volunteers = () => {
 
   useEffect(() => {
     if (token) {
-      fetchVolunteers();
+      fetchBeneficiaries();
     }
-  }, [token, fetchVolunteers]);
+  }, [token, fetchBeneficiaries]);
 
   // Handle filter changes (resets page to 1)
   const handleFilterChange = (setter, value) => {
     setter(value);
     setPage(1);
-  };
-
-  const handleToggleStatus = async (id) => {
-    try {
-      const res = await fetch(`${API}/superadmin/volunteers/${id}/toggle-status`, { 
-        method: 'PATCH', 
-        headers 
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success(data.message);
-        setVolunteers(prev => prev.map(v => v._id === id ? { ...v, status: data.data.status } : v));
-        fetchStats();
-      } else {
-        toast.error(data.message);
-      }
-    } catch {
-      toast.error('Failed to change status');
-    }
   };
 
   // Upload Photo Flow (using XMLHttpRequest for progress)
@@ -244,7 +227,7 @@ const Volunteers = () => {
       const contentType = file.type;
 
       // GET Presigned URL from Backend
-      fetch(`${API}/superadmin/volunteers/upload-url?fileName=${encodeURIComponent(fileName)}&contentType=${encodeURIComponent(contentType)}`, {
+      fetch(`${API}/superadmin/beneficiaries/upload-url?fileName=${encodeURIComponent(fileName)}&contentType=${encodeURIComponent(contentType)}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.json())
@@ -338,23 +321,43 @@ const Volunteers = () => {
     }
   };
 
+  const handleToggleStatus = async (id) => {
+    try {
+      const res = await fetch(`${API}/superadmin/beneficiaries/${id}/toggle-status`, { 
+        method: 'PATCH', 
+        headers 
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message);
+        setBeneficiaries(prev => prev.map(b => b._id === id ? { ...b, status: data.data.status } : b));
+        fetchStats();
+      } else {
+        toast.error(data.message);
+      }
+    } catch {
+      toast.error('Failed to change status');
+    }
+  };
+
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
       const bodyData = {
         ...addForm,
-        skills: addForm.skills.split(',').map(s => s.trim()).filter(Boolean)
+        needsIdentified: addForm.needsIdentified.split(',').map(s => s.trim()).filter(Boolean),
+        supportReceived: addForm.supportReceived.split(',').map(s => s.trim()).filter(Boolean)
       };
 
-      const res = await fetch(`${API}/superadmin/volunteers`, {
+      const res = await fetch(`${API}/superadmin/beneficiaries`, {
         method: 'POST',
         headers,
         body: JSON.stringify(bodyData)
       });
       const data = await res.json();
       if (data.success) {
-        toast.success('Volunteer registered successfully');
+        toast.success('Beneficiary registered successfully');
         setShowAddModal(false);
         setAddForm({
           fullName: '',
@@ -367,44 +370,46 @@ const Volunteers = () => {
           district: '',
           state: '',
           pinCode: '',
-          skills: '',
-          availability: 'Part-time',
+          category: 'Healthcare',
+          needsIdentified: '',
+          supportReceived: '',
           branch: '',
-          status: 'Pending',
+          status: 'Active',
           profilePhoto: null
         });
         setPhotoPreview(null);
-        fetchVolunteers();
+        fetchBeneficiaries();
         fetchStats();
       } else {
-        toast.error(data.message || 'Failed to register volunteer');
+        toast.error(data.message || 'Failed to register beneficiary');
       }
     } catch {
-      toast.error('Server error registering volunteer');
+      toast.error('Server error registering beneficiary');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const openEdit = (volunteer) => {
-    setEditVolunteer(volunteer);
-    setEditPhotoPreview(volunteer.photoUrl || null);
+  const openEdit = (beneficiary) => {
+    setEditBeneficiary(beneficiary);
+    setEditPhotoPreview(beneficiary.photoUrl || null);
     setEditForm({
-      fullName: volunteer.fullName || '',
-      mobileNumber: volunteer.mobileNumber || '',
-      email: volunteer.email || '',
-      gender: volunteer.gender || '',
-      dateOfBirth: volunteer.dateOfBirth ? new Date(volunteer.dateOfBirth).toISOString().split('T')[0] : '',
-      address: volunteer.address || '',
-      city: volunteer.city || '',
-      district: volunteer.district || '',
-      state: volunteer.state || '',
-      pinCode: volunteer.pinCode || '',
-      skills: volunteer.skills ? volunteer.skills.join(', ') : '',
-      availability: volunteer.availability || 'Part-time',
-      branch: volunteer.branch?._id || volunteer.branch || '',
-      status: volunteer.status || 'Pending',
-      profilePhoto: volunteer.profilePhoto || null
+      fullName: beneficiary.fullName || '',
+      mobileNumber: beneficiary.mobileNumber || '',
+      email: beneficiary.email || '',
+      gender: beneficiary.gender || '',
+      dateOfBirth: beneficiary.dateOfBirth ? new Date(beneficiary.dateOfBirth).toISOString().split('T')[0] : '',
+      address: beneficiary.address || '',
+      city: beneficiary.city || '',
+      district: beneficiary.district || '',
+      state: beneficiary.state || '',
+      pinCode: beneficiary.pinCode || '',
+      category: beneficiary.category || 'Healthcare',
+      needsIdentified: beneficiary.needsIdentified ? beneficiary.needsIdentified.join(', ') : '',
+      supportReceived: beneficiary.supportReceived ? beneficiary.supportReceived.join(', ') : '',
+      branch: beneficiary.branch?._id || beneficiary.branch || '',
+      status: beneficiary.status || 'Active',
+      profilePhoto: beneficiary.profilePhoto || null
     });
   };
 
@@ -414,25 +419,26 @@ const Volunteers = () => {
     try {
       const bodyData = {
         ...editForm,
-        skills: editForm.skills.split(',').map(s => s.trim()).filter(Boolean)
+        needsIdentified: editForm.needsIdentified.split(',').map(s => s.trim()).filter(Boolean),
+        supportReceived: editForm.supportReceived.split(',').map(s => s.trim()).filter(Boolean)
       };
 
-      const res = await fetch(`${API}/superadmin/volunteers/${editVolunteer._id}`, {
+      const res = await fetch(`${API}/superadmin/beneficiaries/${editBeneficiary._id}`, {
         method: 'PUT',
         headers,
         body: JSON.stringify(bodyData)
       });
       const data = await res.json();
       if (data.success) {
-        toast.success('Volunteer details updated!');
-        setEditVolunteer(null);
-        fetchVolunteers();
+        toast.success('Beneficiary updated successfully');
+        setEditBeneficiary(null);
+        fetchBeneficiaries();
         fetchStats();
       } else {
-        toast.error(data.message || 'Failed to update volunteer');
+        toast.error(data.message || 'Failed to update beneficiary');
       }
     } catch {
-      toast.error('Server error updating volunteer');
+      toast.error('Server error updating beneficiary');
     } finally {
       setSubmitting(false);
     }
@@ -440,21 +446,21 @@ const Volunteers = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`${API}/superadmin/volunteers/${deleteVolunteer._id}`, { 
+      const res = await fetch(`${API}/superadmin/beneficiaries/${deleteBeneficiary._id}`, { 
         method: 'DELETE', 
         headers 
       });
       const data = await res.json();
       if (data.success) {
-        toast.success('Volunteer deleted successfully');
-        setVolunteers(prev => prev.filter(v => v._id !== deleteVolunteer._id));
-        setDeleteVolunteer(null);
+        toast.success('Beneficiary deleted successfully');
+        setBeneficiaries(prev => prev.filter(b => b._id !== deleteBeneficiary._id));
+        setDeleteBeneficiary(null);
         fetchStats();
       } else {
         toast.error(data.message);
       }
     } catch {
-      toast.error('Failed to delete volunteer');
+      toast.error('Failed to delete beneficiary');
     }
   };
 
@@ -475,14 +481,14 @@ const Volunteers = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
-              <Heart className="text-[#1B5E20]" size={28} />
-              Volunteers Registry
+              <Users className="text-[#1B5E20]" size={28} />
+              Beneficiaries Registry
             </h1>
-            <p className="text-sm text-gray-400 mt-0.5">Manage registered volunteers and their skills matrix</p>
+            <p className="text-sm text-gray-400 mt-0.5">Manage and audit registered aid recipients across sectors</p>
           </div>
           <div className="flex items-center gap-2">
             <button 
-              onClick={() => { fetchVolunteers(); fetchStats(); }}
+              onClick={() => { fetchBeneficiaries(); fetchStats(); }}
               className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors shadow-sm text-gray-500"
               title="Refresh Data"
             >
@@ -493,7 +499,7 @@ const Volunteers = () => {
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
               style={{ backgroundColor: COLORS.primary }}
             >
-              Add Volunteer
+              Add Beneficiary
             </button>
           </div>
         </div>
@@ -501,10 +507,10 @@ const Volunteers = () => {
         {/* Dynamic Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { label: 'Total Volunteers', value: stats.totalVolunteers, color: COLORS.primary, sub: 'Registered database' },
-            { label: 'Active Volunteers', value: stats.activeVolunteers, color: COLORS.success, sub: 'Currently deploying' },
-            { label: 'Pending Registries', value: stats.pendingVolunteers, color: COLORS.warning, sub: 'Awaiting onboarding' },
-            { label: 'Top Skill Mapped', value: stats.skillsBreakdown[0]?.name || 'N/A', color: COLORS.info, sub: `${stats.skillsBreakdown[0]?.count || 0} volunteers represent` },
+            { label: 'Total Beneficiaries', value: stats.totalBeneficiaries, color: COLORS.primary, sub: 'Registered database' },
+            { label: 'Active Recipients', value: stats.activeBeneficiaries, color: COLORS.success, sub: 'Receiving support' },
+            { label: 'Primary Sector', value: stats.categoriesBreakdown[0]?.name || 'N/A', color: COLORS.info, sub: `${stats.categoriesBreakdown[0]?.count || 0} active profiles` },
+            { label: 'Inactive Profiles', value: stats.inactiveBeneficiaries, color: COLORS.danger, sub: 'On hold / Suspended' },
           ].map((card, idx) => (
             <div 
               key={idx} 
@@ -512,7 +518,7 @@ const Volunteers = () => {
               style={{ boxShadow: '8px 8px 16px #D0D0D0, -8px -8px 16px #FFFFFF' }}
             >
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${card.color}15` }}>
-                <Heart size={22} style={{ color: card.color }} />
+                <Users size={22} style={{ color: card.color }} />
               </div>
               <div className="min-w-0 flex-1">
                 <p className={`font-extrabold text-gray-800 leading-tight truncate ${typeof card.value === 'string' && card.value.length > 12 ? 'text-[15px]' : 'text-2xl'}`} title={card.value}>
@@ -559,6 +565,21 @@ const Volunteers = () => {
                 ))}
               </select>
 
+              {/* Category */}
+              <select
+                value={selectedCategory}
+                onChange={e => handleFilterChange(setSelectedCategory, e.target.value)}
+                className="px-4 py-3 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 transition-colors bg-gray-50 text-gray-600 font-semibold cursor-pointer"
+              >
+                <option value="">All Sectors</option>
+                <option value="Education">Education</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Women Empowerment">Women Empowerment</option>
+                <option value="Skill Development">Skill Development</option>
+                <option value="Disaster Relief">Disaster Relief</option>
+                <option value="Social Welfare">Social Welfare</option>
+              </select>
+
               {/* Status */}
               <select
                 value={selectedStatus}
@@ -567,28 +588,14 @@ const Volunteers = () => {
               >
                 <option value="">All Statuses</option>
                 <option value="Active">Active</option>
-                <option value="Pending">Pending</option>
                 <option value="Inactive">Inactive</option>
-              </select>
-
-              {/* Availability */}
-              <select
-                value={selectedAvailability}
-                onChange={e => handleFilterChange(setSelectedAvailability, e.target.value)}
-                className="px-4 py-3 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 transition-colors bg-gray-50 text-gray-600 font-semibold cursor-pointer"
-              >
-                <option value="">All Availability</option>
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
-                <option value="Weekends">Weekends</option>
-                <option value="Occasional">Occasional</option>
               </select>
 
             </div>
           </div>
         </div>
 
-        {/* Volunteers Table */}
+        {/* Table */}
         <div 
           className="rounded-2xl overflow-hidden bg-white"
           style={{ boxShadow: '8px 8px 16px #D0D0D0, -8px -8px 16px #FFFFFF' }}
@@ -596,46 +603,46 @@ const Volunteers = () => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24 gap-3">
               <Loader2 className="animate-spin text-[#1B5E20]" size={36} />
-              <p className="text-sm font-semibold text-gray-400">Loading volunteers data...</p>
+              <p className="text-sm font-semibold text-gray-400">Loading beneficiaries data...</p>
             </div>
-          ) : volunteers.length === 0 ? (
+          ) : beneficiaries.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-2">
               <Users size={44} className="opacity-30" />
-              <p className="font-semibold text-sm">No volunteers found matching your query</p>
+              <p className="font-semibold text-sm">No beneficiaries registered yet</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b" style={{ borderColor: '#E0E0E0' }}>
-                    {['#', 'ID', 'Volunteer Details', 'Contact', 'Branch', 'Skills / Mapped', 'Availability', 'Status', 'Actions'].map(h => (
+                    {['#', 'ID', 'Recipient Profile', 'Contact', 'Branch', 'Category / Needs', 'Status', 'Actions'].map(h => (
                       <th key={h} className="px-3.5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {volunteers.map((volunteer, idx) => (
-                    <tr key={volunteer._id} className="border-b last:border-0 hover:bg-gray-50 transition-colors" style={{ borderColor: '#F0F0F0' }}>
+                  {beneficiaries.map((beneficiary, idx) => (
+                    <tr key={beneficiary._id} className="border-b last:border-0 hover:bg-gray-50 transition-colors" style={{ borderColor: '#F0F0F0' }}>
                       
                       {/* Sr. No */}
                       <td className="px-2.5 py-3 text-gray-500 font-medium">{(page - 1) * limit + idx + 1}</td>
 
                       {/* ID */}
-                      <td className="px-3.5 py-3 font-bold text-gray-700">{volunteer.volunteerId || 'N/A'}</td>
+                      <td className="px-3.5 py-3 font-bold text-gray-700">{beneficiary.beneficiaryId || 'N/A'}</td>
 
-                      {/* Photo & Name */}
+                      {/* Profile & Name */}
                       <td className="px-3.5 py-3">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border">
-                            {volunteer.photoUrl ? (
-                              <img src={volunteer.photoUrl} alt="" className="h-full w-full object-cover" />
+                            {beneficiary.photoUrl ? (
+                              <img src={beneficiary.photoUrl} alt="" className="h-full w-full object-cover" />
                             ) : (
                               <User size={18} className="text-gray-500" />
                             )}
                           </div>
                           <div>
-                            <p className="font-bold text-gray-800 leading-tight">{volunteer.fullName}</p>
-                            <p className="text-[10px] text-gray-500 font-semibold capitalize">{volunteer.gender || 'No spec'}</p>
+                            <p className="font-bold text-gray-800 leading-tight">{beneficiary.fullName}</p>
+                            <p className="text-[10px] text-gray-500 font-semibold capitalize">{beneficiary.gender || 'No spec'}</p>
                           </div>
                         </div>
                       </td>
@@ -644,56 +651,46 @@ const Volunteers = () => {
                       <td className="px-3.5 py-3">
                         <div className="space-y-0.5">
                           <p className="text-gray-700 font-semibold text-xs flex items-center gap-1">
-                            <Phone size={11} className="text-gray-500" /> {volunteer.mobileNumber}
+                            <Phone size={11} className="text-gray-500" /> {beneficiary.mobileNumber}
                           </p>
-                          <p className="text-gray-500 text-[11px] flex items-center gap-1 max-w-[150px] truncate" title={volunteer.email || ''}>
-                            <Mail size={11} className="text-gray-400" /> {volunteer.email || 'No email'}
+                          <p className="text-gray-500 text-[11px] flex items-center gap-1 max-w-[150px] truncate" title={beneficiary.email || ''}>
+                            <Mail size={11} className="text-gray-400" /> {beneficiary.email || 'No email'}
                           </p>
                         </div>
                       </td>
 
                       {/* Branch */}
                       <td className="px-3.5 py-3">
-                        {volunteer.branch ? (
+                        {beneficiary.branch ? (
                           <div>
-                            <p className="font-bold text-gray-700">{volunteer.branch.name}</p>
-                            <p className="text-[10px] text-gray-500 font-semibold">Code: {volunteer.branch.code}</p>
+                            <p className="font-bold text-gray-700">{beneficiary.branch.name}</p>
+                            <p className="text-[10px] text-gray-500 font-semibold">Code: {beneficiary.branch.code}</p>
                           </div>
                         ) : (
                           <span className="text-gray-500 text-xs italic">Unassigned</span>
                         )}
                       </td>
 
-                      {/* Skills */}
+                      {/* Category & Needs */}
                       <td className="px-3.5 py-3">
-                        <div className="flex flex-wrap gap-1 max-w-[160px]">
-                          {volunteer.skills && volunteer.skills.length > 0 ? (
-                            volunteer.skills.slice(0, 2).map((skill, sIdx) => (
-                              <span key={sIdx} className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-gray-100 text-gray-600 border">
-                                {skill}
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-gray-500 text-xs italic">No skills</span>
-                          )}
-                          {volunteer.skills && volunteer.skills.length > 2 && (
-                            <span className="text-[9px] text-gray-500 font-bold">+{volunteer.skills.length - 2} more</span>
-                          )}
+                        <div>
+                          <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-green-50 text-green-700 border border-green-100">
+                            {beneficiary.category}
+                          </span>
+                          <p className="text-[10px] text-gray-500 font-semibold mt-1 max-w-[150px] truncate" title={beneficiary.needsIdentified?.join(', ') || ''}>
+                            Needs: {beneficiary.needsIdentified && beneficiary.needsIdentified.length > 0 ? beneficiary.needsIdentified.join(', ') : 'None logged'}
+                          </p>
                         </div>
                       </td>
 
-                      {/* Availability */}
-                      <td className="px-3.5 py-3 font-semibold text-gray-700">{volunteer.availability}</td>
-
                       {/* Status */}
                       <td className="px-3.5 py-3">
-                        <button onClick={() => handleToggleStatus(volunteer._id)} title="Click to Toggle Status">
+                        <button onClick={() => handleToggleStatus(beneficiary._id)} title="Click to Toggle Status">
                           <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold cursor-pointer transition-all hover:scale-[1.03] ${
-                            volunteer.status === 'Active' ? 'bg-green-100 text-green-700' : 
-                            volunteer.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-600'
+                            beneficiary.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
                           }`}>
-                            {volunteer.status === 'Active' ? <ToggleRight size={13} /> : <ToggleLeft size={13} />}
-                            {volunteer.status}
+                            {beneficiary.status === 'Active' ? <ToggleRight size={13} /> : <ToggleLeft size={13} />}
+                            {beneficiary.status}
                           </span>
                         </button>
                       </td>
@@ -701,10 +698,10 @@ const Volunteers = () => {
                       {/* Actions */}
                       <td className="px-3.5 py-3">
                         <ActionMenu 
-                          volunteer={volunteer} 
-                          onView={setViewVolunteer} 
+                          beneficiary={beneficiary} 
+                          onView={setViewBeneficiary} 
                           onEdit={openEdit} 
-                          onDelete={setDeleteVolunteer} 
+                          onDelete={setDeleteBeneficiary} 
                           onToggle={handleToggleStatus}
                         />
                       </td>
@@ -743,10 +740,10 @@ const Volunteers = () => {
 
       </div>
 
-      {/* ADD VOLUNTEER MODAL */}
+      {/* ADD BENEFICIARY MODAL */}
       {showAddModal && (
         <Modal onClose={() => setShowAddModal(false)}>
-          <ModalHeader title="Register New Volunteer" onClose={() => setShowAddModal(false)} />
+          <ModalHeader title="Register New Beneficiary" onClose={() => setShowAddModal(false)} />
           <form onSubmit={handleAddSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 no-scrollbar">
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -828,23 +825,34 @@ const Volunteers = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Availability *</label>
-                <select required value={addForm.availability}
-                  onChange={e => setAddForm(p => ({ ...p, availability: e.target.value }))}
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Aid Sector Category *</label>
+                <select required value={addForm.category}
+                  onChange={e => setAddForm(p => ({ ...p, category: e.target.value }))}
                   className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50 cursor-pointer">
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Weekends">Weekends</option>
-                  <option value="Occasional">Occasional</option>
+                  <option value="Education">Education</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Women Empowerment">Women Empowerment</option>
+                  <option value="Skill Development">Skill Development</option>
+                  <option value="Disaster Relief">Disaster Relief</option>
+                  <option value="Social Welfare">Social Welfare</option>
                 </select>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Skills (Comma-separated) *</label>
-              <input type="text" placeholder="e.g. Teaching, Fundraising, First Aid, Media" required value={addForm.skills}
-                onChange={e => setAddForm(p => ({ ...p, skills: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Needs Identified (Comma-separated)</label>
+                <input type="text" placeholder="e.g. Free Tuition, Eye Care, Ration Kits" value={addForm.needsIdentified}
+                  onChange={e => setAddForm(p => ({ ...p, needsIdentified: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Support Received (Comma-separated)</label>
+                <input type="text" placeholder="e.g. Textbook Set, Medical Checkup, Ration Box" value={addForm.supportReceived}
+                  onChange={e => setAddForm(p => ({ ...p, supportReceived: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+              </div>
             </div>
 
             <div className="space-y-1">
@@ -882,7 +890,7 @@ const Volunteers = () => {
                 Cancel
               </button>
               <button type="submit" disabled={submitting} className="flex-1 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60 transition-all" style={{ backgroundColor: COLORS.primary }}>
-                {submitting ? 'Creating...' : 'Register Volunteer'}
+                {submitting ? 'Registering...' : 'Register Beneficiary'}
               </button>
             </div>
 
@@ -890,35 +898,34 @@ const Volunteers = () => {
         </Modal>
       )}
 
-      {/* VIEW VOLUNTEER DETAILS MODAL */}
-      {viewVolunteer && (
-        <Modal onClose={() => setViewVolunteer(null)}>
-          <ModalHeader title="Volunteer Profile Summary" onClose={() => setViewVolunteer(null)} />
+      {/* VIEW BENEFICIARY DETAILS MODAL */}
+      {viewBeneficiary && (
+        <Modal onClose={() => setViewBeneficiary(null)}>
+          <ModalHeader title="Beneficiary Profile Summary" onClose={() => setViewBeneficiary(null)} />
           
           <div className="max-h-[50vh] overflow-y-auto pr-2 space-y-6 no-scrollbar">
             
             <div className="flex flex-col md:flex-row items-center gap-6 mb-6 pb-6 border-b border-gray-100">
               <div className="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-green-500 shadow flex-shrink-0">
-                {viewVolunteer.photoUrl ? (
-                  <img src={viewVolunteer.photoUrl} alt="" className="h-full w-full object-cover" />
+                {viewBeneficiary.photoUrl ? (
+                  <img src={viewBeneficiary.photoUrl} alt="" className="h-full w-full object-cover" />
                 ) : (
                   <User size={36} className="text-gray-400" />
                 )}
               </div>
               <div className="text-center md:text-left space-y-1">
-                <h3 className="text-xl font-extrabold text-gray-800">{viewVolunteer.fullName}</h3>
+                <h3 className="text-xl font-extrabold text-gray-800">{viewBeneficiary.fullName}</h3>
                 <p className="text-sm text-gray-500 font-semibold flex items-center justify-center md:justify-start gap-1">
-                  <Landmark size={14} /> ID: <span className="text-green-700 font-bold">{viewVolunteer.volunteerId || 'N/A'}</span>
+                  <Landmark size={14} /> ID: <span className="text-green-700 font-bold">{viewBeneficiary.beneficiaryId || 'N/A'}</span>
                 </p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 pt-1">
                   <span className={`px-3 py-0.5 rounded-full text-xs font-bold ${
-                    viewVolunteer.status === 'Active' ? 'bg-green-100 text-green-700' :
-                    viewVolunteer.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+                    viewBeneficiary.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                   }`}>
-                    {viewVolunteer.status} Volunteer
+                    {viewBeneficiary.status} Recipient
                   </span>
                   <span className="px-3 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600">
-                    {viewVolunteer.availability} Availability
+                    {viewBeneficiary.category} Sector
                   </span>
                 </div>
               </div>
@@ -934,29 +941,29 @@ const Volunteers = () => {
                     <User size={16} className="text-gray-400" />
                     <div>
                       <p className="text-[10px] text-gray-400 font-bold uppercase">Gender</p>
-                      <p className="text-gray-700 font-semibold">{viewVolunteer.gender || 'Not specified'}</p>
+                      <p className="text-gray-700 font-semibold">{viewBeneficiary.gender || 'Not specified'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Calendar size={16} className="text-gray-400" />
                     <div>
                       <p className="text-[10px] text-gray-400 font-bold uppercase">Date of Birth</p>
-                      <p className="text-gray-700 font-semibold">{formatDate(viewVolunteer.dateOfBirth)}</p>
+                      <p className="text-gray-700 font-semibold">{formatDate(viewBeneficiary.dateOfBirth)}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Wrench size={16} className="text-gray-400 mt-1" />
+                    <FileText size={16} className="text-gray-400 mt-1" />
                     <div>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase">Skills Matrix</p>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase">Needs Matrix Log</p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {viewVolunteer.skills && viewVolunteer.skills.length > 0 ? (
-                          viewVolunteer.skills.map((skill, sIdx) => (
-                            <span key={sIdx} className="px-2 py-0.5 text-xs font-bold rounded bg-green-50 text-green-700 border border-green-100">
-                              {skill}
+                        {viewBeneficiary.needsIdentified && viewBeneficiary.needsIdentified.length > 0 ? (
+                          viewBeneficiary.needsIdentified.map((need, sIdx) => (
+                            <span key={sIdx} className="px-2 py-0.5 text-xs font-bold rounded bg-amber-50 text-amber-700 border border-amber-100">
+                              {need}
                             </span>
                           ))
                         ) : (
-                          <span className="text-gray-700 font-semibold">No skills mapped</span>
+                          <span className="text-gray-700 font-semibold">No special needs flagged</span>
                         )}
                       </div>
                     </div>
@@ -972,14 +979,14 @@ const Volunteers = () => {
                     <Phone size={16} className="text-gray-400" />
                     <div>
                       <p className="text-[10px] text-gray-400 font-bold uppercase">Phone Number</p>
-                      <p className="text-gray-700 font-semibold">{viewVolunteer.mobileNumber}</p>
+                      <p className="text-gray-700 font-semibold">{viewBeneficiary.mobileNumber}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail size={16} className="text-gray-400" />
                     <div>
                       <p className="text-[10px] text-gray-400 font-bold uppercase">Email Address</p>
-                      <p className="text-gray-700 font-semibold break-all">{viewVolunteer.email || '—'}</p>
+                      <p className="text-gray-700 font-semibold break-all">{viewBeneficiary.email || '—'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -987,41 +994,46 @@ const Volunteers = () => {
                     <div>
                       <p className="text-[10px] text-gray-400 font-bold uppercase">Full Address</p>
                       <p className="text-gray-700 font-semibold text-xs leading-tight">
-                        {viewVolunteer.address ? `${viewVolunteer.address}, ` : ''}
-                        {viewVolunteer.city ? `${viewVolunteer.city}, ` : ''}
-                        {viewVolunteer.district ? `${viewVolunteer.district}, ` : ''}
-                        {viewVolunteer.state ? `${viewVolunteer.state} ` : ''}
-                        {viewVolunteer.pinCode ? `- ${viewVolunteer.pinCode}` : ''}
-                        {!viewVolunteer.address && !viewVolunteer.city && 'No address saved'}
+                        {viewBeneficiary.address ? `${viewiciaryAddress(viewBeneficiary)}` : 'No address saved'}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* NGO Branch Context */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-green-700 uppercase tracking-wider border-b pb-1">NGO Branch Context</h4>
-                <div className="space-y-2.5">
-                  <div className="flex items-center gap-3">
-                    <Landmark size={16} className="text-gray-400" />
-                    <div>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase">NGO Branch</p>
-                      <p className="text-gray-700 font-semibold">{viewVolunteer.branch?.name || 'Unassigned'}</p>
+              {/* Branch & Support Log */}
+              <div className="space-y-4 md:col-span-2">
+                <h4 className="text-xs font-bold text-green-700 uppercase tracking-wider border-b pb-1">NGO Support History & Context</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-3">
+                      <Landmark size={16} className="text-gray-400" />
+                      <div>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase">NGO Branch</p>
+                        <p className="text-gray-700 font-semibold">{viewBeneficiary.branch?.name || 'Unassigned'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <User size={16} className="text-gray-400" />
+                      <div>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase">Registered By (Admin)</p>
+                        <p className="text-gray-700 font-semibold">{viewBeneficiary.createdBy?.name || 'System Setup'}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <User size={16} className="text-gray-400" />
-                    <div>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase">Onboarded By (Admin)</p>
-                      <p className="text-gray-700 font-semibold">{viewVolunteer.createdBy?.name || 'System Setup'}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar size={16} className="text-gray-400" />
-                    <div>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase">Joined Date</p>
-                      <p className="text-gray-700 font-semibold">{formatDate(viewVolunteer.joinedDate)}</p>
+                  
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-gray-400 font-bold uppercase">Kits/Support Distributed</p>
+                    <div className="flex flex-wrap gap-1">
+                      {viewBeneficiary.supportReceived && viewBeneficiary.supportReceived.length > 0 ? (
+                        viewBeneficiary.supportReceived.map((sup, supIdx) => (
+                          <span key={supIdx} className="px-2 py-0.5 text-xs font-bold rounded bg-green-50 text-green-700 border border-green-100">
+                            {sup}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-400 text-xs italic">No support distributions logged</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1033,7 +1045,7 @@ const Volunteers = () => {
 
           <div className="mt-8 flex justify-end gap-3 border-t pt-4">
             <button 
-              onClick={() => setViewVolunteer(null)} 
+              onClick={() => setViewBeneficiary(null)} 
               className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
             >
               Close Profile
@@ -1042,10 +1054,10 @@ const Volunteers = () => {
         </Modal>
       )}
 
-      {/* EDIT VOLUNTEER DETAILS MODAL */}
-      {editVolunteer && (
-        <Modal onClose={() => setEditVolunteer(null)}>
-          <ModalHeader title="Edit Volunteer Profile" onClose={() => setEditVolunteer(null)} />
+      {/* EDIT BENEFICIARY DETAILS MODAL */}
+      {editBeneficiary && (
+        <Modal onClose={() => setEditBeneficiary(null)}>
+          <ModalHeader title="Edit Beneficiary Profile" onClose={() => setEditBeneficiary(null)} />
           <form onSubmit={handleEditSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 no-scrollbar">
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -1127,23 +1139,34 @@ const Volunteers = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Availability *</label>
-                <select required value={editForm.availability}
-                  onChange={e => setEditForm(p => ({ ...p, availability: e.target.value }))}
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Aid Sector Category *</label>
+                <select required value={editForm.category}
+                  onChange={e => setEditForm(p => ({ ...p, category: e.target.value }))}
                   className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50 cursor-pointer">
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Weekends">Weekends</option>
-                  <option value="Occasional">Occasional</option>
+                  <option value="Education">Education</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Women Empowerment">Women Empowerment</option>
+                  <option value="Skill Development">Skill Development</option>
+                  <option value="Disaster Relief">Disaster Relief</option>
+                  <option value="Social Welfare">Social Welfare</option>
                 </select>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Skills (Comma-separated) *</label>
-              <input type="text" placeholder="e.g. Teaching, Fundraising, First Aid, Media" required value={editForm.skills}
-                onChange={e => setEditForm(p => ({ ...p, skills: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Needs Identified (Comma-separated)</label>
+                <input type="text" placeholder="e.g. Free Tuition, Eye Care, Ration Kits" value={editForm.needsIdentified}
+                  onChange={e => setEditForm(p => ({ ...p, needsIdentified: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Support Received (Comma-separated)</label>
+                <input type="text" placeholder="e.g. Textbook Set, Medical Checkup, Ration Box" value={editForm.supportReceived}
+                  onChange={e => setEditForm(p => ({ ...p, supportReceived: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+              </div>
             </div>
 
             <div className="space-y-1">
@@ -1183,14 +1206,13 @@ const Volunteers = () => {
                   onChange={e => setEditForm(p => ({ ...p, status: e.target.value }))}
                   className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50 cursor-pointer">
                   <option value="Active">Active</option>
-                  <option value="Pending">Pending</option>
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
             </div>
 
             <div className="flex gap-3 pt-4 border-t">
-              <button type="button" onClick={() => setEditVolunteer(null)} className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+              <button type="button" onClick={() => setEditBeneficiary(null)} className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
                 Cancel
               </button>
               <button type="submit" disabled={submitting} className="flex-1 py-3 rounded-xl text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60 transition-all" style={{ backgroundColor: COLORS.primary }}>
@@ -1203,20 +1225,20 @@ const Volunteers = () => {
       )}
 
       {/* DELETE CONFIRMATION MODAL */}
-      {deleteVolunteer && (
-        <Modal onClose={() => setDeleteVolunteer(null)}>
-          <ModalHeader title="Remove Volunteer Record" onClose={() => setDeleteVolunteer(null)} />
+      {deleteBeneficiary && (
+        <Modal onClose={() => setDeleteBeneficiary(null)}>
+          <ModalHeader title="Remove Beneficiary Profile" onClose={() => setDeleteBeneficiary(null)} />
           <div className="flex flex-col items-center gap-3 py-2 mb-6">
             <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
               <ShieldAlert size={24} className="text-red-500" />
             </div>
             <p className="text-center text-gray-600 text-sm">
-              Are you sure you want to delete volunteer <span className="font-bold text-gray-800">"{deleteVolunteer.fullName}"</span> ({deleteVolunteer.volunteerId || 'N/A'})?<br />
-              <span className="text-red-500 font-bold text-xs">WARNING: This will permanently delete the volunteer's database file and skills metrics.</span>
+              Are you sure you want to delete beneficiary <span className="font-bold text-gray-800">"{deleteBeneficiary.fullName}"</span> ({deleteBeneficiary.beneficiaryId || 'N/A'})?<br />
+              <span className="text-red-500 font-bold text-xs">WARNING: This will permanently delete the recipient profile and aid logs.</span>
             </p>
           </div>
           <div className="flex gap-3">
-            <button onClick={() => setDeleteVolunteer(null)} className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+            <button onClick={() => setDeleteBeneficiary(null)} className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
               Cancel
             </button>
             <button onClick={handleDelete} className="flex-1 py-3 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors">
@@ -1230,4 +1252,15 @@ const Volunteers = () => {
   );
 };
 
-export default Volunteers;
+// Helper for address parsing
+const viewiciaryAddress = (b) => {
+  const parts = [];
+  if (b.address) parts.push(b.address);
+  if (b.city) parts.push(b.city);
+  if (b.district) parts.push(b.district);
+  if (b.state) parts.push(b.state);
+  if (b.pinCode) parts.push(b.pinCode);
+  return parts.join(', ');
+};
+
+export default Beneficiaries;

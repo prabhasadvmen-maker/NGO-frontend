@@ -455,7 +455,7 @@ const Members = () => {
                 <thead>
                   <tr className="border-b" style={{ borderColor: '#E0E0E0' }}>
                     {['#', 'ID', 'Name / Member', 'Contact Info', 'Branch', 'Registered By', 'Membership', 'Status', 'Actions'].map(h => (
-                      <th key={h} className="px-3.5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-400">{h}</th>
+                      <th key={h} className="px-3.5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -464,7 +464,7 @@ const Members = () => {
                     <tr key={member._id} className="border-b last:border-0 hover:bg-gray-50 transition-colors" style={{ borderColor: '#F0F0F0' }}>
                       
                       {/* Sr. No. */}
-                      <td className="px-2.5 py-3 text-gray-400 font-medium">{(page - 1) * limit + idx + 1}</td>
+                      <td className="px-2.5 py-3 text-gray-500 font-medium">{(page - 1) * limit + idx + 1}</td>
 
                       {/* ID */}
                       <td className="px-3.5 py-3 font-bold text-gray-700">{member.memberId || 'N/A'}</td>
@@ -476,12 +476,12 @@ const Members = () => {
                             {member.photoUrl ? (
                               <img src={member.photoUrl} alt="" className="h-full w-full object-cover" />
                             ) : (
-                              <User size={18} className="text-gray-400" />
+                              <User size={18} className="text-gray-500" />
                             )}
                           </div>
                           <div>
                             <p className="font-bold text-gray-800 leading-tight">{member.fullName}</p>
-                            <p className="text-[10px] text-gray-400 font-semibold capitalize">{member.gender || 'No Gender Spec'}</p>
+                            <p className="text-[10px] text-gray-500 font-semibold capitalize">{member.gender || 'No Gender Spec'}</p>
                           </div>
                         </div>
                       </td>
@@ -490,10 +490,10 @@ const Members = () => {
                       <td className="px-3.5 py-3">
                         <div className="space-y-0.5">
                           <p className="text-gray-700 font-semibold text-xs flex items-center gap-1">
-                            <Phone size={11} className="text-gray-400" /> {member.mobileNumber}
+                            <Phone size={11} className="text-gray-500" /> {member.mobileNumber}
                           </p>
-                          <p className="text-gray-400 text-[11px] flex items-center gap-1 max-w-[150px] truncate" title={member.email || ''}>
-                            <Mail size={11} className="text-gray-300" /> {member.email || 'No email configured'}
+                          <p className="text-gray-500 text-[11px] flex items-center gap-1 max-w-[150px] truncate" title={member.email || ''}>
+                            <Mail size={11} className="text-gray-400" /> {member.email || 'No email configured'}
                           </p>
                         </div>
                       </td>
@@ -503,10 +503,10 @@ const Members = () => {
                         {member.branch ? (
                           <div>
                             <p className="font-bold text-gray-700">{member.branch.name}</p>
-                            <p className="text-[10px] text-gray-400 font-semibold">Code: {member.branch.code}</p>
+                            <p className="text-[10px] text-gray-500 font-semibold">Code: {member.branch.code}</p>
                           </div>
                         ) : (
-                          <span className="text-gray-400 text-xs italic">Unassigned</span>
+                          <span className="text-gray-500 text-xs italic">Unassigned</span>
                         )}
                       </td>
 
@@ -515,10 +515,10 @@ const Members = () => {
                         {member.createdBy ? (
                           <div>
                             <p className="font-semibold text-gray-700 text-xs">{member.createdBy.name}</p>
-                            <p className="text-[9px] text-gray-400">Admin Account</p>
+                            <p className="text-[9px] text-gray-500">Admin Account</p>
                           </div>
                         ) : (
-                          <span className="text-gray-400 text-xs">System Setup</span>
+                          <span className="text-gray-500 text-xs">System Setup</span>
                         )}
                       </td>
 
@@ -528,7 +528,7 @@ const Members = () => {
                           <span className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-green-50 text-green-700 border border-green-100">
                             {member.membershipType}
                           </span>
-                          <p className="text-[10px] text-gray-400 font-semibold mt-1">Paid: ₹{member.membershipFee}</p>
+                          <p className="text-[10px] text-gray-500 font-semibold mt-1">Paid: ₹{member.membershipFee}</p>
                         </div>
                       </td>
 
