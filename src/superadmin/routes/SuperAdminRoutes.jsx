@@ -12,6 +12,8 @@ import ComingSoon from '../pages/ComingSoon';
 import NGOProfile from '../pages/NGOProfile';
 import Branches from '../pages/Branches';
 import Departments from '../pages/Departments';
+import Members from '../pages/Members';
+import Volunteers from '../pages/Volunteers';
 
 const SA = (element) => <ProtectedRoute role="super_admin">{element}</ProtectedRoute>;
 const CS = (title) => SA(<ComingSoon title={title} />);
@@ -24,8 +26,8 @@ const SuperAdminRoutes = () => [
   <Route key="org-departments" path="/org/departments" element={SA(<Departments />)} />,
   <Route key="org-membership-types" path="/org/membership-types" element={SA(<MembershipTypes />)} />,
   <Route key="users-admins" path="/users/admins" element={SA(<Admins />)} />,
-  <Route key="users-members" path="/users/members" element={CS('Members')} />,
-  <Route key="users-volunteers" path="/users/volunteers" element={CS('Volunteers')} />,
+  <Route key="users-members" path="/users/members" element={SA(<Members />)} />,
+  <Route key="users-volunteers" path="/users/volunteers" element={SA(<Volunteers />)} />,
   <Route key="users-beneficiaries" path="/users/beneficiaries" element={CS('Beneficiaries')} />,
   <Route key="donations" path="/donations" element={CS('Donations')} />,
   <Route key="projects" path="/projects" element={CS('Projects')} />,
