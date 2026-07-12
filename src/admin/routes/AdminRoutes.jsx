@@ -12,6 +12,10 @@ import AddMember from '../pages/members/AddMember';
 import MembersList from '../pages/members/MembersList';
 import MemberApproval from '../pages/members/MemberApproval';
 import MembershipRequests from '../pages/members/MembershipRequests';
+import DonationsList from '../pages/donations/DonationsList';
+import AddDonation from '../pages/donations/AddDonation';
+import PendingDonations from '../pages/donations/PendingDonations';
+import DonationReceipts from '../pages/donations/DonationReceipts';
 
 const AD = (element) => <ProtectedRoute role="admin">{element}</ProtectedRoute>;
 const ACS = (title) => AD(<ComingSoon title={title} />);
@@ -24,10 +28,10 @@ const AdminRoutes = () => [
   <Route key="admin-members-add" path="/admin/members/add" element={AD(<AddMember />)} />,
   <Route key="admin-members-approval" path="/admin/members/approval" element={AD(<MemberApproval />)} />,
   <Route key="admin-members-requests" path="/admin/members/requests" element={AD(<MembershipRequests />)} />,
-  <Route key="admin-donations" path="/admin/donations" element={ACS('All Donations')} />,
-  <Route key="admin-donations-add" path="/admin/donations/add" element={ACS('Add Donation')} />,
-  <Route key="admin-donations-pending" path="/admin/donations/pending" element={ACS('Pending Donations')} />,
-  <Route key="admin-donations-receipts" path="/admin/donations/receipts" element={ACS('Donation Receipts')} />,
+  <Route key="admin-donations" path="/admin/donations" element={AD(<DonationsList />)} />,
+  <Route key="admin-donations-add" path="/admin/donations/add" element={AD(<AddDonation />)} />,
+  <Route key="admin-donations-pending" path="/admin/donations/pending" element={AD(<PendingDonations />)} />,
+  <Route key="admin-donations-receipts" path="/admin/donations/receipts" element={AD(<DonationReceipts />)} />,
   <Route key="admin-beneficiaries" path="/admin/beneficiaries" element={ACS('All Beneficiaries')} />,
   <Route key="admin-beneficiaries-add" path="/admin/beneficiaries/add" element={ACS('Add Beneficiary')} />,
   <Route key="admin-beneficiaries-verification" path="/admin/beneficiaries/verification" element={ACS('Beneficiary Verification')} />,

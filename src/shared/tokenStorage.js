@@ -7,8 +7,8 @@ export const TOKEN_KEYS = {
 export function getRoleFromPath(pathname) {
   if (pathname.startsWith('/member')) return 'MEMBER';
   if (pathname.startsWith('/admin')) return 'ADMIN';
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/org') || pathname.startsWith('/users')) return 'SUPERADMIN';
-  return null;
+  if (pathname === '/superadmin/login' || pathname === '/login' || pathname === '/') return null;
+  return 'SUPERADMIN';
 }
 
 export function getTokenKeyForRole(role) {
