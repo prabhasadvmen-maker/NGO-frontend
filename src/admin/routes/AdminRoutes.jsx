@@ -16,6 +16,20 @@ import DonationsList from '../pages/donations/DonationsList';
 import AddDonation from '../pages/donations/AddDonation';
 import PendingDonations from '../pages/donations/PendingDonations';
 import DonationReceipts from '../pages/donations/DonationReceipts';
+import EventsList from '../pages/events/EventsList';
+import CreateEvent from '../pages/events/CreateEvent';
+import Registrations from '../pages/events/Registrations';
+import Attendance from '../pages/events/Attendance';
+import CampaignsList from '../pages/crowdfunding/CampaignsList';
+import CreateCampaign from '../pages/crowdfunding/CreateCampaign';
+import ContributionsList from '../pages/crowdfunding/ContributionsList';
+import GenerateCertificate from '../pages/certificates/GenerateCertificate';
+import CertificateList from '../pages/certificates/CertificateList';
+import VerifyCertificate from '../pages/certificates/VerifyCertificate';
+import GenerateIDCard from '../pages/idcards/GenerateIDCard';
+import IDCardList from '../pages/idcards/IDCardList';
+import AdminFinance from '../pages/finance/AdminFinance';
+import AdminReports from '../pages/reports/AdminReports';
 
 const AD = (element) => <ProtectedRoute role="admin">{element}</ProtectedRoute>;
 const ACS = (title) => AD(<ComingSoon title={title} />);
@@ -43,25 +57,25 @@ const AdminRoutes = () => [
   <Route key="admin-projects-add" path="/admin/projects/add" element={ACS('Add Project')} />,
   <Route key="admin-projects-progress" path="/admin/projects/progress" element={ACS('Project Progress')} />,
   <Route key="admin-projects-expenses" path="/admin/projects/expenses" element={ACS('Project Expenses')} />,
-  <Route key="admin-events" path="/admin/events" element={ACS('All Events')} />,
-  <Route key="admin-events-create" path="/admin/events/create" element={ACS('Create Event')} />,
-  <Route key="admin-events-registrations" path="/admin/events/registrations" element={ACS('Registrations')} />,
-  <Route key="admin-events-attendance" path="/admin/events/attendance" element={ACS('Attendance')} />,
-  <Route key="admin-crowdfunding" path="/admin/crowdfunding" element={ACS('Campaigns')} />,
-  <Route key="admin-crowdfunding-create" path="/admin/crowdfunding/create" element={ACS('Create Campaign')} />,
-  <Route key="admin-crowdfunding-contributions" path="/admin/crowdfunding/contributions" element={ACS('Contributions')} />,
-  <Route key="admin-certificates-generate" path="/admin/certificates/generate" element={ACS('Generate Certificate')} />,
-  <Route key="admin-certificates" path="/admin/certificates" element={ACS('Certificate List')} />,
-  <Route key="admin-certificates-verify" path="/admin/certificates/verify" element={ACS('Verify Certificate')} />,
-  <Route key="admin-id-cards-generate" path="/admin/id-cards/generate" element={ACS('Generate ID Card')} />,
-  <Route key="admin-id-cards" path="/admin/id-cards" element={ACS('ID Card List')} />,
-  <Route key="admin-finance-income" path="/admin/finance/income" element={ACS('Income')} />,
-  <Route key="admin-finance-expenses" path="/admin/finance/expenses" element={ACS('Expenses')} />,
-  <Route key="admin-finance-transactions" path="/admin/finance/transactions" element={ACS('Transactions')} />,
-  <Route key="admin-reports-donations" path="/admin/reports/donations" element={ACS('Donation Reports')} />,
-  <Route key="admin-reports-members" path="/admin/reports/members" element={ACS('Member Reports')} />,
-  <Route key="admin-reports-projects" path="/admin/reports/projects" element={ACS('Project Reports')} />,
-  <Route key="admin-reports-events" path="/admin/reports/events" element={ACS('Event Reports')} />,
+  <Route key="admin-events" path="/admin/events" element={AD(<EventsList />)} />,
+  <Route key="admin-events-create" path="/admin/events/create" element={AD(<CreateEvent />)} />,
+  <Route key="admin-events-registrations" path="/admin/events/registrations" element={AD(<Registrations />)} />,
+  <Route key="admin-events-attendance" path="/admin/events/attendance" element={AD(<Attendance />)} />,
+  <Route key="admin-crowdfunding" path="/admin/crowdfunding" element={AD(<CampaignsList />)} />,
+  <Route key="admin-crowdfunding-create" path="/admin/crowdfunding/create" element={AD(<CreateCampaign />)} />,
+  <Route key="admin-crowdfunding-contributions" path="/admin/crowdfunding/contributions" element={AD(<ContributionsList />)} />,
+  <Route key="admin-certificates-generate" path="/admin/certificates/generate" element={AD(<GenerateCertificate />)} />,
+  <Route key="admin-certificates" path="/admin/certificates" element={AD(<CertificateList />)} />,
+  <Route key="admin-certificates-verify" path="/admin/certificates/verify" element={AD(<VerifyCertificate />)} />,
+  <Route key="admin-id-cards-generate" path="/admin/id-cards/generate" element={AD(<GenerateIDCard />)} />,
+  <Route key="admin-id-cards" path="/admin/id-cards" element={AD(<IDCardList />)} />,
+  <Route key="admin-finance-income" path="/admin/finance/income" element={AD(<AdminFinance />)} />,
+  <Route key="admin-finance-expenses" path="/admin/finance/expenses" element={AD(<AdminFinance />)} />,
+  <Route key="admin-finance-transactions" path="/admin/finance/transactions" element={AD(<AdminFinance />)} />,
+  <Route key="admin-reports-donations" path="/admin/reports/donations" element={AD(<AdminReports />)} />,
+  <Route key="admin-reports-members" path="/admin/reports/members" element={AD(<AdminReports />)} />,
+  <Route key="admin-reports-projects" path="/admin/reports/projects" element={AD(<AdminReports />)} />,
+  <Route key="admin-reports-events" path="/admin/reports/events" element={AD(<AdminReports />)} />,
   <Route key="admin-cms-homepage" path="/admin/cms/homepage" element={ACS('Homepage')} />,
   <Route key="admin-cms-projects" path="/admin/cms/projects" element={ACS('CMS Projects')} />,
   <Route key="admin-cms-news" path="/admin/cms/news" element={ACS('News / Blog')} />,

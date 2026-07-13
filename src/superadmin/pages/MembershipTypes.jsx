@@ -55,6 +55,18 @@ const MembershipTypes = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      if (!res.ok) {
+        const contentType = res.headers.get('content-type');
+        let errorMsg = 'Failed to fetch membership types';
+        if (contentType && contentType.includes('application/json')) {
+          const errJson = await res.json();
+          errorMsg = errJson.message || errorMsg;
+        } else {
+          errorMsg = await res.text() || errorMsg;
+        }
+        throw new Error(errorMsg);
+      }
+
       const resData = await res.json();
       if (resData.success) {
         setMembershipTypes(resData.data);
@@ -63,7 +75,7 @@ const MembershipTypes = () => {
       }
     } catch (err) {
       console.error(err);
-      toast.error('Failed to load membership types');
+      toast.error(err.message || 'Failed to load membership types');
     } finally {
       setLoading(false);
     }

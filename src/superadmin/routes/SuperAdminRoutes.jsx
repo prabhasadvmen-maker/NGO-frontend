@@ -17,6 +17,12 @@ import Volunteers from '../pages/Volunteers';
 import Beneficiaries from '../pages/Beneficiaries';
 import Donations from '../pages/Donations';
 import Projects from '../pages/Projects';
+import Events from '../pages/Events';
+import Crowdfunding from '../pages/Crowdfunding';
+import Certificates from '../pages/Certificates';
+import IDCards from '../pages/IDCards';
+import Finance from '../pages/Finance';
+import Reports from '../pages/Reports';
 
 const SA = (element) => <ProtectedRoute role="super_admin">{element}</ProtectedRoute>;
 const CS = (title) => SA(<ComingSoon title={title} />);
@@ -34,12 +40,12 @@ const SuperAdminRoutes = () => [
   <Route key="users-beneficiaries" path="/users/beneficiaries" element={SA(<Beneficiaries />)} />,
   <Route key="donations" path="/donations" element={SA(<Donations />)} />,
   <Route key="projects" path="/projects" element={SA(<Projects />)} />,
-  <Route key="events" path="/events" element={CS('Events')} />,
-  <Route key="crowdfunding" path="/crowdfunding" element={CS('Crowdfunding')} />,
-  <Route key="certificates" path="/certificates" element={CS('Certificates')} />,
-  <Route key="id-cards" path="/id-cards" element={CS('ID Cards')} />,
-  <Route key="finance" path="/finance" element={CS('Finance')} />,
-  <Route key="reports" path="/reports" element={CS('Reports')} />,
+  <Route key="events" path="/events" element={SA(<Events />)} />,
+  <Route key="crowdfunding" path="/crowdfunding" element={SA(<Crowdfunding />)} />,
+  <Route key="certificates" path="/certificates" element={SA(<Certificates />)} />,
+  <Route key="id-cards" path="/id-cards" element={SA(<IDCards />)} />,
+  <Route key="finance" path="/finance" element={SA(<Finance />)} />,
+  <Route key="reports" path="/reports" element={SA(<Reports />)} />,
   <Route key="website-cms" path="/website-cms" element={CS('Website CMS')} />,
   <Route key="communication" path="/communication" element={CS('Communication')} />,
   <Route key="media-library" path="/media-library" element={CS('Media Library')} />,
