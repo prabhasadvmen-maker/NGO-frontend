@@ -23,6 +23,14 @@ import Certificates from '../pages/Certificates';
 import IDCards from '../pages/IDCards';
 import Finance from '../pages/Finance';
 import Reports from '../pages/Reports';
+import WebsiteCMS from '../pages/WebsiteCMS';
+import Communication from '../pages/Communication';
+import MediaLibrary from '../pages/MediaLibrary';
+import Forms from '../pages/Forms';
+import AuditLogs from '../pages/AuditLogs';
+import Backup from '../pages/Backup';
+import APIIntegrations from '../pages/APIIntegrations';
+import AICenter from '../pages/AICenter';
 
 const SA = (element) => <ProtectedRoute role="super_admin">{element}</ProtectedRoute>;
 const CS = (title) => SA(<ComingSoon title={title} />);
@@ -46,14 +54,14 @@ const SuperAdminRoutes = () => [
   <Route key="id-cards" path="/id-cards" element={SA(<IDCards />)} />,
   <Route key="finance" path="/finance" element={SA(<Finance />)} />,
   <Route key="reports" path="/reports" element={SA(<Reports />)} />,
-  <Route key="website-cms" path="/website-cms" element={CS('Website CMS')} />,
-  <Route key="communication" path="/communication" element={CS('Communication')} />,
-  <Route key="media-library" path="/media-library" element={CS('Media Library')} />,
-  <Route key="forms" path="/forms" element={CS('Forms')} />,
-  <Route key="audit-logs" path="/audit-logs" element={CS('Audit Logs')} />,
-  <Route key="backup" path="/backup" element={CS('Backup & Restore')} />,
-  <Route key="api-integrations" path="/api-integrations" element={CS('API & Integrations')} />,
-  <Route key="ai-center" path="/ai-center" element={CS('AI Center')} />,
+  <Route key="website-cms" path="/website-cms" element={SA(<WebsiteCMS />)} />,
+  <Route key="communication" path="/communication" element={SA(<Communication />)} />,
+  <Route key="media-library" path="/media-library" element={SA(<MediaLibrary />)} />,
+  <Route key="forms" path="/forms" element={SA(<Forms />)} />,
+  <Route key="audit-logs" path="/audit-logs" element={SA(<AuditLogs />)} />,
+  <Route key="backup" path="/backup" element={SA(<Backup />)} />,
+  <Route key="api-integrations" path="/api-integrations" element={SA(<APIIntegrations />)} />,
+  <Route key="ai-center" path="/ai-center" element={SA(<AICenter />)} />,
   <Route key="profile" path="/profile" element={SA(<Profile />)} />,
   <Route key="settings" path="/settings" element={SA(<Settings />)} />,
   <Route key="help" path="/help" element={SA(<Help />)} />,

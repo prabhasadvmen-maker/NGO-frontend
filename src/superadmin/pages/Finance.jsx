@@ -105,64 +105,62 @@ const Finance = () => {
     setActiveDropdownId(prev => (prev === id ? null : id));
   };
 
-  const fetchBranches = useCallback(async () => {
+  const fetchAPI = useCallback(async (url, options = {}) => {
     try {
-      const res = await fetch(BRANCH_API, {
-        headers: { Authorization: `Bearer ${token}` }
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          ...options.headers,
+        }
       });
-      const data = await res.json();
-      if (data.success) setBranches(data.data || []);
+      if (!res.ok) {
+        if (res.status === 429) {
+          toast.error('Too many requests. Please wait a moment.');
+        } else {
+          console.error(`API Error ${res.status}: ${res.statusText}`);
+        }
+        return null;
+      }
+      return await res.json();
     } catch (err) {
-      console.error(err);
+      console.error('Fetch operation error:', err);
+      return null;
     }
-  }, [token]);
+  }, [token, toast]);
+
+  const fetchBranches = useCallback(async () => {
+    const data = await fetchAPI(BRANCH_API);
+    if (data && data.success) setBranches(data.data || []);
+  }, [fetchAPI]);
 
   const fetchProjects = useCallback(async () => {
-    try {
-      const res = await fetch(PROJECT_API, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.success) setProjects(data.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [token]);
+    const data = await fetchAPI(PROJECT_API);
+    if (data && data.success) setProjects(data.data || []);
+  }, [fetchAPI]);
 
   const fetchEvents = useCallback(async () => {
-    try {
-      const res = await fetch(EVENT_API, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.success) setEvents(data.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [token]);
+    const data = await fetchAPI(EVENT_API);
+    if (data && data.success) setEvents(data.data || []);
+  }, [fetchAPI]);
 
   const fetchStats = useCallback(async () => {
-    try {
-      const [donStatsRes, expStatsRes] = await Promise.all([
-        fetch(`${DONATION_API}/stats`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${EXPENSE_API}/stats`, { headers: { Authorization: `Bearer ${token}` } })
-      ]);
-      const donStats = await donStatsRes.json();
-      const expStats = await expStatsRes.json();
+    const [donStats, expStats] = await Promise.all([
+      fetchAPI(`${DONATION_API}/stats`),
+      fetchAPI(`${EXPENSE_API}/stats`)
+    ]);
 
-      const income = donStats.success ? donStats.data.totalAmount : 0;
-      const spent = expStats.success ? expStats.data.totalAmount : 0;
+    const income = (donStats && donStats.success) ? donStats.data.totalAmount : 0;
+    const spent = (expStats && expStats.success) ? expStats.data.totalAmount : 0;
 
-      setStats({
-        totalIncome: income,
-        totalExpenses: spent,
-        netBalance: income - spent,
-        pendingExpensesCount: expStats.success ? expStats.data.pendingCount : 0
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }, [token]);
+    setStats({
+      totalIncome: income,
+      totalExpenses: spent,
+      netBalance: income - spent,
+      pendingExpensesCount: (expStats && expStats.success) ? expStats.data.pendingCount : 0
+    });
+  }, [fetchAPI]);
 
   const fetchData = useCallback(async () => {
     if (!token) return;
@@ -174,39 +172,28 @@ const Finance = () => {
       const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
 
       if (activeTab === 'donations') {
-        const res = await fetch(`${DONATION_API}?page=${page}&limit=10${searchParam}${branchParam}${statusParam}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const json = await res.json();
-        if (json.success) {
+        const json = await fetchAPI(`${DONATION_API}?page=${page}&limit=10${searchParam}${branchParam}${statusParam}`);
+        if (json && json.success) {
           setDonations(json.data || []);
           setTotalPages(json.pagination.totalPages);
         }
       } else if (activeTab === 'expenses') {
-        const res = await fetch(`${EXPENSE_API}?page=${page}&limit=10${searchParam}${branchParam}${statusParam}${categoryParam}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const json = await res.json();
-        if (json.success) {
+        const json = await fetchAPI(`${EXPENSE_API}?page=${page}&limit=10${searchParam}${branchParam}${statusParam}${categoryParam}`);
+        if (json && json.success) {
           setExpenses(json.data || []);
           setTotalPages(json.pagination.totalPages);
         }
       } else {
-        // Ledger tab: load both donations and expenses, sort in memory or load paginated combined list
-        // Let's load the latest 20 donations and latest 20 expenses, combine and sort them
-        const [donRes, expRes] = await Promise.all([
-          fetch(`${DONATION_API}?page=1&limit=50`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${EXPENSE_API}?page=1&limit=50`, { headers: { Authorization: `Bearer ${token}` } })
+        const [donJson, expJson] = await Promise.all([
+          fetchAPI(`${DONATION_API}?page=1&limit=50`),
+          fetchAPI(`${EXPENSE_API}?page=1&limit=50`)
         ]);
-        const donJson = await donRes.json();
-        const expJson = await expRes.json();
 
         const combined = [
-          ...(donJson.success ? donJson.data.map(d => ({ ...d, type: 'credit', date: d.donationDate, title: `Donation: ${d.donorName}` })) : []),
-          ...(expJson.success ? expJson.data.map(e => ({ ...e, type: 'debit', date: e.date, title: e.title })) : [])
+          ...(donJson && donJson.success ? donJson.data.map(d => ({ ...d, type: 'credit', date: d.donationDate, title: `Donation: ${d.donorName}` })) : []),
+          ...(expJson && expJson.success ? expJson.data.map(e => ({ ...e, type: 'debit', date: e.date, title: e.title })) : [])
         ];
 
-        // Sort by date descending
         combined.sort((a, b) => new Date(b.date) - new Date(a.date));
         setLedger(combined.slice(0, 15));
         setTotalPages(1);
@@ -216,7 +203,7 @@ const Finance = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, activeTab, page, search, filterCategory, filterBranch, filterStatus, toast]);
+  }, [token, activeTab, page, search, filterCategory, filterBranch, filterStatus, fetchAPI, toast]);
 
   useEffect(() => {
     fetchBranches();

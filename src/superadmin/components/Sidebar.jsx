@@ -150,7 +150,7 @@ const Sidebar = () => {
         <hr className="border-white/20 mx-4 mb-3" />
 
         {/* Scrollable Nav */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden py-2 px-3" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden py-2 px-3 no-scrollbar" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="mb-2">
               {!isCollapsed && (
@@ -190,7 +190,7 @@ const Sidebar = () => {
         <hr className="border-white/20 mx-4 mt-2" />
 
         {/* Bottom: Profile, Settings, Help */}
-        <div className="p-3 space-y-1">
+        <div className="p-3 space-y-1 flex-shrink-0">
           {[
             { path: '/profile',  label: 'Profile',  icon: User },
             { path: '/settings', label: 'Settings', icon: Settings },

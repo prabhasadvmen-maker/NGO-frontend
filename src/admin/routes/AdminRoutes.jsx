@@ -28,8 +28,12 @@ import CertificateList from '../pages/certificates/CertificateList';
 import VerifyCertificate from '../pages/certificates/VerifyCertificate';
 import GenerateIDCard from '../pages/idcards/GenerateIDCard';
 import IDCardList from '../pages/idcards/IDCardList';
+import AdminCms from '../pages/cms/AdminCms';
 import AdminFinance from '../pages/finance/AdminFinance';
 import AdminReports from '../pages/reports/AdminReports';
+import AdminCommunication from '../pages/communication/AdminCommunication';
+import AdminMediaLibrary from '../pages/media/AdminMediaLibrary';
+import AdminForms from '../pages/forms/AdminForms';
 
 const AD = (element) => <ProtectedRoute role="admin">{element}</ProtectedRoute>;
 const ACS = (title) => AD(<ComingSoon title={title} />);
@@ -76,20 +80,20 @@ const AdminRoutes = () => [
   <Route key="admin-reports-members" path="/admin/reports/members" element={AD(<AdminReports />)} />,
   <Route key="admin-reports-projects" path="/admin/reports/projects" element={AD(<AdminReports />)} />,
   <Route key="admin-reports-events" path="/admin/reports/events" element={AD(<AdminReports />)} />,
-  <Route key="admin-cms-homepage" path="/admin/cms/homepage" element={ACS('Homepage')} />,
-  <Route key="admin-cms-projects" path="/admin/cms/projects" element={ACS('CMS Projects')} />,
-  <Route key="admin-cms-news" path="/admin/cms/news" element={ACS('News / Blog')} />,
-  <Route key="admin-cms-gallery" path="/admin/cms/gallery" element={ACS('Gallery')} />,
-  <Route key="admin-cms-testimonials" path="/admin/cms/testimonials" element={ACS('Testimonials')} />,
-  <Route key="admin-cms-contact" path="/admin/cms/contact" element={ACS('Contact Queries')} />,
-  <Route key="admin-communication-email" path="/admin/communication/email" element={ACS('Email')} />,
-  <Route key="admin-communication-sms" path="/admin/communication/sms" element={ACS('SMS')} />,
-  <Route key="admin-communication-whatsapp" path="/admin/communication/whatsapp" element={ACS('WhatsApp')} />,
-  <Route key="admin-communication-notifications" path="/admin/communication/notifications" element={ACS('Notifications')} />,
-  <Route key="admin-media-library" path="/admin/media-library" element={ACS('Media Library')} />,
-  <Route key="admin-forms-contact" path="/admin/forms/contact" element={ACS('Contact Forms')} />,
-  <Route key="admin-forms-membership" path="/admin/forms/membership" element={ACS('Membership Forms')} />,
-  <Route key="admin-forms-volunteer" path="/admin/forms/volunteer" element={ACS('Volunteer Forms')} />,
+  <Route key="admin-cms-homepage" path="/admin/cms/homepage" element={AD(<AdminCms />)} />,
+  <Route key="admin-cms-projects" path="/admin/cms/projects" element={AD(<AdminCms />)} />,
+  <Route key="admin-cms-news" path="/admin/cms/news" element={AD(<AdminCms />)} />,
+  <Route key="admin-cms-gallery" path="/admin/cms/gallery" element={AD(<AdminCms />)} />,
+  <Route key="admin-cms-testimonials" path="/admin/cms/testimonials" element={AD(<AdminCms />)} />,
+  <Route key="admin-cms-contact" path="/admin/cms/contact" element={AD(<AdminCms />)} />,
+  <Route key="admin-communication-email" path="/admin/communication/email" element={AD(<AdminCommunication />)} />,
+  <Route key="admin-communication-sms" path="/admin/communication/sms" element={AD(<AdminCommunication />)} />,
+  <Route key="admin-communication-whatsapp" path="/admin/communication/whatsapp" element={AD(<AdminCommunication />)} />,
+  <Route key="admin-communication-notifications" path="/admin/communication/notifications" element={AD(<AdminCommunication />)} />,
+  <Route key="admin-media-library" path="/admin/media-library" element={AD(<AdminMediaLibrary />)} />,
+  <Route key="admin-forms-contact" path="/admin/forms/contact" element={AD(<AdminForms defaultTab="contact" />)} />,
+  <Route key="admin-forms-membership" path="/admin/forms/membership" element={AD(<AdminForms defaultTab="membership" />)} />,
+  <Route key="admin-forms-volunteer" path="/admin/forms/volunteer" element={AD(<AdminForms defaultTab="volunteer" />)} />,
   <Route key="admin-profile" path="/admin/profile" element={AD(<Profile />)} />,
   <Route key="admin-settings" path="/admin/settings" element={AD(<Settings />)} />,
   <Route key="admin-help" path="/admin/help" element={AD(<Help />)} />,
