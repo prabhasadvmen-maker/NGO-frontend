@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { DollarSign, Search, ArrowLeft, Loader2, Heart, Plus } from 'lucide-react';
+import { DollarSign, Search, ArrowLeft, Loader2, Heart, Plus, X } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
 import { useToast } from '../../../shared/ToastContext';

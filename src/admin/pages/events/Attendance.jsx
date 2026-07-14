@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShieldCheck, Search, ArrowLeft, Loader2, CalendarDays, Check } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
@@ -13,9 +13,11 @@ const Attendance = () => {
   const { token } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get('event');
 
   const [allEvents, setAllEvents] = useState([]);
-  const [selectedEventId, setSelectedEventId] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState(eventId || '');
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
@@ -30,14 +32,14 @@ const Attendance = () => {
       const data = await res.json();
       if (data.success) {
         setAllEvents(data.data);
-        if (data.data.length > 0) {
+        if (!selectedEventId && data.data.length > 0) {
           setSelectedEventId(data.data[0]._id);
         }
       }
     } catch (err) {
       console.error(err);
     }
-  }, [token]);
+  }, [token, selectedEventId]);
 
   // Fetch attendees
   const fetchAttendees = useCallback(async (evId = selectedEventId, searchQ = search) => {

@@ -73,7 +73,7 @@ const Dashboard = () => {
 
   const quickLinks = [
     { icon: Users,        label: 'Add Member',     path: '/admin/members/add',      color: COLORS.primary },
-    { icon: HandHeart,    label: 'Add Donation',    path: '/admin/donations/add',    color: '#E91E63' },
+    { icon: HandHeart,    label: 'Add Donation',    path: '/admin/donations',        color: '#E91E63' },
     { icon: FolderKanban, label: 'Add Project',     path: '/admin/projects/add',     color: '#FF9800' },
     { icon: CalendarDays, label: 'Create Event',    path: '/admin/events/create',    color: '#2196F3' },
     { icon: UserCheck,    label: 'Add Volunteer',   path: '/admin/volunteers/add',   color: '#9C27B0' },

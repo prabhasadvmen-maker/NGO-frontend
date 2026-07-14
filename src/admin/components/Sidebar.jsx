@@ -31,7 +31,6 @@ const NAV_GROUPS = [
     label: 'Donations', icon: HandHeart,
     items: [
       { path: '/admin/donations',          label: 'All Donations',     icon: HandHeart },
-      { path: '/admin/donations/add',      label: 'Add Donation',      icon: PlusCircle },
       { path: '/admin/donations/pending',  label: 'Pending Donations', icon: Clock },
       { path: '/admin/donations/receipts', label: 'Donation Receipts', icon: Receipt },
     ],
@@ -40,7 +39,6 @@ const NAV_GROUPS = [
     label: 'Beneficiaries', icon: Heart,
     items: [
       { path: '/admin/beneficiaries',              label: 'All Beneficiaries',        icon: Heart },
-      { path: '/admin/beneficiaries/add',          label: 'Add Beneficiary',          icon: UserPlus },
       { path: '/admin/beneficiaries/verification', label: 'Beneficiary Verification', icon: UserCheck },
     ],
   },
@@ -48,7 +46,6 @@ const NAV_GROUPS = [
     label: 'Volunteers', icon: UserCheck,
     items: [
       { path: '/admin/volunteers',              label: 'All Volunteers',        icon: Users },
-      { path: '/admin/volunteers/add',          label: 'Add Volunteer',         icon: UserPlus },
       { path: '/admin/volunteers/applications', label: 'Volunteer Applications',icon: ClipboardList },
       { path: '/admin/volunteers/attendance',   label: 'Attendance',            icon: CalendarCheck },
     ],
@@ -57,7 +54,6 @@ const NAV_GROUPS = [
     label: 'Projects', icon: FolderKanban,
     items: [
       { path: '/admin/projects',          label: 'All Projects',    icon: FolderKanban },
-      { path: '/admin/projects/add',      label: 'Add Project',     icon: PlusCircle },
       { path: '/admin/projects/progress', label: 'Project Progress',icon: TrendingUp },
       { path: '/admin/projects/expenses', label: 'Project Expenses',icon: DollarSign },
     ],
@@ -66,7 +62,6 @@ const NAV_GROUPS = [
     label: 'Events', icon: CalendarDays,
     items: [
       { path: '/admin/events',               label: 'All Events',    icon: CalendarDays },
-      { path: '/admin/events/create',        label: 'Create Event',  icon: PlusCircle },
       { path: '/admin/events/registrations', label: 'Registrations', icon: Ticket },
       { path: '/admin/events/attendance',    label: 'Attendance',    icon: CalendarCheck },
     ],
@@ -75,7 +70,6 @@ const NAV_GROUPS = [
     label: 'Crowdfunding', icon: Megaphone,
     items: [
       { path: '/admin/crowdfunding',               label: 'Campaigns',       icon: Megaphone },
-      { path: '/admin/crowdfunding/create',        label: 'Create Campaign', icon: PlusCircle },
       { path: '/admin/crowdfunding/contributions', label: 'Contributions',   icon: HandHeart },
     ],
   },
