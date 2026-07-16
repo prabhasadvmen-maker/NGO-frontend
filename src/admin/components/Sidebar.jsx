@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserPlus, Clock, ClipboardList,
@@ -151,6 +151,14 @@ const Sidebar = () => {
     return init;
   });
 
+  const activeRef = useRef(null);
+
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+    }
+  }, [location.pathname]);
+
   useEffect(() => {
     if (isCollapsed) return;
     setOpenGroups(prev => {
@@ -245,6 +253,7 @@ const Sidebar = () => {
                     const active = isActive(item.path);
                     return (
                       <Link key={item.path} to={item.path}
+                        ref={active ? activeRef : null}
                         onClick={() => setIsMobileOpen(false)}
                         title={isCollapsed ? item.label : undefined}
                         className={`flex items-center rounded-lg transition-all duration-200 hover:bg-white/10 hover:text-white ${isCollapsed ? 'justify-center p-3' : 'gap-3 px-3 py-2'}`}
