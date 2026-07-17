@@ -20,10 +20,8 @@ import Registrations from '../pages/events/Registrations';
 import Attendance from '../pages/events/Attendance';
 import CampaignsList from '../pages/crowdfunding/CampaignsList';
 import ContributionsList from '../pages/crowdfunding/ContributionsList';
-import GenerateCertificate from '../pages/certificates/GenerateCertificate';
 import CertificateList from '../pages/certificates/CertificateList';
 import VerifyCertificate from '../pages/certificates/VerifyCertificate';
-import GenerateIDCard from '../pages/idcards/GenerateIDCard';
 import IDCardList from '../pages/idcards/IDCardList';
 import AdminCms from '../pages/cms/AdminCms';
 import AdminFinance from '../pages/finance/AdminFinance';
@@ -67,32 +65,18 @@ const AdminRoutes = () => [
   <Route key="admin-events-attendance" path="/admin/events/attendance" element={AD(<Attendance />)} />,
   <Route key="admin-crowdfunding" path="/admin/crowdfunding" element={AD(<CampaignsList />)} />,
   <Route key="admin-crowdfunding-contributions" path="/admin/crowdfunding/contributions" element={AD(<ContributionsList />)} />,
-  <Route key="admin-certificates-generate" path="/admin/certificates/generate" element={AD(<GenerateCertificate />)} />,
   <Route key="admin-certificates" path="/admin/certificates" element={AD(<CertificateList />)} />,
   <Route key="admin-certificates-verify" path="/admin/certificates/verify" element={AD(<VerifyCertificate />)} />,
-  <Route key="admin-id-cards-generate" path="/admin/id-cards/generate" element={AD(<GenerateIDCard />)} />,
   <Route key="admin-id-cards" path="/admin/id-cards" element={AD(<IDCardList />)} />,
-  <Route key="admin-finance-income" path="/admin/finance/income" element={AD(<AdminFinance />)} />,
-  <Route key="admin-finance-expenses" path="/admin/finance/expenses" element={AD(<AdminFinance />)} />,
-  <Route key="admin-finance-transactions" path="/admin/finance/transactions" element={AD(<AdminFinance />)} />,
-  <Route key="admin-reports-donations" path="/admin/reports/donations" element={AD(<AdminReports />)} />,
-  <Route key="admin-reports-members" path="/admin/reports/members" element={AD(<AdminReports />)} />,
-  <Route key="admin-reports-projects" path="/admin/reports/projects" element={AD(<AdminReports />)} />,
-  <Route key="admin-reports-events" path="/admin/reports/events" element={AD(<AdminReports />)} />,
-  <Route key="admin-cms-homepage" path="/admin/cms/homepage" element={AD(<AdminCms />)} />,
-  <Route key="admin-cms-projects" path="/admin/cms/projects" element={AD(<AdminCms />)} />,
-  <Route key="admin-cms-news" path="/admin/cms/news" element={AD(<AdminCms />)} />,
-  <Route key="admin-cms-gallery" path="/admin/cms/gallery" element={AD(<AdminCms />)} />,
-  <Route key="admin-cms-testimonials" path="/admin/cms/testimonials" element={AD(<AdminCms />)} />,
-  <Route key="admin-cms-contact" path="/admin/cms/contact" element={AD(<AdminCms />)} />,
+  <Route key="admin-finance" path="/admin/finance" element={AD(<AdminFinance />)} />,
+  <Route key="admin-reports" path="/admin/reports" element={AD(<AdminReports />)} />,
+  <Route key="admin-cms" path="/admin/cms" element={AD(<AdminCms />)} />,
   <Route key="admin-communication-email" path="/admin/communication/email" element={AD(<AdminCommunication />)} />,
   <Route key="admin-communication-sms" path="/admin/communication/sms" element={AD(<AdminCommunication />)} />,
   <Route key="admin-communication-whatsapp" path="/admin/communication/whatsapp" element={AD(<AdminCommunication />)} />,
   <Route key="admin-communication-notifications" path="/admin/communication/notifications" element={AD(<AdminCommunication />)} />,
   <Route key="admin-media-library" path="/admin/media-library" element={AD(<AdminMediaLibrary />)} />,
-  <Route key="admin-forms-contact" path="/admin/forms/contact" element={AD(<AdminForms defaultTab="contact" />)} />,
-  <Route key="admin-forms-membership" path="/admin/forms/membership" element={AD(<AdminForms defaultTab="membership" />)} />,
-  <Route key="admin-forms-volunteer" path="/admin/forms/volunteer" element={AD(<AdminForms defaultTab="volunteer" />)} />,
+  <Route key="admin-forms" path="/admin/forms" element={AD(<AdminForms defaultTab="contact" />)} />,
   <Route key="admin-profile" path="/admin/profile" element={AD(<Profile />)} />,
   <Route key="admin-settings" path="/admin/settings" element={AD(<Settings />)} />,
   <Route key="admin-help" path="/admin/help" element={AD(<Help />)} />,

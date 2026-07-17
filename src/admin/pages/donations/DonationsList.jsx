@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import {
-  HandHeart, DollarSign, Plus, Pencil, Trash2, Eye,
+  HandHeart, IndianRupee, Plus, Pencil, Trash2, Eye,
   Loader2, Search, X, Check, FileText, Printer, Settings, Phone, Mail, User
 } from 'lucide-react';
 import Layout from '../../components/Layout';
@@ -332,7 +332,7 @@ const DonationsList = () => {
               className="rounded-3xl p-5 bg-white flex items-center gap-4 transition-all duration-300 hover:scale-[1.01] border border-gray-100 shadow-sm"
             >
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${card.color}10` }}>
-                <DollarSign size={20} style={{ color: card.color }} />
+                <IndianRupee size={20} style={{ color: card.color }} />
               </div>
               <div>
                 <p className="text-xl font-black text-gray-800 leading-tight">{card.value}</p>

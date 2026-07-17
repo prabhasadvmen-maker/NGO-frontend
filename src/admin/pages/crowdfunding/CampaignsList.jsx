@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Megaphone, DollarSign, Plus, Eye, Loader2, Search, Heart, X, Settings, 
+  Megaphone, IndianRupee, Plus, Eye, Loader2, Search, Heart, X, Settings, 
   Pencil, Trash2, Landmark, Calendar, LandmarkIcon, ClipboardList, Gift, RefreshCw
 } from 'lucide-react';
 import Layout from '../../components/Layout';

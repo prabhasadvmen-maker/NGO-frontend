@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, Users, DollarSign, Heart } from 'lucide-react';
+import { Building2, Users, IndianRupee, Heart } from 'lucide-react';
 import Layout from '../components/Layout';
 import StatsCard from '../../shared/components/StatsCard';
 import { COLORS } from '../../shared/colors';
@@ -118,7 +118,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard icon={Building2} label="Total NGOs"        value={stats?.totalNGOs ?? 0}                                          color={COLORS.primary}   subtext="registered NGOs" />
             <StatsCard icon={Users}     label="Total Users"       value={stats?.totalUsers ?? 0}                                         color={COLORS.secondary} subtext="all roles" />
-            <StatsCard icon={DollarSign}label="Total Donations"   value={stats?.totalDonations ? `₹${(stats.totalDonations/100000).toFixed(1)}L` : '₹0'} color={COLORS.accent} subtext="total collected" />
+            <StatsCard icon={IndianRupee} label="Total Donations"   value={stats?.totalDonations ? `₹${(stats.totalDonations/100000).toFixed(1)}L` : '₹0'} color={COLORS.accent} subtext="total collected" />
             <StatsCard icon={Heart}     label="Active Volunteers" value={stats?.activeVolunteers ?? 0}                                   color={COLORS.info}      subtext="currently active" />
           </div>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { 
-  FolderKanban, DollarSign, Calendar, Plus, Trash2, Loader2, RefreshCw, Landmark, Save, FileText, FileSpreadsheet,
+  FolderKanban, IndianRupee, Calendar, Plus, Trash2, Loader2, RefreshCw, Landmark, Save, FileText, FileSpreadsheet,
   Settings, Eye, Pencil, Printer, X
 } from 'lucide-react';
 import Layout from '../../components/Layout';
@@ -379,7 +379,7 @@ const ProjectExpenses = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
-              <DollarSign className="text-[#1B5E20]" size={28} />
+              <IndianRupee className="text-[#1B5E20]" size={28} />
               Project Expenditure Logs
             </h1>
             <p className="text-sm text-gray-400 mt-0.5">Audit financial bills and record payments mapped to specific social programs</p>

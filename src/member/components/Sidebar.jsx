@@ -6,7 +6,6 @@ import { useSidebar } from '../../shared/SidebarContext';
 
 const NAV_ITEMS = [
   { path: '/member/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/member/profile', label: 'My Profile', icon: User },
   { path: '/member/membership', label: 'My Membership', icon: CreditCard },
   { path: '/member/donations', label: 'My Donations', icon: Heart },
   { path: '/member/receipts', label: 'My Receipts', icon: FileText },
@@ -20,6 +19,7 @@ const NAV_ITEMS = [
 ];
 
 const BOTTOM_ITEMS = [
+  { path: '/member/profile', label: 'My Profile', icon: User },
   { path: '/member/help', label: 'Help', icon: HelpCircle },
   { path: '/member/settings', label: 'Settings', icon: Settings },
 ];

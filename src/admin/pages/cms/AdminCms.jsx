@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Globe, Newspaper, Image, MessageSquare, Mail, Plus, Trash2, Check, X,
   Edit2, Eye, Loader2, Calendar, FileText, FolderKanban, Info, Settings,
-  Upload, ImageIcon
+  Upload, ImageIcon, CheckCircle2, ShieldCheck
 } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
@@ -83,20 +83,13 @@ const AdminCms = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Determine active tab from path
-  const getTabFromPath = (path) => {
-    if (path.includes('/homepage')) return 'homepage';
-    if (path.includes('/projects')) return 'projects';
-    if (path.includes('/news')) return 'news';
-    if (path.includes('/gallery')) return 'gallery';
-    if (path.includes('/testimonials')) return 'testimonials';
-    if (path.includes('/contact')) return 'queries';
-    return 'homepage';
-  };
-
-  const activeTab = getTabFromPath(location.pathname);
+  // Local React state for active tab selection ('homepage' default)
+  const [activeTab, setActiveTab] = useState('homepage'); // 'homepage', 'projects', 'news', 'gallery', 'testimonials', 'queries'
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  // Dropdown states
+  const [activeDropdownId, setActiveDropdownId] = useState(null);
 
   // Data lists
   const [newsPosts, setNewsPosts] = useState([]);
@@ -138,7 +131,22 @@ const AdminCms = () => {
     avatarPreview: ''
   });
 
+  // Modal Views details
+  const [viewingNews, setViewingNews] = useState(null);
+  const [viewingGallery, setViewingGallery] = useState(null);
+  const [viewingTestimonial, setViewingTestimonial] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState(null);
+
+  useEffect(() => {
+    const handleOutsideClick = () => setActiveDropdownId(null);
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, []);
+
+  const handleDropdownToggle = (evt, id) => {
+    evt.stopPropagation();
+    setActiveDropdownId(prev => (prev === id ? null : id));
+  };
 
   // Consolidated fetch helper
   const fetchAPI = useCallback(async (url, options = {}) => {
@@ -334,15 +342,8 @@ const AdminCms = () => {
   };
 
   const handleTabChange = (tabId) => {
-    const pathMap = {
-      homepage: '/admin/cms/homepage',
-      projects: '/admin/cms/projects',
-      news: '/admin/cms/news',
-      gallery: '/admin/cms/gallery',
-      testimonials: '/admin/cms/testimonials',
-      queries: '/admin/cms/contact'
-    };
-    navigate(pathMap[tabId]);
+    setPage(1);
+    setActiveTab(tabId);
   };
 
   return (
@@ -546,22 +547,36 @@ const AdminCms = () => {
                             <td className="px-4 py-4 text-xs font-semibold text-gray-400">
                               {new Date(post.createdAt).toLocaleDateString('en-IN')}
                             </td>
-                            <td className="px-4 py-4 text-right pr-6">
-                              <div className="flex justify-end gap-2">
+                            <td className="px-4 py-4 text-right relative overflow-visible pr-6">
+                              <div className="inline-block text-left">
                                 <button
-                                  onClick={() => handleEditNewsClick(post)}
-                                  className="p-1.5 rounded hover:bg-green-50 text-green-700 border border-green-200 bg-white cursor-pointer"
-                                  title="Edit"
+                                  onClick={(evt) => handleDropdownToggle(evt, post._id)}
+                                  className="p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-all cursor-pointer text-gray-700 hover:text-green-700"
                                 >
-                                  <Edit2 size={14} />
+                                  <Settings size={18} className={activeDropdownId === post._id ? 'animate-spin text-green-700' : ''} />
                                 </button>
-                                <button
-                                  onClick={() => handleDeleteNews(post._id)}
-                                  className="p-1.5 rounded hover:bg-red-50 text-red-500 border border-red-200 bg-white cursor-pointer"
-                                  title="Delete"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
+                                {activeDropdownId === post._id && (
+                                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 text-left">
+                                    <button
+                                      onClick={() => setViewingNews(post)}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Eye size={14} className="text-gray-400" /> View Details
+                                    </button>
+                                    <button
+                                      onClick={() => handleEditNewsClick(post)}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Edit2 size={14} className="text-gray-400" /> Edit Article
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteNews(post._id)}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-red-650 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Trash2 size={14} className="text-red-400" /> Delete
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -587,20 +602,38 @@ const AdminCms = () => {
                           alt={item.caption}
                           className="w-full h-40 object-cover"
                         />
-                        <div className="p-3.5 space-y-1.5">
-                          <span className="px-2 py-0.5 rounded bg-gray-200 text-gray-600 font-bold text-[9px] uppercase tracking-wider">
-                            {item.category}
-                          </span>
-                          <p className="text-xs font-bold text-gray-800 line-clamp-1">{item.caption || 'No Caption'}</p>
-                        </div>
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => handleDeleteGalleryItem(item._id)}
-                            className="p-2 bg-white/90 text-red-600 hover:text-red-700 hover:bg-white rounded-xl shadow-lg border-0 cursor-pointer"
-                            title="Delete Image"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                        <div className="p-3.5 space-y-1.5 flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <span className="px-2 py-0.5 rounded bg-gray-200 text-gray-600 font-bold text-[9px] uppercase tracking-wider">
+                              {item.category}
+                            </span>
+                            <p className="text-xs font-bold text-gray-800 line-clamp-1 mt-1">{item.caption || 'No Caption'}</p>
+                          </div>
+                          
+                          <div className="relative overflow-visible">
+                            <button
+                              onClick={(evt) => handleDropdownToggle(evt, item._id)}
+                              className="p-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-all cursor-pointer text-gray-500 hover:text-green-700"
+                            >
+                              <Settings size={15} className={activeDropdownId === item._id ? 'animate-spin text-green-700' : ''} />
+                            </button>
+                            {activeDropdownId === item._id && (
+                              <div className="absolute right-0 bottom-8 w-36 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-50 text-left">
+                                <button
+                                  onClick={() => setViewingGallery(item)}
+                                  className="w-full px-3 py-1.5 text-left text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                >
+                                  <Eye size={12} className="text-gray-400" /> View Photo
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteGalleryItem(item._id)}
+                                  className="w-full px-3 py-1.5 text-left text-xs font-bold text-red-650 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                >
+                                  <Trash2 size={12} className="text-red-400" /> Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -619,12 +652,13 @@ const AdminCms = () => {
                         <th className="px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-left">Visitor Name</th>
                         <th className="px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-left">Quote Message</th>
                         <th className="px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-left">Moderation Status</th>
+                        <th className="px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-right pr-6">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {testimonials.length === 0 ? (
                         <tr>
-                          <td colSpan="3" className="text-center py-10 text-gray-400 font-semibold">No logged testimonials.</td>
+                          <td colSpan="4" className="text-center py-10 text-gray-400 font-semibold">No logged testimonials.</td>
                         </tr>
                       ) : (
                         testimonials.map((test) => (
@@ -653,6 +687,26 @@ const AdminCms = () => {
                               }`}>
                                 {test.isApproved ? 'Approved & Public' : 'Pending Super Admin Approval'}
                               </span>
+                            </td>
+                            <td className="px-4 py-4 text-right relative overflow-visible pr-6">
+                              <div className="inline-block text-left">
+                                <button
+                                  onClick={(evt) => handleDropdownToggle(evt, test._id)}
+                                  className="p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-all cursor-pointer text-gray-700 hover:text-green-700"
+                                >
+                                  <Settings size={18} className={activeDropdownId === test._id ? 'animate-spin text-green-700' : ''} />
+                                </button>
+                                {activeDropdownId === test._id && (
+                                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 text-left">
+                                    <button
+                                      onClick={() => setViewingTestimonial(test)}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Eye size={14} className="text-gray-400" /> View Details
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))
@@ -704,14 +758,43 @@ const AdminCms = () => {
                             <td className="px-4 py-4 text-xs font-semibold text-gray-400">
                               {new Date(q.createdAt).toLocaleDateString('en-IN', { dateStyle: 'medium' })}
                             </td>
-                            <td className="px-4 py-4 text-right pr-6">
-                              <button
-                                onClick={() => setSelectedQuery(q)}
-                                className="p-1.5 rounded hover:bg-green-50 text-green-700 border border-green-200 bg-white cursor-pointer"
-                                title="View Message"
-                              >
-                                <Eye size={14} />
-                              </button>
+                            <td className="px-4 py-4 text-right relative overflow-visible pr-6">
+                              <div className="inline-block text-left">
+                                <button
+                                  onClick={(evt) => handleDropdownToggle(evt, q._id)}
+                                  className="p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-all cursor-pointer text-gray-700 hover:text-green-700"
+                                >
+                                  <Settings size={18} className={activeDropdownId === q._id ? 'animate-spin text-green-700' : ''} />
+                                </button>
+                                {activeDropdownId === q._id && (
+                                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 text-left">
+                                    <button
+                                      onClick={() => setSelectedQuery(q)}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Eye size={14} className="text-gray-400" /> View Message
+                                    </button>
+                                    <button
+                                      onClick={() => handleUpdateQueryStatus(q._id, 'Read')}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-blue-700 hover:bg-blue-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Check size={14} className="text-blue-500" /> Mark as Read
+                                    </button>
+                                    <button
+                                      onClick={() => handleUpdateQueryStatus(q._id, 'Replied')}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-green-700 hover:bg-green-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <Check size={14} className="text-green-500" /> Mark as Replied
+                                    </button>
+                                    <button
+                                      onClick={() => handleUpdateQueryStatus(q._id, 'Unread')}
+                                      className="w-full px-4 py-2 text-left text-xs font-bold text-red-650 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer border-0 bg-transparent"
+                                    >
+                                      <X size={14} className="text-red-400" /> Mark as Unread
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))
@@ -746,7 +829,7 @@ const AdminCms = () => {
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Article Title *</label>
                 <input
-                  type="text" required placeholder=" Lucknow Branch Project Launch"
+                  type="text" required placeholder=" Lucknow Project Launch"
                   value={newsForm.title}
                   onChange={(e) => setNewsForm(p => ({ ...p, title: e.target.value }))}
                   className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50"
@@ -793,7 +876,7 @@ const AdminCms = () => {
                   required placeholder="Describe the news in detail..."
                   value={newsForm.content}
                   onChange={(e) => setNewsForm(p => ({ ...p, content: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50 h-32"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-55/50 h-32"
                 />
               </div>
 
@@ -848,7 +931,17 @@ const AdminCms = () => {
                   type="text" placeholder="Short description of the photo"
                   value={galleryForm.caption}
                   onChange={(e) => setGalleryForm(p => ({ ...p, caption: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-55/50"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Category</label>
+                <input
+                  type="text" placeholder="General, Projects, Events..."
+                  value={galleryForm.category}
+                  onChange={(e) => setGalleryForm(p => ({ ...p, category: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-55/50"
                 />
               </div>
 
@@ -929,7 +1022,7 @@ const AdminCms = () => {
                   required placeholder="What feedback did they share about our branch drives?"
                   value={testimonialForm.message}
                   onChange={(e) => setTestimonialForm(p => ({ ...p, message: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50 h-24"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-55/50 h-24"
                 />
               </div>
 
@@ -955,7 +1048,7 @@ const AdminCms = () => {
 
       {/* 4. Query Details Dialog */}
       {selectedQuery && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 overflow-y-auto no-scrollbar">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 overflow-y-auto no-scrollbar animate-fade-in">
           <div className="w-full max-w-xl bg-white border border-gray-100 shadow-2xl relative rounded-3xl p-6 md:p-8 space-y-5 max-h-[90vh] overflow-y-auto no-scrollbar">
             <div className="flex items-center justify-between pb-2 border-b border-gray-100">
               <div>
@@ -990,7 +1083,7 @@ const AdminCms = () => {
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Local Response Notes</label>
                 <textarea
-                  value={selectedQuery.notes}
+                  value={selectedQuery.notes || ''}
                   onChange={async (e) => {
                     const val = e.target.value;
                     setSelectedQuery(p => ({ ...p, notes: val }));
@@ -1030,6 +1123,176 @@ const AdminCms = () => {
                   className="px-5 py-2.5 border border-gray-200 rounded-xl text-xs font-bold text-gray-500 cursor-pointer bg-white"
                 >
                   Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. News Article View Modal */}
+      {viewingNews && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 overflow-y-auto no-scrollbar animate-fade-in">
+          <div className="w-full max-w-2xl bg-white border border-gray-100 shadow-2xl relative rounded-3xl p-6 md:p-8 space-y-5 max-h-[90vh] overflow-y-auto no-scrollbar">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <h3 className="text-lg font-black text-gray-800">News Article Details</h3>
+                <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">Auditing News Submission</p>
+              </div>
+              <button onClick={() => setViewingNews(null)} className="p-1 rounded hover:bg-gray-100 cursor-pointer border-0 bg-transparent">
+                <X size={18} className="text-gray-500" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {viewingNews.coverImageUrl || viewingNews.coverImage ? (
+                <img
+                  src={viewingNews.coverImageUrl || viewingNews.coverImage}
+                  alt="cover"
+                  className="w-full h-56 object-cover rounded-2xl border border-gray-100"
+                />
+              ) : null}
+
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <p className="font-bold text-gray-400 uppercase tracking-wide">Category</p>
+                  <p className="font-bold text-gray-700 mt-0.5">{viewingNews.category || 'General'}</p>
+                </div>
+                <div>
+                  <p className="font-bold text-gray-400 uppercase tracking-wide">Publication Status</p>
+                  <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold border mt-1 ${
+                    viewingNews.status === 'Published'
+                      ? 'bg-green-50 text-green-700 border-green-200'
+                      : 'bg-orange-50 text-orange-700 border-orange-200'
+                  }`}>
+                    {viewingNews.status}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-extrabold text-gray-800">{viewingNews.title}</h4>
+                <p className="text-[10px] text-gray-400 font-semibold mt-1">
+                  Created Date: {new Date(viewingNews.createdAt).toLocaleDateString('en-IN', { dateStyle: 'long' })}
+                </p>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-600 leading-relaxed bg-gray-50/50 p-4 rounded-2xl border border-gray-100 whitespace-pre-wrap font-semibold">
+                  {viewingNews.content}
+                </p>
+              </div>
+
+              <div className="flex justify-end pt-3 border-t border-gray-100">
+                <button
+                  type="button" onClick={() => setViewingNews(null)}
+                  className="px-5 py-2.5 border border-gray-200 rounded-xl text-xs font-bold text-gray-500 cursor-pointer bg-white"
+                >
+                  Dismiss Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Gallery Photo View Modal */}
+      {viewingGallery && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 overflow-y-auto no-scrollbar animate-fade-in">
+          <div className="w-full max-w-lg bg-white border border-gray-100 shadow-2xl relative rounded-3xl p-6 md:p-8 space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <h3 className="text-lg font-black text-gray-800">Gallery Asset View</h3>
+                <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">Asset audit</p>
+              </div>
+              <button onClick={() => setViewingGallery(null)} className="p-1 rounded hover:bg-gray-100 cursor-pointer border-0 bg-transparent">
+                <X size={18} className="text-gray-500" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <img
+                src={viewingGallery.imageUrlResolved || viewingGallery.imageUrl}
+                alt={viewingGallery.caption}
+                className="w-full h-72 object-cover rounded-2xl border border-gray-100"
+              />
+
+              <div className="text-xs">
+                <p className="font-bold text-gray-400 uppercase tracking-wide">Category</p>
+                <p className="font-bold text-gray-700 mt-0.5 uppercase">{viewingGallery.category || 'General'}</p>
+              </div>
+
+              <div className="border-t border-gray-100 pt-3">
+                <p className="font-bold text-gray-400 uppercase tracking-wide text-[10px]">Caption</p>
+                <p className="text-xs text-gray-600 leading-relaxed font-semibold mt-1">
+                  {viewingGallery.caption || 'No caption recorded.'}
+                </p>
+              </div>
+
+              <div className="flex justify-end pt-3 border-t border-gray-100">
+                <button
+                  type="button" onClick={() => setViewingGallery(null)}
+                  className="px-5 py-2.5 border border-gray-200 rounded-xl text-xs font-bold text-gray-500 cursor-pointer bg-white"
+                >
+                  Close Photo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. Testimonial View Modal */}
+      {viewingTestimonial && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 overflow-y-auto no-scrollbar animate-fade-in">
+          <div className="w-full max-w-lg bg-white border border-gray-100 shadow-2xl relative rounded-3xl p-6 md:p-8 space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <h3 className="text-lg font-black text-gray-800">Testimonial Record Details</h3>
+                <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">Auditing Visitor Quote</p>
+              </div>
+              <button onClick={() => setViewingTestimonial(null)} className="p-1 rounded hover:bg-gray-100 cursor-pointer border-0 bg-transparent">
+                <X size={18} className="text-gray-500" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <img
+                  src={viewingTestimonial.avatarUrlResolved || viewingTestimonial.avatar || 'https://placehold.co/40x40/f3f4f6/9ca3af?text=Pic'}
+                  alt="avatar"
+                  className="w-12 h-12 object-cover rounded-full border border-gray-200"
+                />
+                <div>
+                  <h4 className="font-extrabold text-gray-800">{viewingTestimonial.name}</h4>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mt-0.5">{viewingTestimonial.role}</p>
+                </div>
+              </div>
+
+              <div className="text-xs">
+                <p className="font-bold text-gray-400 uppercase tracking-wide">Approval Status</p>
+                <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold border mt-1 ${
+                  viewingTestimonial.isApproved
+                    ? 'bg-green-50 text-green-700 border-green-200'
+                    : 'bg-orange-50 text-orange-700 border-orange-200'
+                }`}>
+                  {viewingTestimonial.isApproved ? 'Approved & Public' : 'Pending Super Admin Approval'}
+                </span>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Quote Message</p>
+                <p className="text-xs text-gray-600 leading-relaxed italic bg-gray-50/50 p-4 rounded-xl border border-gray-100 font-semibold">
+                  "{viewingTestimonial.message}"
+                </p>
+              </div>
+
+              <div className="flex justify-end pt-3 border-t border-gray-100">
+                <button
+                  type="button" onClick={() => setViewingTestimonial(null)}
+                  className="px-5 py-2.5 border border-gray-200 rounded-xl text-xs font-bold text-gray-500 cursor-pointer bg-white"
+                >
+                  Close Quote
                 </button>
               </div>
             </div>

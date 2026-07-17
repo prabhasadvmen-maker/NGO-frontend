@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { 
-  FolderKanban, DollarSign, Calendar, Filter, Plus, Pencil, Trash2, Eye,
+  FolderKanban, IndianRupee, Calendar, Filter, Plus, Pencil, Trash2, Eye,
   Loader2, Search, X, Check, FileText, Settings, User, Building2, TrendingUp, Users, RefreshCw
 } from 'lucide-react';
 import Layout from '../../components/Layout';
@@ -361,7 +361,7 @@ const ProjectsList = () => {
             >
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${card.color}15` }}>
                 {idx === 0 ? <FolderKanban size={22} style={{ color: card.color }} /> :
-                 idx === 1 ? <DollarSign size={22} style={{ color: card.color }} /> :
+                 idx === 1 ? <IndianRupee size={22} style={{ color: card.color }} /> :
                  idx === 2 ? <TrendingUp size={22} style={{ color: card.color }} /> :
                  <Users size={22} style={{ color: card.color }} />}
               </div>

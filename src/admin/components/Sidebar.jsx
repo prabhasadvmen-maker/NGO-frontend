@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserPlus, Clock, ClipboardList,
   HandHeart, PlusCircle, Receipt, Heart, UserCheck, CalendarCheck,
-  FolderKanban, TrendingUp, DollarSign, CalendarDays, Ticket,
+  FolderKanban, TrendingUp, IndianRupee, CalendarDays, Ticket,
   Megaphone, Award, CreditCard, ArrowUpCircle, ArrowDownCircle,
   ArrowLeftRight, BarChart3, Globe, Home, Newspaper, Image, MessageSquare,
   Mail, Phone, MessageCircle, Bell, FileText, User, Settings, HelpCircle,
@@ -55,7 +55,7 @@ const NAV_GROUPS = [
     items: [
       { path: '/admin/projects',          label: 'All Projects',    icon: FolderKanban },
       { path: '/admin/projects/progress', label: 'Project Progress',icon: TrendingUp },
-      { path: '/admin/projects/expenses', label: 'Project Expenses',icon: DollarSign },
+      { path: '/admin/projects/expenses', label: 'Project Expenses',icon: IndianRupee },
     ],
   },
   {
@@ -76,44 +76,32 @@ const NAV_GROUPS = [
   {
     label: 'Certificates', icon: Award,
     items: [
-      { path: '/admin/certificates/generate', label: 'Generate Certificate', icon: Award },
-      { path: '/admin/certificates',          label: 'Certificate List',     icon: ClipboardList },
+      { path: '/admin/certificates',          label: 'Certificates',       icon: ClipboardList },
       { path: '/admin/certificates/verify',   label: 'Verify Certificate',   icon: UserCheck },
     ],
   },
   {
     label: 'ID Cards', icon: CreditCard,
     items: [
-      { path: '/admin/id-cards/generate', label: 'Generate ID Card', icon: CreditCard },
-      { path: '/admin/id-cards',          label: 'ID Card List',     icon: ClipboardList },
+      { path: '/admin/id-cards',          label: 'ID Cards',         icon: CreditCard },
     ],
   },
   {
-    label: 'Finance', icon: ArrowLeftRight,
+    label: 'Finance', icon: IndianRupee,
     items: [
-      { path: '/admin/finance/income',       label: 'Income',       icon: ArrowUpCircle },
-      { path: '/admin/finance/expenses',     label: 'Expenses',     icon: ArrowDownCircle },
-      { path: '/admin/finance/transactions', label: 'Transactions', icon: ArrowLeftRight },
+      { path: '/admin/finance', label: 'Finance Board', icon: IndianRupee },
     ],
   },
   {
     label: 'Reports', icon: BarChart3,
     items: [
-      { path: '/admin/reports/donations', label: 'Donation Reports', icon: BarChart3 },
-      { path: '/admin/reports/members',   label: 'Member Reports',   icon: BarChart3 },
-      { path: '/admin/reports/projects',  label: 'Project Reports',  icon: BarChart3 },
-      { path: '/admin/reports/events',    label: 'Event Reports',    icon: BarChart3 },
+      { path: '/admin/reports', label: 'Audit Reports', icon: BarChart3 },
     ],
   },
   {
     label: 'Website CMS', icon: Globe,
     items: [
-      { path: '/admin/cms/homepage',     label: 'Homepage',        icon: Home },
-      { path: '/admin/cms/projects',     label: 'Projects',        icon: FolderKanban },
-      { path: '/admin/cms/news',         label: 'News / Blog',     icon: Newspaper },
-      { path: '/admin/cms/gallery',      label: 'Gallery',         icon: Image },
-      { path: '/admin/cms/testimonials', label: 'Testimonials',    icon: MessageSquare },
-      { path: '/admin/cms/contact',      label: 'Contact Queries', icon: Mail },
+      { path: '/admin/cms', label: 'Branch CMS Panel', icon: Globe },
     ],
   },
   {
@@ -132,9 +120,7 @@ const NAV_GROUPS = [
   {
     label: 'Forms', icon: FileText,
     items: [
-      { path: '/admin/forms/contact',    label: 'Contact Forms',    icon: FileText },
-      { path: '/admin/forms/membership', label: 'Membership Forms', icon: FileText },
-      { path: '/admin/forms/volunteer',  label: 'Volunteer Forms',  icon: FileText },
+      { path: '/admin/forms', label: 'Forms Submissions', icon: FileText },
     ],
   },
 ];

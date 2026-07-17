@@ -121,7 +121,10 @@ const Forms = () => {
     setSubmitting(true);
     const data = await fetchAPI(`${MEMBER_API}/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ status })
+      body: JSON.stringify({
+        status,
+        requestStatus: status === 'Active' ? 'Approved' : 'Rejected'
+      })
     });
     setSubmitting(false);
     if (data && data.success) {
@@ -304,18 +307,30 @@ const Forms = () => {
                                 <Settings size={14} className="text-gray-500" />
                               </button>
                               {openMenuId === m._id && (
-                                <div className="absolute right-0 top-8 z-20 bg-white border border-gray-100 rounded-xl shadow-xl w-32 py-1" onClick={(e) => e.stopPropagation()}>
+                                <div className="absolute right-0 mt-2 z-30 bg-white border border-gray-100 rounded-xl shadow-xl w-44 py-2 text-left" onClick={(e) => e.stopPropagation()}>
                                   <button
                                     onClick={() => { setSelectedItem(m); setOpenMenuId(null); }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 cursor-pointer bg-transparent border-0"
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 cursor-pointer bg-transparent border-0"
                                   >
-                                    <Eye size={13} className="text-blue-500" /> View
+                                    <Eye size={14} className="text-blue-500" /> Review / View
+                                  </button>
+                                  <button
+                                    onClick={() => { handleProcessMember(m._id, 'Active'); setOpenMenuId(null); }}
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-green-50 cursor-pointer bg-transparent border-0"
+                                  >
+                                    <Check size={14} className="text-green-600" /> Approve Application
+                                  </button>
+                                  <button
+                                    onClick={() => { handleProcessMember(m._id, 'Inactive'); setOpenMenuId(null); }}
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-650 hover:bg-red-50 cursor-pointer bg-transparent border-0"
+                                  >
+                                    <X size={14} className="text-red-500" /> Reject Application
                                   </button>
                                   <button
                                     onClick={() => { handleDeleteMember(m._id); setOpenMenuId(null); }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 cursor-pointer bg-transparent border-0"
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-650 hover:bg-red-50 cursor-pointer bg-transparent border-0"
                                   >
-                                    <Trash2 size={13} /> Delete
+                                    <Trash2 size={14} className="text-red-400" /> Delete Record
                                   </button>
                                 </div>
                               )}
@@ -352,18 +367,30 @@ const Forms = () => {
                                 <Settings size={14} className="text-gray-500" />
                               </button>
                               {openMenuId === v._id && (
-                                <div className="absolute right-0 top-8 z-20 bg-white border border-gray-100 rounded-xl shadow-xl w-32 py-1" onClick={(e) => e.stopPropagation()}>
+                                <div className="absolute right-0 mt-2 z-30 bg-white border border-gray-100 rounded-xl shadow-xl w-44 py-2 text-left" onClick={(e) => e.stopPropagation()}>
                                   <button
                                     onClick={() => { setSelectedItem(v); setOpenMenuId(null); }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-600 hover:bg-gray-50 cursor-pointer bg-transparent border-0"
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 cursor-pointer bg-transparent border-0"
                                   >
-                                    <Eye size={13} className="text-blue-500" /> View
+                                    <Eye size={14} className="text-blue-500" /> Review / View
+                                  </button>
+                                  <button
+                                    onClick={() => { handleProcessVolunteer(v._id, 'Active'); setOpenMenuId(null); }}
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-green-50 cursor-pointer bg-transparent border-0"
+                                  >
+                                    <Check size={14} className="text-green-600" /> Approve Application
+                                  </button>
+                                  <button
+                                    onClick={() => { handleProcessVolunteer(v._id, 'Inactive'); setOpenMenuId(null); }}
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-650 hover:bg-red-50 cursor-pointer bg-transparent border-0"
+                                  >
+                                    <X size={14} className="text-red-500" /> Reject Application
                                   </button>
                                   <button
                                     onClick={() => { handleDeleteVolunteer(v._id); setOpenMenuId(null); }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 cursor-pointer bg-transparent border-0"
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-650 hover:bg-red-50 cursor-pointer bg-transparent border-0"
                                   >
-                                    <Trash2 size={13} /> Delete
+                                    <Trash2 size={14} className="text-red-400" /> Delete Record
                                   </button>
                                 </div>
                               )}

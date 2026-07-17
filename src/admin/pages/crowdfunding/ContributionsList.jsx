@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { DollarSign, Search, ArrowLeft, Loader2, Heart, Plus, X } from 'lucide-react';
+import { IndianRupee, Search, ArrowLeft, Loader2, Heart, Plus, X } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
 import { useToast } from '../../../shared/ToastContext';
@@ -141,7 +141,7 @@ const ContributionsList = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
-              <DollarSign size={26} className="text-green-700" />
+              <IndianRupee size={26} className="text-green-700" />
               Contributions Log
             </h1>
             <p className="text-sm text-gray-400 mt-0.5">Audit trail of crowdfunding campaign contributions and micro-donations</p>
