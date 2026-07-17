@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Gift, Clock, DollarSign, Check, AlertCircle, Loader2, X,
+  Gift, Clock, IndianRupee, Check, AlertCircle, Loader2, X,
   ArrowRight, Calendar, User, Phone, Mail
 } from 'lucide-react';
 import Layout from '../components/Layout';
@@ -22,6 +22,8 @@ const MyMembership = () => {
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [selectedType, setSelectedType] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [paymentMode, setPaymentMode] = useState('UPI');
+  const [transactionId, setTransactionId] = useState('');
 
   // Fetch current membership
   const fetchMembership = useCallback(async () => {
@@ -74,6 +76,10 @@ const MyMembership = () => {
       toast.error('Please select a membership type');
       return;
     }
+    if (!transactionId.trim()) {
+      toast.error('Please enter the payment transaction reference ID (UTR)');
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -83,7 +89,11 @@ const MyMembership = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ requestedType: selectedType })
+        body: JSON.stringify({
+          requestedType: selectedType,
+          paymentMode,
+          transactionId: transactionId.trim()
+        })
       });
 
       const resData = await res.json();
@@ -91,6 +101,7 @@ const MyMembership = () => {
         toast.success('Upgrade request submitted successfully');
         setIsUpgradeOpen(false);
         setSelectedType('');
+        setTransactionId('');
         fetchMembership();
       } else {
         toast.error(resData.message || 'Failed to submit request');
@@ -131,6 +142,10 @@ const MyMembership = () => {
 
   return (
     <Layout>
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
       <div className="space-y-6 bg-[#F5F5F5] min-h-screen p-1">
         {/* Header */}
         <div>
@@ -166,7 +181,7 @@ const MyMembership = () => {
               
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <DollarSign className="text-blue-600" size={18} />
+                  <IndianRupee className="text-blue-600" size={18} />
                   <div>
                     <p className="text-xs text-gray-500">Annual Fee</p>
                     <p className="font-bold text-gray-800">₹{membership.currentMembership.fee.toLocaleString('en-IN')}</p>
@@ -289,7 +304,7 @@ const MyMembership = () => {
                     <h3 className="font-bold text-gray-800 mb-2">{type.name}</h3>
                     <p className="text-sm text-gray-600 mb-3">{type.description}</p>
                     <div className="flex items-center gap-2 mb-3">
-                      <DollarSign className="text-blue-600" size={16} />
+                      <IndianRupee className="text-blue-600" size={16} />
                       <span className="font-bold text-gray-800">₹{type.annualFee.toLocaleString('en-IN')}/year</span>
                     </div>
                     <button className="w-full px-3 py-2 rounded-lg bg-[#1B5E20] text-white text-xs font-bold hover:bg-[#145a1b] transition-all">
@@ -305,7 +320,7 @@ const MyMembership = () => {
         {isUpgradeOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <div
-              className="w-full max-w-md rounded-3xl p-6 md:p-8 space-y-6 relative"
+              className="w-full max-w-md rounded-3xl p-6 md:p-8 space-y-6 relative max-h-[85vh] overflow-y-auto no-scrollbar"
               style={{
                 backgroundColor: '#F5F5F5',
                 boxShadow: '10px 10px 20px rgba(0,0,0,0.2)'
@@ -347,10 +362,36 @@ const MyMembership = () => {
                     </p>
                   </div>
 
-                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-sm text-blue-800">
-                      ℹ️ Your request will be reviewed by the admin. You'll be notified once it's approved or rejected.
+                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-left">
+                    <p className="text-[11px] text-blue-800 leading-relaxed font-semibold">
+                      Please make an offline payment of <strong>₹{availableTypes.find(t => t.name === selectedType)?.annualFee.toLocaleString('en-IN')}</strong> to the NGO's account/UPI, then enter the payment reference below.
                     </p>
+                  </div>
+
+                  <div className="space-y-3 text-left">
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Payment Mode *</label>
+                      <select
+                        value={paymentMode}
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        className="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-white cursor-pointer"
+                      >
+                        <option value="UPI">UPI / GPay / PhonePe</option>
+                        <option value="Bank Transfer">Bank Transfer (IMPS/NEFT)</option>
+                        <option value="Cash">Cash to Branch Head</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Transaction Ref / UTR ID *</label>
+                      <input
+                        type="text"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        placeholder="Enter UTR or Reference ID"
+                        className="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-gray-200 focus:border-green-700 outline-none bg-white"
+                      />
+                    </div>
                   </div>
                 </div>
               )}

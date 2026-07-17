@@ -292,7 +292,16 @@ const Forms = () => {
                             {m.fullName}
                             <p className="text-[10px] text-gray-400 font-mono mt-0.5">{m.email || 'No Email'}</p>
                           </td>
-                          <td className="px-4 py-4 text-xs font-semibold text-gray-600">{m.occupation || 'Not Specified'} (Type: {m.membershipType})</td>
+                          <td className="px-4 py-4 text-xs font-semibold text-gray-600">
+                            {m.occupation || 'Not Specified'}{' '}
+                            {m.requestedMembershipType ? (
+                              <span className="text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                Upgrade To: {m.requestedMembershipType} (Current: {m.membershipType})
+                              </span>
+                            ) : (
+                              `(Type: ${m.membershipType})`
+                            )}
+                          </td>
                           <td className="px-4 py-4 text-xs font-bold text-gray-500">{m.branch?.name || 'Global HQ'}</td>
                           <td className="px-4 py-4">
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-orange-50 text-orange-700 border-orange-200">Pending</span>
@@ -513,7 +522,15 @@ const Forms = () => {
                   </div>
                   <div className="bg-gray-50 p-4 rounded-xl">
                     <span className="block text-[10px] font-bold text-gray-400 uppercase">Membership Type</span>
-                    <span className="font-bold text-gray-800">{selectedItem.membershipType}</span>
+                    <span className="font-bold text-gray-800">
+                      {selectedItem.requestedMembershipType ? (
+                        <span className="text-amber-600 font-bold">
+                          Upgrade To: {selectedItem.requestedMembershipType} (Current: {selectedItem.membershipType})
+                        </span>
+                      ) : (
+                        selectedItem.membershipType
+                      )}
+                    </span>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -540,6 +557,21 @@ const Forms = () => {
                   <span className="block text-[10px] font-bold text-gray-400 uppercase">Address</span>
                   <span className="text-xs font-bold text-gray-700">{selectedItem.address || 'N/A'}, {selectedItem.city || ''}, {selectedItem.state || ''}</span>
                 </div>
+                {selectedItem.requestedMembershipType && selectedItem.upgradePaymentMode && (
+                  <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-150 space-y-2 text-xs text-left">
+                    <p className="font-bold text-amber-850 uppercase tracking-wide text-[10px]">Submitted Upgrade Payment Verification</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-[10px] text-gray-400 font-bold">PAYMENT MODE</span>
+                        <span className="font-bold text-gray-700">{selectedItem.upgradePaymentMode}</span>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-gray-400 font-bold">TRANSACTION REF ID (UTR)</span>
+                        <span className="font-bold text-gray-700 font-mono select-all">{selectedItem.upgradeTransactionId || '—'}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
                   <button
                     onClick={() => handleProcessMember(selectedItem._id, 'Active')}

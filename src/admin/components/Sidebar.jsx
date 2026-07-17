@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserPlus, Clock, ClipboardList,
@@ -194,7 +194,7 @@ const Sidebar = () => {
             style={{ borderColor: COLORS.accent }} />
           {!isCollapsed && (
             <div className="text-left">
-              <h1 className="text-lg font-bold leading-none text-white tracking-wide">Advmen</h1>
+              <h1 className="text-lg font-bold leading-none text-white tracking-wide">SAVITRAM FOUNDATION</h1>
               <p className="text-[10px] text-white/70 mt-1">Admin Panel</p>
             </div>
           )}
@@ -208,7 +208,7 @@ const Sidebar = () => {
             </div>
             <div className="overflow-hidden">
               <p className="text-xs font-bold text-white truncate">{user?.name || 'Anil kumar singh'}</p>
-              <p className="text-[10px] text-white/50 truncate">{user?.email || 'prabhas.advmen@gmail.com'}</p>
+              <p className="text-[10px] text-white/50 truncate">{user?.email || 'prabhas.savitram@gmail.com'}</p>
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Award, Search, Plus, Eye, Loader2, Printer, X, Settings, Trash2, Pencil } from 'lucide-react';
 import Layout from '../../components/Layout';
@@ -121,7 +121,7 @@ const CertificateList = () => {
     role: 'Member',
     type: 'Appreciation',
     title: 'Certificate of Appreciation',
-    description: 'For outstanding commitment and dedicated support to Advmen NGO projects.',
+    description: 'For outstanding commitment and dedicated support to SAVITRAM FOUNDATION projects.',
     signatoryName: 'Branch Executive Committee',
     signatoryTitle: 'Authorized Representative'
   });
@@ -256,7 +256,7 @@ const CertificateList = () => {
           role: 'Member',
           type: 'Appreciation',
           title: 'Certificate of Appreciation',
-          description: 'For outstanding commitment and dedicated support to Advmen NGO projects.',
+          description: 'For outstanding commitment and dedicated support to SAVITRAM FOUNDATION projects.',
           signatoryName: 'Branch Executive Committee',
           signatoryTitle: 'Authorized Representative'
         });
@@ -373,7 +373,7 @@ const CertificateList = () => {
         </head>
         <body onload="window.print();window.close()">
           <div class="cert-container">
-            <div class="cert-logo">ADVMEN NGO</div>
+            <div class="cert-logo">SAVITRAM FOUNDATION</div>
             <h2 class="cert-heading">${cert.title}</h2>
             <p class="cert-presented">This is proudly presented to</p>
             <div class="cert-name">${cert.recipientName}</div>
@@ -589,7 +589,7 @@ const CertificateList = () => {
                 <div className="absolute bottom-2 left-2 text-green-800 font-extrabold text-xs font-serif">*</div>
                 <div className="absolute bottom-2 right-2 text-green-800 font-extrabold text-xs font-serif">*</div>
 
-                <div className="text-sm font-bold text-green-850 uppercase tracking-widest font-serif mb-4">ADVMEN NGO</div>
+                <div className="text-sm font-bold text-green-850 uppercase tracking-widest font-serif mb-4">SAVITRAM FOUNDATION</div>
                 <h2 className="text-2xl font-normal text-green-850 font-serif leading-tight mb-2">{activeCertificate.title}</h2>
                 
                 <p className="italic text-gray-500 text-xs font-serif mb-3">This is proudly presented to</p>

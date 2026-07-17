@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { 
   FolderKanban, IndianRupee, Calendar, Plus, Trash2, Loader2, RefreshCw, Landmark, Save, FileText, FileSpreadsheet,
   Settings, Eye, Pencil, Printer, X
@@ -328,7 +328,7 @@ const ProjectExpenses = () => {
         <body>
           <div class="receipt-container">
             <div class="header">
-              <h1 class="ngo-name">Advmen NGO</h1>
+              <h1 class="ngo-name">SAVITRAM FOUNDATION</h1>
               <p class="ngo-sub">Aid welfare and community development directory</p>
               <div class="receipt-title">PAYMENT VOUCHER RECEIPT</div>
             </div>
@@ -343,7 +343,7 @@ const ProjectExpenses = () => {
             ${expense.notes ? `<div class="notes"><strong>Description notes:</strong> ${expense.notes}</div>` : ''}
             <div class="footer">
               <p>Thank you for supporting community welfare.</p>
-              <p>© ${new Date().getFullYear()} Advmen NGO. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} SAVITRAM FOUNDATION. All rights reserved.</p>
             </div>
           </div>
           <script>

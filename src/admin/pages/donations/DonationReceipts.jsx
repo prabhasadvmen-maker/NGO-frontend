@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { Loader2, ArrowLeft, Printer, Eye, X, FileText } from 'lucide-react';
@@ -161,7 +161,7 @@ const DonationReceipts = () => {
                   <div className="flex items-center gap-3">
                     <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-12 w-12 rounded-full object-cover border" />
                     <div>
-                      <h2 className="text-sm font-extrabold text-green-950 tracking-wide uppercase">ADVMEN NGO</h2>
+                      <h2 className="text-sm font-extrabold text-green-950 tracking-wide uppercase">SAVITRAM FOUNDATION</h2>
                       <p className="text-[9px] text-gray-400 font-semibold tracking-wider">Regd No. ADV/2024/99124</p>
                     </div>
                   </div>

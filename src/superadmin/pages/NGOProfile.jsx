@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import {
   Building2, Phone, Mail, Globe, MapPin, Award, FileText,
   Upload, Loader2, Save, Trash2, ShieldCheck, Heart, Edit2, X, Check, ArrowLeft, ArrowRight
@@ -633,7 +633,7 @@ const NGOProfile = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="e.g. Advmen Foundation"
+                        placeholder="e.g. SAVITRAM FOUNDATION"
                         className="w-full px-3.5 py-3 rounded-xl border border-gray-300 hover:border-gray-400 focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 outline-none bg-white text-sm font-bold text-black transition-all shadow-sm"
                       />
                     </div>
@@ -692,7 +692,7 @@ const NGOProfile = () => {
                         name="website"
                         value={formData.website}
                         onChange={handleChange}
-                        placeholder="e.g. https://advmenngo.org"
+                        placeholder="e.g. https://savitram.org"
                         className="w-full px-3.5 py-3 rounded-xl border border-gray-300 hover:border-gray-400 focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 outline-none bg-white text-sm font-bold text-black transition-all shadow-sm"
                       />
                     </div>
@@ -704,7 +704,7 @@ const NGOProfile = () => {
                         name="address"
                         value={formData.address}
                         onChange={handleChange}
-                        placeholder="e.g. Office Suite 404, Advmen Tower"
+                        placeholder="e.g. Office Suite 404, SAVITRAM FOUNDATION Tower"
                         className="w-full px-3.5 py-3 rounded-xl border border-gray-300 hover:border-gray-400 focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 outline-none bg-white text-sm font-bold text-black transition-all shadow-sm"
                       />
                     </div>

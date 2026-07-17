@@ -1,4 +1,4 @@
-# Advmen NGO Management System - Frontend
+﻿# SAVITRAM FOUNDATION Management System - Frontend
 
 Industrial-grade NGO Management System with Super Admin Dashboard built with React.js and Tailwind CSS using Neomorphism design.
 
@@ -238,8 +238,8 @@ npm run preview
 
 ## 📞 Support
 
-For issues or questions, contact: admin@advmen.org
+For issues or questions, contact: admin@savitram.org
 
 ---
 
-**Built with ❤️ for Advmen NGO**
+**Built with ❤️ for SAVITRAM FOUNDATION**

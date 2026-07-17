@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Globe, Settings, Newspaper, Image, MessageSquare, Mail, Plus, Trash2, Check, X,
   Edit2, Eye, Loader2, Link2, Upload, ImageIcon
@@ -990,7 +990,7 @@ const WebsiteCMS = () => {
                   <input type="text" value={configForm.heroTitle}
                     onChange={(e) => setConfigForm(p => ({ ...p, heroTitle: e.target.value }))}
                     className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50"
-                    placeholder="e.g. Advmen NGO" />
+                    placeholder="e.g. SAVITRAM FOUNDATION" />
                 </div>
                 <ImageUploader
                   value={configForm.heroImagePreview || configForm.heroImage}

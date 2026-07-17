@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Award, Plus, Trash2, Search, Eye, Loader2, Calendar, FileText, CheckCircle2, ShieldCheck, Printer, X, Settings } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useAuth } from '../../shared/AuthContext';
@@ -43,8 +43,8 @@ const Certificates = () => {
     role: 'Member',
     type: 'Appreciation',
     title: 'Certificate of Appreciation',
-    description: 'For outstanding commitment and dedicated support to Advmen NGO projects.',
-    signatoryName: 'Advmen NGO Board',
+    description: 'For outstanding commitment and dedicated support to SAVITRAM FOUNDATION projects.',
+    signatoryName: 'Savitram Foundation Board',
     signatoryTitle: 'Authorized Signatory'
   });
 
@@ -129,8 +129,8 @@ const Certificates = () => {
           role: 'Member',
           type: 'Appreciation',
           title: 'Certificate of Appreciation',
-          description: 'For outstanding commitment and dedicated support to Advmen NGO projects.',
-          signatoryName: 'Advmen NGO Board',
+          description: 'For outstanding commitment and dedicated support to SAVITRAM FOUNDATION projects.',
+          signatoryName: 'Savitram Foundation Board',
           signatoryTitle: 'Authorized Signatory'
         });
         fetchCertificates();
@@ -255,7 +255,7 @@ const Certificates = () => {
             <div class="absolute bottom-2 left-2 text-green-800 font-extrabold text-xs font-serif">*</div>
             <div class="absolute bottom-2 right-2 text-green-800 font-extrabold text-xs font-serif">*</div>
 
-            <div class="cert-logo">ADVMEN NGO</div>
+            <div class="cert-logo">SAVITRAM FOUNDATION</div>
             <h2 class="cert-heading">${cert.title}</h2>
             <div class="cert-subheading">CERTIFICATE OF RECOGNITION</div>
 
@@ -620,7 +620,7 @@ const Certificates = () => {
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Signatory Name</label>
                   <input
                     type="text"
-                    placeholder="e.g. Advmen NGO Board"
+                    placeholder="e.g. Savitram Foundation Board"
                     value={formData.signatoryName}
                     onChange={(e) => setFormData(p => ({ ...p, signatoryName: e.target.value }))}
                     className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50"
@@ -686,7 +686,7 @@ const Certificates = () => {
                 <div className="absolute bottom-2 left-2 text-green-800 font-extrabold text-xs font-serif">*</div>
                 <div className="absolute bottom-2 right-2 text-green-800 font-extrabold text-xs font-serif">*</div>
 
-                <div className="text-green-800 font-serif text-lg tracking-[4px] font-black uppercase mb-4">ADVMEN NGO</div>
+                <div className="text-green-800 font-serif text-lg tracking-[4px] font-black uppercase mb-4">SAVITRAM FOUNDATION</div>
                 
                 <h2 className="text-3xl md:text-4xl font-serif text-green-800 font-normal mb-1">{activeCertificate.title}</h2>
                 <div className="text-[10px] tracking-[3px] text-gray-500 font-bold uppercase mb-6">CERTIFICATE OF RECOGNITION</div>

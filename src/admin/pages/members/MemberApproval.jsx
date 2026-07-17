@@ -228,6 +228,7 @@ const MemberApproval = () => {
               <table className="w-full text-sm text-left">
                 <thead>
                   <tr className="border-b border-gray-100 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                    <th className="px-4 py-3">#</th>
                     <th className="px-4 py-3">Photo</th>
                     <th className="px-4 py-3">Member ID</th>
                     <th className="px-4 py-3">Full Name</th>
@@ -239,8 +240,9 @@ const MemberApproval = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {members.map(member => (
+                  {members.map((member, idx) => (
                     <tr key={member._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                      <td className="px-4 py-3.5 font-bold text-gray-400">{(page - 1) * 10 + idx + 1}</td>
                       <td className="px-4 py-3.5">
                         <div className="w-9 h-9 rounded-full bg-[#1B5E20]/10 flex items-center justify-center overflow-hidden border border-gray-100 flex-shrink-0 text-xs font-bold text-[#1B5E20]">
                           {member.photoUrl ? (

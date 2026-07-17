@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
   HandHeart, DollarSign, Calendar, Filter, Plus, Pencil, Trash2, Eye,
@@ -846,7 +846,7 @@ const Donations = () => {
                   <div className="flex items-center gap-3">
                     <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-14 w-14 rounded-full object-cover border" />
                     <div>
-                      <h2 className="text-xl font-extrabold text-green-950 tracking-wide uppercase">ADVMEN NGO</h2>
+                      <h2 className="text-xl font-extrabold text-green-950 tracking-wide uppercase">SAVITRAM FOUNDATION</h2>
                       <p className="text-[10px] text-gray-400 font-semibold tracking-wider uppercase">Regd No. ADV/2024/99124</p>
                       <p className="text-xs text-gray-500 font-medium">Helping hands for a better society</p>
                     </div>

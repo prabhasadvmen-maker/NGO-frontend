@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Search, CheckCircle, XCircle, Loader2, Users, FileText, Eye, X,
   ChevronLeft, ChevronRight, Clock, User, Phone, Mail, Calendar,
-  MapPin, CreditCard, ShieldCheck, AlertCircle
+  MapPin, CreditCard, ShieldCheck, AlertCircle, Settings
 } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
@@ -28,6 +28,7 @@ const MembershipRequests = () => {
   const [viewingRequest, setViewingRequest] = useState(null);
   const [approving, setApproving] = useState(false);
   const [rejecting, setRejecting] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const fetchRequests = useCallback(async () => {
     if (!token) return;
@@ -61,6 +62,12 @@ const MembershipRequests = () => {
   useEffect(() => {
     setPage(1);
   }, [search, statusFilter]);
+
+  useEffect(() => {
+    const handleOutsideClick = () => setOpenMenuId(null);
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, []);
 
   const handleViewClick = (request) => {
     setViewingRequest(request);
@@ -210,6 +217,7 @@ const MembershipRequests = () => {
               <table className="w-full text-sm text-left">
                 <thead>
                   <tr className="border-b border-gray-100 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                    <th className="px-4 py-3">#</th>
                     <th className="px-4 py-3">Photo</th>
                     <th className="px-4 py-3">Member ID</th>
                     <th className="px-4 py-3">Full Name</th>
@@ -221,8 +229,9 @@ const MembershipRequests = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {requests.map(request => (
+                  {requests.map((request, idx) => (
                     <tr key={request._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                      <td className="px-4 py-3.5 font-bold text-gray-400">{(page - 1) * 10 + idx + 1}</td>
                       <td className="px-4 py-3.5">
                         <div className="w-9 h-9 rounded-full bg-[#1B5E20]/10 flex items-center justify-center overflow-hidden border border-gray-100 flex-shrink-0 text-xs font-bold text-[#1B5E20]">
                           {request.photoUrl ? (
@@ -256,31 +265,44 @@ const MembershipRequests = () => {
                       <td className="px-4 py-3.5 text-gray-400 font-semibold text-xs">
                         {request.createdAt ? new Date(request.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
                       </td>
-                      <td className="px-4 py-3.5 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="px-4 py-3.5 text-right relative">
+                        <div className="relative inline-block text-left">
                           <button
-                            onClick={() => handleViewClick(request)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all cursor-pointer active:scale-95"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuId(openMenuId === request._id ? null : request._id);
+                            }}
+                            className="p-1.5 rounded border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer"
                           >
-                            View
+                            <Settings size={14} className="text-gray-500" />
                           </button>
-                          {request.requestStatus === 'Pending' && (
-                            <>
+                          {openMenuId === request._id && (
+                            <div className="absolute right-0 mt-2 z-30 bg-white border border-gray-100 rounded-xl shadow-xl w-44 py-2 text-left" onClick={(e) => e.stopPropagation()}>
                               <button
-                                onClick={() => handleApprove(request._id)}
-                                disabled={approving}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-green-600 hover:bg-green-700 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                                onClick={() => { handleViewClick(request); setOpenMenuId(null); }}
+                                className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 cursor-pointer bg-transparent border-0"
                               >
-                                Approve
+                                <Eye size={14} className="text-blue-500" /> View Details
                               </button>
-                              <button
-                                onClick={() => handleReject(request._id)}
-                                disabled={rejecting}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
-                              >
-                                Reject
-                              </button>
-                            </>
+                              {request.requestStatus === 'Pending' && (
+                                <>
+                                  <button
+                                    onClick={() => { handleApprove(request._id); setOpenMenuId(null); }}
+                                    disabled={approving}
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-green-50 cursor-pointer bg-transparent border-0 disabled:opacity-50"
+                                  >
+                                    <CheckCircle size={14} className="text-green-600" /> Approve Upgrade
+                                  </button>
+                                  <button
+                                    onClick={() => { handleReject(request._id); setOpenMenuId(null); }}
+                                    disabled={rejecting}
+                                    className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#D32F2F] hover:bg-red-50 cursor-pointer bg-transparent border-0 disabled:opacity-50"
+                                  >
+                                    <XCircle size={14} className="text-red-500" /> Reject Upgrade
+                                  </button>
+                                </>
+                              )}
+                            </div>
                           )}
                         </div>
                       </td>
@@ -383,6 +405,18 @@ const MembershipRequests = () => {
                       <span className="text-xs text-gray-400 font-semibold block">Request Reason</span>
                       <span className="font-bold text-gray-800">{viewingRequest.requestReason || 'Not specified'}</span>
                     </div>
+                    {viewingRequest.upgradePaymentMode && (
+                      <>
+                        <div>
+                          <span className="text-xs text-gray-400 font-semibold block">Payment Mode</span>
+                          <span className="font-bold text-[#1B5E20] font-extrabold">{viewingRequest.upgradePaymentMode}</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-400 font-semibold block">Transaction ID / UTR</span>
+                          <span className="font-bold text-gray-850 font-mono select-all">{viewingRequest.upgradeTransactionId || '—'}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 

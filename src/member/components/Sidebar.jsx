@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, LayoutDashboard, User, CreditCard, Heart, FileText, Award, CreditCard as IdCard, Calendar, HandHeart, FolderKanban, Gift, Bell, HelpCircle, Settings } from 'lucide-react';
 import { COLORS } from '../../shared/colors';
@@ -49,7 +49,7 @@ const Sidebar = () => {
           {!isCollapsed && (
             <div className="text-left">
               <h1 className="text-lg font-bold leading-none text-white tracking-wide">Member</h1>
-              <p className="text-[10px] text-white/70 mt-1">Advmen Portal</p>
+              <p className="text-[10px] text-white/70 mt-1">Savitram Foundation Portal</p>
             </div>
           )}
         </div>

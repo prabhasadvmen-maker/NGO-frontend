@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Loader } from 'lucide-react';
 import { useToast } from '../../shared/ToastContext';
@@ -53,7 +53,7 @@ const SuperAdminLogin = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-20 w-20 mx-auto mb-4 rounded-full object-cover" />
-          <h1 className="text-3xl font-bold" style={{ color: COLORS.primary }}>Advmen NGO</h1>
+          <h1 className="text-3xl font-bold" style={{ color: COLORS.primary }}>SAVITRAM FOUNDATION</h1>
           <p className="text-gray-600 mt-2">Super Admin Portal</p>
         </div>
 

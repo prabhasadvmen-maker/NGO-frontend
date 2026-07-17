@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Menu, X, LayoutDashboard, Building2, GitBranch, Layers,
@@ -149,7 +149,7 @@ const Sidebar = () => {
             style={{ borderColor: COLORS.accent }} />
           {!isCollapsed && (
             <div className="text-left">
-              <h1 className="text-lg font-bold leading-none text-white tracking-wide">Advmen</h1>
+              <h1 className="text-lg font-bold leading-none text-white tracking-wide">SAVITRAM FOUNDATION</h1>
               <p className="text-[10px] text-white/70 mt-1">NGO Management</p>
             </div>
           )}

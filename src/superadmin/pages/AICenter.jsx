@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, Sparkles, Loader2, User, Trash2 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useAuth } from '../../shared/AuthContext';
@@ -78,7 +78,7 @@ const AICenter = () => {
   const [chat, setChat] = useState([
     {
       sender: 'ai',
-      text: "Hello! I'm Advmen NGO's Smart Assistant. I can help you analyze donation statistics, plan events, manage volunteers, or draft notices. What would you like to explore today?"
+      text: "Hello! I'm SAVITRAM FOUNDATION's Smart Assistant. I can help you analyze donation statistics, plan events, manage volunteers, or draft notices. What would you like to explore today?"
     }
   ]);
 
@@ -140,7 +140,7 @@ const AICenter = () => {
             </p>
           </div>
           <button
-            onClick={() => setChat([{ sender: 'ai', text: "Hello! I'm Advmen NGO's Smart Assistant. How can I help you today?" }])}
+            onClick={() => setChat([{ sender: 'ai', text: "Hello! I'm SAVITRAM FOUNDATION's Smart Assistant. How can I help you today?" }])}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-red-500 border border-gray-200 hover:border-red-200 rounded-xl transition-colors cursor-pointer bg-white"
           >
             <Trash2 size={13} /> Clear Chat
@@ -159,7 +159,7 @@ const AICenter = () => {
               <span className="text-xs font-extrabold text-gray-800">NGO Operation Helper</span>
               <span className="text-[10px] text-gray-400 font-semibold flex items-center gap-1 mt-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
-                Online · Advmen-NLP v3.0
+                Online · Savitram-NLP v3.0
               </span>
             </div>
           </div>

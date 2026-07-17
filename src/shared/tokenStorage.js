@@ -1,7 +1,7 @@
-export const TOKEN_KEYS = {
-  SUPERADMIN: 'advmen_superadmin_token',
-  ADMIN: 'advmen_admin_token',
-  MEMBER: 'advmen_member_token',
+﻿export const TOKEN_KEYS = {
+  SUPERADMIN: 'savitram_superadmin_token',
+  ADMIN: 'savitram_admin_token',
+  MEMBER: 'savitram_member_token',
 };
 
 export function getRoleFromPath(pathname) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { FileText, Mail, Phone, ChevronDown, ChevronRight, MessageCircle } from 'lucide-react';
 import Layout from '../components/Layout';
 import { COLORS } from '../../shared/colors';
@@ -16,7 +16,7 @@ const Help = () => {
 
   const supportCards = [
     { icon: FileText,      label: 'Documentation', desc: 'Browse guides and documentation for the system.',  href: '#',                         color: '#E8F5E9', iconColor: COLORS.primary },
-    { icon: Mail,          label: 'Email Support',  desc: 'Reach us at support@advmen.org for any queries.', href: 'mailto:support@advmen.org', color: '#E3F2FD', iconColor: '#2196F3' },
+    { icon: Mail,          label: 'Email Support',  desc: 'Reach us at support@savitram.org for any queries.', href: 'mailto:support@savitram.org', color: '#E3F2FD', iconColor: '#2196F3' },
     { icon: MessageCircle, label: 'Live Chat',      desc: 'Chat with our support team in real time.',        href: '#',                         color: '#FFF3E0', iconColor: '#FF9800' },
     { icon: Phone,         label: 'Phone Support',  desc: 'Call us at +91-XXXXX-XXXXX for urgent help.',     href: 'tel:+91XXXXXXXXXX',         color: '#FCE4EC', iconColor: '#E91E63' },
   ];

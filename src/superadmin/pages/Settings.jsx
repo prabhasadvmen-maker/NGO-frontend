@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Settings as SettingsIcon, Lock, Bell, Upload, Eye, EyeOff, Loader2 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useToast } from '../../shared/ToastContext';
@@ -40,7 +40,7 @@ const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
   const [loading, setLoading] = useState(false);
   const [showPwd, setShowPwd] = useState({ current: false, new: false, confirm: false });
-  const [general, setGeneral] = useState({ appName: 'Advmen NGO Management System', contactEmail: 'admin@advmen.org' });
+  const [general, setGeneral] = useState({ appName: 'SAVITRAM FOUNDATION Management System', contactEmail: 'admin@savitram.org' });
   const [security, setSecurity] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [notifications, setNotifications] = useState({
     emailNotifications: true,

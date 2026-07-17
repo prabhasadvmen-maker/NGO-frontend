@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Contact, Search, ShieldAlert, Loader2, Printer, CheckCircle, Award, Heart, HelpCircle } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useAuth } from '../../shared/AuthContext';
@@ -362,7 +362,7 @@ const IDCards = () => {
                       justifyContent: 'space-between',
                     }}>
                       <div>
-                        <div className="card-header-logo" style={{ fontSize: '12px', fontWeight: '8px', letterSpacing: '1px', textTransform: 'uppercase' }}>ADVMEN NGO</div>
+                        <div className="card-header-logo" style={{ fontSize: '12px', fontWeight: '8px', letterSpacing: '1px', textTransform: 'uppercase' }}>SAVITRAM FOUNDATION</div>
                         <div className="card-header-sub" style={{ fontSize: '8px', opacity: 0.8 }}>Humanitarian Care</div>
                       </div>
                       <span className="card-badge" style={{
@@ -439,7 +439,7 @@ const IDCards = () => {
                       <div className="space-y-1">
                         <p className="back-meta-title" style={{ fontWeight: '850', color: '#0f172a', margin: '0 0 4px 0' }}>Card Usage Guidelines:</p>
                         <ul className="back-terms" style={{ margin: 0, paddingLeft: '12px', spaceY: '1px' }}>
-                          <li>This identity card is non-transferable and remains property of Advmen NGO.</li>
+                          <li>This identity card is non-transferable and remains property of SAVITRAM FOUNDATION.</li>
                           <li>In case of emergency, please call <strong>+91-99999-88888</strong>.</li>
                           <li>Report loss of this card immediately to administration.</li>
                         </ul>
@@ -453,7 +453,7 @@ const IDCards = () => {
                         paddingTop: '6px'
                       }}>
                         <div>
-                          <p className="back-meta-title" style={{ fontWeight: '850', color: '#0f172a', margin: 0 }}>Advmen Central Board</p>
+                          <p className="back-meta-title" style={{ fontWeight: '850', color: '#0f172a', margin: 0 }}>Savitram Foundation Central Board</p>
                           <p style={{ margin: '1px 0 0 0', color: '#475569', fontWeight: '800' }}>Delhi Head Office, India</p>
                           <p style={{ margin: '1px 0 0 0', fontWeight: '850', color: '#22c55e' }}>Status: {uDetails.status}</p>
                         </div>
