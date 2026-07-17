@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Globe, Settings, Newspaper, Image, MessageSquare, Mail, Plus, Trash2, Check, X,
   Edit2, Eye, Loader2, Link2, Upload, ImageIcon
@@ -100,6 +100,7 @@ const WebsiteCMS = () => {
     heroSubtitle: '',
     heroImage: '',      // R2 key — sent to backend
     heroImagePreview: '', // presigned URL — only for display
+    heroBannerImages: [],
     mission: '',
     vision: '',
     stats: {
@@ -210,6 +211,7 @@ const WebsiteCMS = () => {
             heroSubtitle: json.data.heroSubtitle || '',
             heroImage: json.data.heroImage || '',           // raw R2 key
             heroImagePreview: json.data.heroImageUrl || '', // presigned URL for preview
+            heroBannerImages: json.data.heroBannerImages || [],
             mission: json.data.mission || '',
             vision: json.data.vision || '',
             stats: {
@@ -268,7 +270,19 @@ const WebsiteCMS = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const { heroImagePreview, ...payload } = configForm;
+      const payload = {
+        heroTitle: configForm.heroTitle,
+        heroSubtitle: configForm.heroSubtitle,
+        heroImage: configForm.heroImage,
+        heroBannerImages: (configForm.heroBannerImages || []).map(img => ({
+          imageUrl: img.imageUrl,
+          caption: img.caption || '',
+          order: parseInt(img.order) || 0
+        })),
+        mission: configForm.mission,
+        vision: configForm.vision,
+        stats: configForm.stats
+      };
       const data = await fetchAPI(`${CMS_API}/config`, {
         method: 'PUT',
         body: JSON.stringify(payload)
@@ -560,16 +574,29 @@ const WebsiteCMS = () => {
             {/* Tab: Homepage Config — Summary View */}
             {activeTab === 'homepage' && (
               <div className="space-y-6 max-w-4xl">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 col-span-1 text-left">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Hero Title</p>
                     <p className="text-sm font-bold text-gray-800">{configForm.heroTitle || '—'}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Hero Banner</p>
-                    {configForm.heroImagePreview || configForm.heroImage
-                      ? <img src={configForm.heroImagePreview || configForm.heroImage} className="h-10 rounded-lg object-cover" alt="banner" />
-                      : <p className="text-xs text-gray-400 font-semibold">No image set</p>}
+                  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 col-span-2 text-left">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Hero Slider Banners</p>
+                    {configForm.heroBannerImages && configForm.heroBannerImages.length > 0 ? (
+                      <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+                        {configForm.heroBannerImages.map((img, idx) => (
+                          <div key={idx} className="relative shrink-0 w-24 h-14 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                            <img src={img.imageUrlResolved || img.imageUrl} className="w-full h-full object-cover" alt="slide" />
+                            {img.caption && (
+                              <div className="absolute inset-0 bg-black/45 flex items-end p-1">
+                                <span className="text-[8px] text-white font-bold truncate w-full">{img.caption}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-400 font-semibold">No slider images configured</p>
+                    )}
                   </div>
                 </div>
                 <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
@@ -984,7 +1011,7 @@ const WebsiteCMS = () => {
               </button>
             </div>
             <form onSubmit={async (e) => { await handleConfigSubmit(e); setIsConfigModalOpen(false); }} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Hero Title</label>
                   <input type="text" value={configForm.heroTitle}
@@ -992,11 +1019,116 @@ const WebsiteCMS = () => {
                     className="w-full px-4 py-2.5 rounded-xl text-sm outline-none border border-gray-200 focus:border-green-500 bg-gray-50/50"
                     placeholder="e.g. SAVITRAM FOUNDATION" />
                 </div>
-                <ImageUploader
-                  value={configForm.heroImagePreview || configForm.heroImage}
-                  onChange={(key, previewUrl) => setConfigForm(p => ({ ...p, heroImage: key, heroImagePreview: previewUrl }))}
-                  token={token} fileType="hero" label="Hero Banner Image"
-                />
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Hero Fallback Image (Optional)</label>
+                  <ImageUploader
+                    value={configForm.heroImagePreview || configForm.heroImage}
+                    onChange={(key, previewUrl) => setConfigForm(p => ({ ...p, heroImage: key, heroImagePreview: previewUrl }))}
+                    token={token} fileType="hero"
+                  />
+                </div>
+              </div>
+
+              {/* Multiple slider images config module */}
+              <div className="space-y-4 border-t border-gray-100 pt-4 text-left">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Hero Slider Images (Dynamic Slider)</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if ((configForm.heroBannerImages || []).length >= 8) {
+                        return toast.error('Maximum 8 slider images allowed.');
+                      }
+                      setConfigForm(p => ({
+                        ...p,
+                        heroBannerImages: [
+                          ...(p.heroBannerImages || []),
+                          { imageUrl: '', imageUrlResolved: '', caption: '', order: (p.heroBannerImages || []).length + 1 }
+                        ]
+                      }));
+                    }}
+                    className="px-2.5 py-1.5 bg-green-50 border border-green-200 text-[#1B5E20] hover:bg-green-100 text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus size={12} /> Add Slide
+                  </button>
+                </div>
+
+                <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1 no-scrollbar">
+                  {(!configForm.heroBannerImages || configForm.heroBannerImages.length === 0) ? (
+                    <p className="text-xs text-gray-400 font-semibold italic text-center py-6">No slider images configured. Add some slides to animate the homepage hero banner.</p>
+                  ) : (
+                    configForm.heroBannerImages.map((banner, index) => (
+                      <div key={index} className="p-3 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center relative">
+                        <div className="w-full sm:w-1/3">
+                          <ImageUploader
+                            value={banner.imageUrl}
+                            previewUrl={banner.imageUrlResolved || banner.imageUrl}
+                            onChange={(key, previewUrl) => {
+                              setConfigForm(p => {
+                                const newBanners = [...(p.heroBannerImages || [])];
+                                newBanners[index] = {
+                                  ...newBanners[index],
+                                  imageUrl: key,
+                                  imageUrlResolved: previewUrl
+                                };
+                                return { ...p, heroBannerImages: newBanners };
+                              });
+                            }}
+                            token={token}
+                            fileType="hero"
+                          />
+                        </div>
+                        <div className="flex-grow grid grid-cols-12 gap-2 text-left items-end">
+                          <div className="col-span-8">
+                            <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">Slide Caption</label>
+                            <input
+                              type="text"
+                              value={banner.caption || ''}
+                              onChange={(e) => {
+                                setConfigForm(p => {
+                                  const newBanners = [...(p.heroBannerImages || [])];
+                                  newBanners[index] = { ...newBanners[index], caption: e.target.value };
+                                  return { ...p, heroBannerImages: newBanners };
+                                });
+                              }}
+                              placeholder="Slide tagline overlay..."
+                              className="w-full px-3 py-1.5 rounded-lg text-xs outline-none border border-gray-200 focus:border-green-500 bg-white"
+                            />
+                          </div>
+                          <div className="col-span-3">
+                            <label className="block text-[9px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Order</label>
+                            <input
+                              type="number"
+                              value={banner.order || 0}
+                              onChange={(e) => {
+                                setConfigForm(p => {
+                                  const newBanners = [...(p.heroBannerImages || [])];
+                                  newBanners[index] = { ...newBanners[index], order: parseInt(e.target.value) || 0 };
+                                  return { ...p, heroBannerImages: newBanners };
+                                });
+                              }}
+                              className="w-full px-3 py-1.5 rounded-lg text-xs outline-none border border-gray-200 focus:border-green-500 bg-white"
+                            />
+                          </div>
+                          <div className="col-span-1 flex justify-center pb-1">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setConfigForm(p => {
+                                  const newBanners = (p.heroBannerImages || []).filter((_, idx) => idx !== index);
+                                  return { ...p, heroBannerImages: newBanners };
+                                });
+                              }}
+                              className="p-1.5 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 cursor-pointer bg-white"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Hero Subtitle</label>
