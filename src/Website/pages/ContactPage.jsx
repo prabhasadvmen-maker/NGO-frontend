@@ -87,10 +87,10 @@ export const ContactPage = () => {
           <p className="text-sm text-gray-400 mt-2 font-semibold">Reach out to our offices or submit a query.</p>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-stretch mb-16">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-16">
           
-          {/* Left Column: Contact details */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-8">
+          {/* Left Column: Contact details & Integrated Map */}
+          <div className="lg:col-span-5 space-y-8">
             <div className="space-y-6">
               <h2 className="font-display font-black text-2xl sm:text-3xl text-[#0A1628]">Contact Information</h2>
               <p className="text-xs text-gray-500 font-semibold leading-relaxed">
@@ -98,49 +98,66 @@ export const ContactPage = () => {
               </p>
 
               <div className="space-y-4">
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 shadow-sm"
-                  style={{ boxShadow: '4px 4px 8px #DCDCDC, -4px -4px 8px #FFFFFF' }}>
+                {/* Helpline Card */}
+                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
                   <div className="p-3 bg-[#1B5E20]/10 text-[#1B5E20] rounded-xl flex-shrink-0">
                     <Phone size={18} />
                   </div>
                   <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">Call Branch Helpline</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Call Branch Helpline</p>
                     <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultPhone}</p>
                   </div>
                 </div>
 
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 shadow-sm"
-                  style={{ boxShadow: '4px 4px 8px #DCDCDC, -4px -4px 8px #FFFFFF' }}>
+                {/* Email Card */}
+                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
                   <div className="p-3 bg-[#2196F3]/10 text-[#2196F3] rounded-xl flex-shrink-0">
                     <Mail size={18} />
                   </div>
                   <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">Official Email Desk</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Official Email Desk</p>
                     <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultEmail}</p>
                   </div>
                 </div>
 
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 shadow-sm"
-                  style={{ boxShadow: '4px 4px 8px #DCDCDC, -4px -4px 8px #FFFFFF' }}>
+                {/* Address Card */}
+                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
                   <div className="p-3 bg-[#9C27B0]/10 text-[#9C27B0] rounded-xl flex-shrink-0">
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">Headquarters Office</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Headquarters Office</p>
                     <p className="text-xs font-bold text-[#0A1628] mt-0.5 leading-relaxed">{defaultAddress}</p>
                   </div>
                 </div>
 
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 shadow-sm"
-                  style={{ boxShadow: '4px 4px 8px #DCDCDC, -4px -4px 8px #FFFFFF' }}>
+                {/* Timings Card */}
+                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
                   <div className="p-3 bg-[#F97316]/10 text-[#F97316] rounded-xl flex-shrink-0">
                     <Clock size={18} />
                   </div>
                   <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase">Office Timings</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Office Timings</p>
                     <p className="text-xs font-bold text-[#0A1628] mt-0.5">Mon-Sat, 9AM - 6PM IST</p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Integrated Industrial Map */}
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left">Our Location Map</h4>
+              <div className="rounded-3xl overflow-hidden border border-gray-200 shadow-md h-[280px] relative bg-gray-100">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3508.835438883204!2d77.0396825!3d28.4393668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d18721c56f2a3%3A0xe1043329f622eb1f!2sADVMEN%20Technologies%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                  width="100%" 
+                  height="100%" 
+                  className="absolute inset-0 w-full h-full border-0"
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="HQ Map Location"
+                />
               </div>
             </div>
 
@@ -161,7 +178,7 @@ export const ContactPage = () => {
                       href={soc.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-white border border-gray-250 flex items-center justify-center text-gray-400 hover:bg-[#1B5E20] hover:text-white hover:border-[#1B5E20] transition-all"
+                      className="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-[#1B5E20] hover:text-white hover:border-[#1B5E20] transition-all"
                     >
                       <Icon size={16} />
                     </a>
@@ -172,10 +189,13 @@ export const ContactPage = () => {
           </div>
 
           {/* Right Column: Enquiry Form */}
-          <div className="lg:col-span-7 p-8 rounded-3xl bg-white border border-gray-100 flex flex-col justify-between shadow-lg"
-            style={{ boxShadow: '8px 8px 16px #D0D0D0, -8px -8px 16px #FFFFFF' }}>
-            
+          <div className="lg:col-span-7 p-8 sm:p-10 rounded-3xl bg-white border border-gray-100 flex flex-col justify-between shadow-lg">
             <form onSubmit={handleSubmit} className="space-y-6 text-left">
+              <div className="pb-2 border-b border-gray-50">
+                <h3 className="font-display font-black text-xl text-[#0A1628]">Quick Enquiry Desk</h3>
+                <p className="text-xs text-gray-400 font-semibold mt-1">Send a direct message to our local program directors.</p>
+              </div>
+
               {status === 'success' && (
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 text-green-700 border border-green-200">
                   <CheckCircle2 className="flex-shrink-0" />
@@ -200,7 +220,7 @@ export const ContactPage = () => {
                     onBlur={() => handleBlur('name')}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
                   />
                   <label 
                     htmlFor="name"
@@ -224,7 +244,7 @@ export const ContactPage = () => {
                     onBlur={() => handleBlur('email')}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
                   />
                   <label 
                     htmlFor="email"
@@ -249,7 +269,7 @@ export const ContactPage = () => {
                     onFocus={() => handleFocus('phone')}
                     onBlur={() => handleBlur('phone')}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
                   />
                   <label 
                     htmlFor="phone"
@@ -272,7 +292,7 @@ export const ContactPage = () => {
                     onFocus={() => handleFocus('subject')}
                     onBlur={() => handleBlur('subject')}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
                   />
                   <label 
                     htmlFor="subject"
@@ -297,7 +317,7 @@ export const ContactPage = () => {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold font-sans"
                 />
                 <label 
                   htmlFor="message"
@@ -314,7 +334,7 @@ export const ContactPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl bg-[#1B5E20] text-xs font-extrabold text-white flex items-center justify-center gap-2 hover:scale-[1.01] hover:brightness-110 shadow-md shadow-emerald-800/10 cursor-pointer disabled:opacity-50 transition-all"
+                className="w-full py-4 rounded-xl bg-[#1B5E20] text-xs font-extrabold text-white flex items-center justify-center gap-2 hover:scale-[1.01] hover:brightness-110 shadow-none border-0 cursor-pointer disabled:opacity-50 transition-all"
               >
                 <span>{loading ? 'Sending Message...' : 'Send Message'}</span>
                 <Send size={14} />
@@ -323,22 +343,6 @@ export const ContactPage = () => {
           </div>
 
         </div>
-
-        {/* Map placeholder */}
-        <section className="max-w-7xl mx-auto px-6 mb-16">
-          <div className="rounded-3xl overflow-hidden border border-gray-100 flex flex-col justify-center bg-gray-200 min-h-[300px] relative shadow-md">
-            <iframe 
-              src={`https://maps.google.com/maps?q=${encodeURIComponent(defaultAddress)}&t=&z=13&ie=UTF8&iwloc=&output=embed`} 
-              width="100%" 
-              height="300" 
-              style={{ border: 0 }} 
-              allowFullScreen="" 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
-              title="HQ Map Location"
-            />
-          </div>
-        </section>
       </main>
 
       <FloatingUtils />

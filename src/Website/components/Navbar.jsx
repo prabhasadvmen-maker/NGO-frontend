@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight, User } from 'lucide-react';
-import { COLORS } from '../../shared/colors';
+import { 
+  Menu, 
+  X, 
+  ArrowRight, 
+  User, 
+  Phone, 
+  Mail, 
+  Heart, 
+  Facebook, 
+  Instagram, 
+  Twitter, 
+  Youtube, 
+  Linkedin, 
+  ChevronDown 
+} from 'lucide-react';
 import { useAuth } from '../../shared/AuthContext';
 
 export const Navbar = () => {
@@ -25,7 +38,7 @@ export const Navbar = () => {
 
   const navLinks = [
     { label: 'Home', path: '/' },
-    { label: 'About', path: '/about' },
+    { label: 'About Us', path: '/about' },
     { label: 'Our Work', path: '/our-work' },
     { label: 'Projects', path: '/projects' },
     { label: 'Events', path: '/events' },
@@ -35,107 +48,228 @@ export const Navbar = () => {
   ];
 
   const isHome = location.pathname === '/';
+  const isJoinActive = location.pathname === '/membership' || location.pathname === '/volunteer';
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
-        scrolled || !isHome
-          ? 'bg-white/95 backdrop-blur-md shadow-md py-4 border-b border-gray-100' 
-          : 'bg-transparent py-6'
+      <header className={`fixed top-0 left-0 w-full z-40 transition-transform duration-300 ${
+        scrolled ? 'lg:-translate-y-8 shadow-md' : 'translate-y-0'
       }`}>
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          {/* Logo Brand */}
-          <Link to="/" className="flex items-center gap-3 group">
+        {/* Top Info Bar (Navy Blue) */}
+        <div className="bg-[#0A1628] text-white text-[11px] font-bold py-2 px-6 hidden lg:block border-b border-white/5 h-8">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            {/* Left: Contact info */}
+            <div className="flex items-center gap-6">
+              <a href="tel:+918375008009" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
+                <Phone size={11} className="text-white" />
+                <span>+91 83750 08009</span>
+              </a>
+              <a href="mailto:info@savitramfoundation.org" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
+                <Mail size={11} className="text-white" />
+                <span>info@savitramfoundation.org</span>
+              </a>
+            </div>
+
+            {/* Center: Heart icon + Message */}
+            <div className="flex items-center gap-1.5">
+              <Heart size={11} className="text-green-500 fill-green-500" />
+              <span>Working for a Better Tomorrow</span>
+            </div>
+
+            {/* Right: Social Media links */}
+            <div className="flex items-center gap-4">
+              <span className="text-gray-400 font-medium">Follow Us :</span>
+              <div className="flex items-center gap-3">
+                <a href="#" className="hover:text-green-400 transition-colors"><Facebook size={11} /></a>
+                <a href="#" className="hover:text-green-400 transition-colors"><Instagram size={11} /></a>
+                <a href="#" className="hover:text-green-400 transition-colors"><Twitter size={11} /></a>
+                <a href="#" className="hover:text-green-400 transition-colors"><Youtube size={11} /></a>
+                <a href="#" className="hover:text-green-400 transition-colors"><Linkedin size={11} /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Bar (White) */}
+        <nav className={`bg-white transition-all duration-300 border-b border-gray-100 ${
+          scrolled ? 'py-2' : 'py-3'
+        }`}>
+          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            {/* Logo Brand */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <img
+                src="/NGO logo.jpeg"
+                alt="Savitram Foundation Logo"
+                className="w-12 h-12 rounded-full object-cover border border-gray-150 transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="flex flex-col text-left">
+                <span className="font-display font-extrabold tracking-tight text-xl text-[#0A1628] leading-none">
+                  SAVITRAM
+                </span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="h-[1.5px] w-2 bg-[#F97316]" />
+                  <span className="text-[9px] font-bold text-[#1B5E20] tracking-[0.18em] uppercase leading-none">
+                    FOUNDATION
+                  </span>
+                  <span className="h-[1.5px] w-2 bg-[#F97316]" />
+                </div>
+                <span className="text-[8px] font-semibold text-gray-500 uppercase tracking-widest leading-none mt-1">
+                  Together We Can
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation Links */}
+            <div className="hidden lg:flex items-center gap-6">
+              {navLinks.slice(0, 7).map((link) => {
+                const active = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
+                      active 
+                        ? 'text-[#1B5E20]' 
+                        : 'text-[#334155] hover:text-[#0A1628]'
+                    }`}
+                  >
+                    {link.label}
+                    {active && (
+                      <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
+                    )}
+                  </Link>
+                );
+              })}
+
+              {/* Join Us Hover Dropdown Menu */}
+              <div className="relative group/dropdown py-2">
+                <button 
+                  className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider bg-transparent border-0 cursor-pointer transition-colors duration-300 ${
+                    isJoinActive ? 'text-[#1B5E20]' : 'text-[#334155] hover:text-[#0A1628]'
+                  }`}
+                >
+                  <span>Join Us</span>
+                  <ChevronDown size={11} />
+                </button>
+                {/* Dropdown Box */}
+                <div className="absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50">
+                  <Link
+                    to="/membership"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Become a Member
+                  </Link>
+                  <Link
+                    to="/volunteer"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Become a Volunteer
+                  </Link>
+                </div>
+              </div>
+
+              {/* Contact Link */}
+              {(() => {
+                const link = navLinks[7]; // Contact
+                const active = location.pathname === link.path;
+                return (
+                  <Link
+                    to={link.path}
+                    className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
+                      active 
+                        ? 'text-[#1B5E20]' 
+                        : 'text-[#334155] hover:text-[#0A1628]'
+                    }`}
+                  >
+                    {link.label}
+                    {active && (
+                      <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
+                    )}
+                  </Link>
+                );
+              })()}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="hidden lg:flex items-center gap-4">
+              {user ? (
+                <Link
+                  to={user.role === 'super_admin' ? '/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1B5E20] text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all"
+                >
+                  <User size={14} />
+                  <span>My Portal</span>
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1B5E20] text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all"
+                >
+                  <User size={14} />
+                  <span>Login</span>
+                </Link>
+              )}
+              <Link
+                to="/crowdfunding"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0A1628] text-xs font-extrabold text-white transition-all hover:scale-105 hover:bg-[#091424] shadow-none"
+              >
+                <Heart size={14} className="text-white fill-white" />
+                <span>Donate Now</span>
+              </Link>
+            </div>
+
+            {/* Mobile Hamburger Menu Toggle */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden p-2 rounded-xl text-[#0A1628] hover:bg-gray-100 transition-colors border-0 bg-transparent"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Mobile Nav Overlay Menu - Redesigned to support close icon & custom styles */}
+      <div className={`fixed inset-0 z-[999] bg-gradient-to-br from-[#0A1628] via-[#0A1628] to-[#1B5E20]/30 flex flex-col justify-between p-6 transition-transform duration-500 ease-out lg:hidden ${
+        mobileOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        {/* Mobile Overlay Header */}
+        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+          <Link to="/" className="flex items-center gap-3">
             <img
               src="/NGO logo.jpeg"
-              alt="Savitram Foundation Logo"
-              className="w-10 h-10 rounded-xl object-cover shadow-lg transition-transform duration-300 group-hover:scale-105"
+              alt="Savitram Logo"
+              className="w-10 h-10 rounded-full object-cover border border-white/10"
             />
-            <div className="flex flex-col">
-              <span className="font-display font-extrabold tracking-tight text-lg text-[#0A1628]">
+            <div className="flex flex-col text-left">
+              <span className="font-display font-extrabold tracking-tight text-base text-white leading-none">
                 SAVITRAM
               </span>
-              <span className="text-[9px] font-bold text-[#1B5E20] uppercase tracking-widest -mt-1">
-                Foundation
+              <span className="text-[8px] font-bold text-green-400 uppercase tracking-widest mt-0.5 leading-none">
+                FOUNDATION
               </span>
             </div>
           </Link>
-
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => {
-              const active = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
-                    active 
-                      ? 'text-[#1B5E20]' 
-                      : 'text-[#64748B] hover:text-[#0A1628]'
-                  }`}
-                >
-                  {link.label}
-                  {active && (
-                    <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full animate-slide" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* CTA & Actions */}
-          <div className="hidden lg:flex items-center gap-4">
-            {user ? (
-              <Link
-                to={user.role === 'super_admin' ? '/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'}
-                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#0A1628] text-xs font-bold text-[#0A1628] transition-all hover:bg-[#0A1628]/5"
-              >
-                <User size={14} />
-                <span>My Portal</span>
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#0A1628] text-xs font-bold text-[#0A1628] transition-all hover:bg-[#0A1628]/5"
-              >
-                <User size={14} />
-                <span>Login</span>
-              </Link>
-            )}
-            <Link
-              to="/crowdfunding"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F97316] text-xs font-extrabold text-white transition-all hover:scale-105 hover:brightness-110 shadow-md shadow-orange-500/20"
-            >
-              <span>Donate Now</span>
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          {/* Mobile Hamburguer Toggle */}
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-2 rounded-xl text-[#0A1628] hover:bg-gray-100 transition-colors border-0 bg-transparent"
-            aria-label="Toggle Navigation Menu"
+            onClick={() => setMobileOpen(false)}
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all text-white border-0 cursor-pointer"
+            aria-label="Close Menu"
           >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            <X size={20} />
           </button>
         </div>
-      </nav>
 
-      {/* Mobile Nav Overlay Menu */}
-      <div className={`fixed inset-0 z-30 bg-[#0A1628] flex flex-col justify-center px-8 transition-transform duration-500 ease-out lg:hidden ${
-        mobileOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <div className="flex flex-col gap-6 text-left">
-          {navLinks.map((link) => {
+        {/* Mobile Menu Links */}
+        <div className="flex-grow py-6 overflow-y-auto flex flex-col gap-4 text-left">
+          {navLinks.slice(0, 7).map((link) => {
             const active = location.pathname === link.path;
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-2xl font-display font-bold transition-all duration-300 ${
-                  active ? 'text-[#1B5E20] translate-x-2' : 'text-white/60 hover:text-white'
+                className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+                  active ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
                 }`}
               >
                 {link.label}
@@ -143,35 +277,63 @@ export const Navbar = () => {
             );
           })}
           
-          <div className="h-px bg-white/10 my-6" />
+          <div className="h-[1px] bg-white/5 my-2" />
 
-          {/* Mobile CTAs */}
-          <div className="flex flex-col gap-4">
-            {user ? (
-              <Link
-                to={user.role === 'super_admin' ? '/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-white text-sm font-bold text-white transition-all hover:bg-white/5"
-              >
-                <User size={16} />
-                <span>My Portal</span>
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-white text-sm font-bold text-white transition-all hover:bg-white/5"
-              >
-                <User size={16} />
-                <span>Login</span>
-              </Link>
-            )}
+          {/* Join Us sublinks inside mobile menu drawer */}
+          <Link
+            to="/membership"
+            className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+              location.pathname === '/membership' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Become a Member
+          </Link>
+          <Link
+            to="/volunteer"
+            className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+              location.pathname === '/volunteer' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Become a Volunteer
+          </Link>
+
+          {/* Contact sublink inside mobile menu drawer */}
+          <Link
+            to="/contact"
+            className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+              location.pathname === '/contact' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Contact
+          </Link>
+        </div>
+
+        {/* Mobile Menu Footer (CTAs) */}
+        <div className="border-t border-white/5 pt-6 flex flex-col gap-3">
+          {user ? (
             <Link
-              to="/crowdfunding"
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full bg-[#F97316] text-sm font-extrabold text-white transition-all shadow-lg"
+              to={user.role === 'super_admin' ? '/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/20 text-xs font-bold text-white transition-all hover:bg-white/5 bg-transparent"
             >
-              <span>Donate Now</span>
-              <ArrowRight size={16} />
+              <User size={14} />
+              <span>My Portal</span>
             </Link>
-          </div>
+          ) : (
+            <Link
+              to="/login"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-white/20 text-xs font-bold text-white transition-all hover:bg-white/5 bg-transparent"
+            >
+              <User size={14} />
+              <span>Login / Register</span>
+            </Link>
+          )}
+          <Link
+            to="/crowdfunding"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-orange-600 text-xs font-extrabold text-white transition-all hover:bg-orange-700 shadow-none border-0"
+          >
+            <Heart size={14} className="text-white fill-white" />
+            <span>Donate Now</span>
+          </Link>
         </div>
       </div>
     </>

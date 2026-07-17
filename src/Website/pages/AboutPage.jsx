@@ -9,7 +9,7 @@ import FloatingUtils from '../components/FloatingUtils';
 
 export const AboutPage = () => {
   const { data: cms } = usePublicAPI('/api/public/cms/config');
-  const { data: branches } = usePublicAPI('/api/branches');
+  const { data: branches } = usePublicAPI('/api/public/branches');
 
   const missionText = cms?.mission || 'To inspire and support community growth through sustainable, locally-driven programs that offer long-term change.';
   const visionText = cms?.vision || 'A world of equal opportunities, health, education, and dignity for all individuals, regardless of their social background.';

@@ -43,9 +43,41 @@ export const HeroSection = () => {
   const firstPart = words.slice(0, Math.ceil(words.length / 2)).join(' ');
   const secondPart = words.slice(Math.ceil(words.length / 2)).join(' ');
 
+  const renderWaveText = (text, highlight = false) => {
+    return text.split(' ').map((word, wIdx) => (
+      <span key={wIdx} className="inline-block whitespace-nowrap mr-2">
+        {word.split('').map((char, cIdx) => (
+          <span
+            key={cIdx}
+            className={`char-wave ${
+              highlight ? 'text-[#4ade80] hover:text-[#F97316]' : 'text-white hover:text-[#4ade80]'
+            }`}
+            style={{ 
+              animationDelay: `${cIdx * 30}ms`
+            }}
+          >
+            {char}
+          </span>
+        ))}
+      </span>
+    ));
+  };
+
   return (
     <section className="relative min-h-[92vh] pt-32 pb-20 flex items-center overflow-hidden bg-[#F8F7F4]">
-      {/* Background Image Slider with Crossfade & Ken Burns effect */}
+      {/* Hidden prefetch block to load all slides in advance */}
+      <div className="hidden" aria-hidden="true">
+        {sliderImages.map((img, idx) => (
+          <img
+            key={idx}
+            src={img.imageUrlResolved || img.imageUrl}
+            alt="preload-asset"
+            loading="eager"
+          />
+        ))}
+      </div>
+
+      {/* Background Image Slider - Full Screen (Full Bleed) */}
       <div className="absolute inset-0 w-full h-full overflow-hidden z-0 select-none">
         {sliderImages.map((img, index) => (
           <div
@@ -60,36 +92,56 @@ export const HeroSection = () => {
               className={`w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${
                 index === currentIndex ? 'scale-105' : 'scale-100'
               }`}
-              loading={index === 0 ? 'eager' : 'lazy'}
+              loading="eager"
+              fetchPriority={index === currentIndex ? "high" : "low"}
             />
           </div>
         ))}
-        {/* Soft horizontal gradient overlay for perfect navy text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F8F7F4] via-[#F8F7F4]/90 to-[#F8F7F4]/30 z-20" />
+        {/* Soft dark navy vignette overlay: darkens the left side slightly for maximum readability of white text */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628]/65 via-[#0A1628]/25 to-transparent z-10 pointer-events-none" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-30 w-full">
-        {/* Typography Content Container */}
-        <div className="max-w-2xl space-y-8 text-left animate-fade-in">
+        {/* Typography Content Container - Clean Background None */}
+        <div className="max-w-2xl space-y-8 text-left animate-fade-in py-4 sm:py-6 bg-transparent border-0 shadow-none">
           {/* Eyebrow */}
           <div className="inline-block relative">
-            <span className="text-[10px] font-bold tracking-[0.25em] text-[#1B5E20] uppercase">
+            <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#F97316] uppercase">
               Together We Can
             </span>
-            <span className="absolute bottom-[-4px] left-0 w-2/3 h-[2px] bg-[#1B5E20] rounded-full" />
+            <span className="absolute bottom-[-4px] left-0 w-2/3 h-[2px] bg-[#F97316] rounded-full" />
           </div>
 
-          {/* Main Headline */}
-          <h1 className="font-display font-black text-4xl sm:text-6xl tracking-tight text-[#0A1628] leading-[1.08] headline-reveal">
-            {firstPart} <span className="text-[#1B5E20]">{secondPart}</span>
+          {/* Main Headline with letter-by-letter hover wave effect */}
+          <h1 className="font-display font-black text-3xl sm:text-5xl tracking-tight leading-[1.1] headline-reveal">
+            {renderWaveText(firstPart, false)}
+            {renderWaveText(secondPart, true)}
           </h1>
 
           {/* Subtitle */}
-          <p className="text-[#475569] text-base sm:text-lg font-bold max-w-xl leading-relaxed">
+          <p className="text-white/90 text-sm sm:text-base font-semibold max-w-xl leading-relaxed">
             {heroSubtitle}
           </p>
 
-          {/* CTAs */}
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes charWave {
+              0%, 100% {
+                transform: translateY(0);
+              }
+              50% {
+                transform: translateY(-8px);
+              }
+            }
+            .char-wave {
+              display: inline-block;
+              transition: transform 0.2s ease, color 0.2s ease;
+            }
+            .char-wave:hover {
+              animation: charWave 0.4s ease-in-out;
+            }
+          `}} />
+
+          {/* Clean CTAs */}
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Link
               to="/crowdfunding"
@@ -100,21 +152,24 @@ export const HeroSection = () => {
             </Link>
             <Link
               to="/membership"
-              className="flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-[#0A1628] text-xs font-extrabold text-[#0A1628] transition-all duration-300 hover:bg-[#0A1628] hover:text-white"
+              className="flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-white text-xs font-extrabold text-white transition-all duration-300 hover:bg-white hover:text-[#0A1628] bg-transparent"
             >
               <span>Become a Member</span>
             </Link>
           </div>
 
-          {/* Trust badges */}
-          <div className="flex flex-wrap items-center gap-5 pt-4 text-xs font-bold text-[#475569]">
+          {/* Clean Trust badges */}
+          <div className="flex flex-wrap items-center gap-5 pt-4 text-xs font-bold text-white/80">
             {[
               'Govt. Registered NGO',
               'Section 80G Tax Exempt',
               '100% Audit Transparency'
             ].map((badge, idx) => (
-              <div key={idx} className="flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-[#1B5E20]" />
+              <div 
+                key={idx} 
+                className="flex items-center gap-1.5"
+              >
+                <CheckCircle2 size={14} className="text-green-400" />
                 <span>{badge}</span>
               </div>
             ))}

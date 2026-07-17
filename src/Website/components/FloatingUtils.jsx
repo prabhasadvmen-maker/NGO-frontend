@@ -155,7 +155,7 @@ export const FloatingUtils = () => {
               <img src="/NGO logo.jpeg" alt="Logo" className="w-7 h-7 rounded-lg object-cover" />
               <div>
                 <p className="font-display font-extrabold text-xs tracking-wide leading-none">Savitram AI</p>
-                <p className="text-[9px] text-white/70 font-semibold mt-0.5">Powered by Groq · llama3</p>
+                <p className="text-[9px] text-white/70 font-semibold mt-0.5">Powered by Groq · Mixtral</p>
               </div>
             </div>
             <button
