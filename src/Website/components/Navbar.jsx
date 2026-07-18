@@ -66,7 +66,7 @@ export const Navbar = () => {
               </a>
               <a href="mailto:info@savitramfoundation.org" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
                 <Mail size={11} className="text-white" />
-                <span>info@savitramfoundation.org</span>
+                <span>hello@advmen.com</span>
               </a>
             </div>
 

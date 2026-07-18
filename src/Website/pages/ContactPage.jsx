@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Clock, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 import API_BASE_URL from '../../shared/apiConfig';
 import usePublicAPI from '../hooks/usePublicAPI';
 import SEOHead from '../components/SEOHead';
@@ -249,7 +249,7 @@ export const ContactPage = () => {
             </form>
           </div>
 
-          {/* Right Column: Contact details & Integrated Map */}
+          {/* Right Column: Contact details */}
           <div className="lg:col-span-5 space-y-8">
             
             {/* Info Card Container */}
@@ -303,55 +303,35 @@ export const ContactPage = () => {
               </div>
             </div>
 
-            {/* Integrated Industrial Map */}
-            <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] text-left space-y-4">
-              <div>
-                <h4 className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest text-left">Our Location Map</h4>
-                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Find us on Google Maps</p>
-              </div>
-              <div className="p-2 bg-[#F8F7F4] rounded-3xl shadow-[inset_3px_3px_8px_#e5e4e1,inset_-3px_-3px_8px_#ffffff] h-[280px] relative">
-                <div className="w-full h-full rounded-2xl overflow-hidden relative bg-gray-100">
-                  <iframe 
-                    src={getCleanMapUrl(defaultAddress)}
-                    width="100%" 
-                    height="100%" 
-                    className="absolute inset-0 w-full h-full border-0"
-                    allowFullScreen="" 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="HQ Map Location"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* Social Links */}
-            <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] text-left space-y-3">
-              <h4 className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest">Connect with Socials</h4>
-              <div className="flex items-center gap-3">
-                {[
-                  { icon: Facebook, href: 'https://facebook.com' },
-                  { icon: Twitter, href: 'https://twitter.com' },
-                  { icon: Instagram, href: 'https://instagram.com' },
-                  { icon: Linkedin, href: 'https://linkedin.com' }
-                ].map((soc, i) => {
-                  const Icon = soc.icon;
-                  return (
-                    <a
-                      key={i}
-                      href={soc.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-[#F8F7F4] shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] flex items-center justify-center text-gray-400 hover:bg-[#1B5E20] hover:text-white transition-all"
-                    >
-                      <Icon size={16} />
-                    </a>
-                  );
-                })}
+
+          </div>
+
+          {/* Bottom Full-Width Column: Map (lg:col-span-12) */}
+        </div>
+
+        {/* Bottom Full-Width Column: Map (Outside grid to eliminate layout gaps) */}
+        <div className="max-w-7xl mx-auto px-6 mt-12 text-left mb-16">
+          <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] space-y-4">
+            <div>
+              <h4 className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest text-left">Our Location Map</h4>
+              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Find us on Google Maps</p>
+            </div>
+            <div className="p-2 bg-[#F8F7F4] rounded-3xl shadow-[inset_3px_3px_8px_#e5e4e1,inset_-3px_-3px_8px_#ffffff] h-[360px] md:h-[450px] relative">
+              <div className="w-full h-full rounded-2xl overflow-hidden relative bg-gray-100">
+                <iframe 
+                  src={getCleanMapUrl(defaultAddress)}
+                  width="100%" 
+                  height="100%" 
+                  className="absolute inset-0 w-full h-full border-0"
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="HQ Map Location"
+                />
               </div>
             </div>
           </div>
-
         </div>
       </main>
 
