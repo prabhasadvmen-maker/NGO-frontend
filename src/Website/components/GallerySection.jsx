@@ -25,7 +25,7 @@ export const GallerySection = () => {
   return (
     <section 
       ref={ref}
-      className={`relative py-32 bg-white reveal ${isVisible ? 'visible' : ''}`}
+      className={`relative pt-14 pb-32 bg-[#F8F7F4] reveal ${isVisible ? 'visible' : ''}`}
     >
       <div className="max-w-7xl mx-auto px-6 space-y-12">
         
@@ -45,31 +45,33 @@ export const GallerySection = () => {
           </p>
         </div>
 
-        {/* CSS Grid for Photo Masonry */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* CSS Grid for Photo Masonry with Neumorphic Frames */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {loading ? (
             [1,2,3,4].map((n) => (
-              <div key={n} className="h-64 bg-gray-150 animate-pulse rounded-2xl" />
+              <div key={n} className="h-64 bg-gray-150 animate-pulse rounded-3xl" />
             ))
           ) : (
             list.map((ph, idx) => (
               <div 
                 key={ph._id}
-                className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer h-64 border border-gray-100/50"
+                className="p-2.5 bg-[#F8F7F4] rounded-3xl transition-all duration-500 hover:-translate-y-1.5 group cursor-pointer border-0 shadow-[6px_6px_15px_#e5e4e1,-6px_-6px_15px_#ffffff] hover:shadow-[10px_10px_25px_#e1e0dd,-10px_-10px_25px_#ffffff]"
               >
-                {/* Image */}
-                <img 
-                  src={ph.imageUrlResolved || ph.imageUrl || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600'} 
-                  alt={ph.caption || 'Gallery moment'} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
+                <div className="relative rounded-2xl overflow-hidden h-56 w-full bg-gray-100">
+                  {/* Image */}
+                  <img 
+                    src={ph.imageUrlResolved || ph.imageUrl || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600'} 
+                    alt={ph.caption || 'Gallery moment'} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
 
-                {/* Dark Gradient Overlay with caption text (Slides/Fades in) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/40 to-transparent flex flex-col justify-end p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white text-xs font-bold text-left leading-relaxed">
-                    {ph.caption || 'Humanitarian Outreach'}
-                  </p>
+                  {/* Dark Gradient Overlay with caption text */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/35 to-transparent flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-white text-xs font-bold text-left leading-relaxed">
+                      {ph.caption || 'Humanitarian Outreach'}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))

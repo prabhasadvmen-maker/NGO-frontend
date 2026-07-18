@@ -15,7 +15,7 @@ const TimelineNode = ({ step, index }) => {
       }`}
     >
       {/* Node Content Card - Frosted Glassmorphism */}
-      <div className={`space-y-4 p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 relative z-10 transition-all duration-500 hover:bg-white/10 hover:border-white/20 shadow-2xl ${
+      <div className={`space-y-4 p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 relative z-10 transition-all duration-500 hover:bg-white/10 hover:border-white/20 shadow-2xl ml-12 md:ml-0 ${
         isEven ? 'md:order-1 text-left' : 'md:order-2 text-left'
       }`}>
         {/* Step Badge */}
@@ -32,7 +32,7 @@ const TimelineNode = ({ step, index }) => {
       </div>
 
       {/* Central Timeline Dot Badge */}
-      <div className="absolute left-[20px] md:left-1/2 top-1/2 -translate-x-[20px] md:-translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center">
+      <div className="absolute left-[20px] md:left-1/2 top-1/2 -translate-x-[24px] md:-translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center">
         <div 
           className={`w-12 h-12 rounded-full flex items-center justify-center text-white border border-white/20 transition-all duration-500 shadow-xl ${
             isVisible ? 'scale-110 rotate-12' : 'scale-90 opacity-60'

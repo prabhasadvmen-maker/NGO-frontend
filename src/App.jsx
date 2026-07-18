@@ -32,42 +32,22 @@ const wrapSuspense = (Component) => (
   </Suspense>
 );
 
-const RoleDispatcher = ({ adminComponent: AdminComponent, publicComponent: PublicComponent, role = 'super_admin' }) => {
-  const { user } = useAuth();
-  if (user && user.role === role) {
-    return <ProtectedRoute role={role}>{wrapSuspense(AdminComponent)}</ProtectedRoute>;
-  }
-  return wrapSuspense(PublicComponent);
-};
-
 function AppContent() {
-  // Filter out clashing paths from SuperAdminRoutes to let role dispatchers handle them at `/projects`, `/events`, etc.
-  const filteredSuperAdminRoutes = SuperAdminRoutes().filter(route => 
-    !['/projects', '/events', '/crowdfunding', '/reports'].includes(route.props.path)
-  );
-
   return (
     <Routes>
-      {/* Conflicting Routes Dispatcher */}
-      <Route path="/projects" element={<RoleDispatcher adminComponent={SA_Projects} publicComponent={Public_Projects} />} />
-      <Route path="/events" element={<RoleDispatcher adminComponent={SA_Events} publicComponent={Public_Events} />} />
-      <Route path="/crowdfunding" element={<RoleDispatcher adminComponent={SA_Crowdfunding} publicComponent={Public_Crowdfunding} />} />
-      <Route path="/reports" element={
-        <ProtectedRoute role="super_admin">
-          <Suspense fallback={<Preloader />}>
-            <SA_Reports />
-          </Suspense>
-        </ProtectedRoute>
-      } />
+      {/* Direct Public Website Pages */}
+      <Route path="/projects" element={wrapSuspense(Public_Projects)} />
+      <Route path="/events" element={wrapSuspense(Public_Events)} />
+      <Route path="/crowdfunding" element={wrapSuspense(Public_Crowdfunding)} />
 
-      {/* Login Dispatcher */}
+      {/* Login Page */}
       <Route path="/login" element={wrapSuspense(Public_Login)} />
 
       {/* Website Public Routes */}
       {WebsiteRoutes()}
 
       {/* Dashboards Routes */}
-      {filteredSuperAdminRoutes}
+      {SuperAdminRoutes()}
       {AdminRoutes()}
       {MemberRoutes()}
 

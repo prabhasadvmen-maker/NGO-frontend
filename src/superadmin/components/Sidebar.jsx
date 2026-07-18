@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Menu, X, LayoutDashboard, Building2, GitBranch, Layers,
@@ -38,10 +38,10 @@ const NAV_GROUPS = [
   {
     label: 'Operations',
     items: [
-      { path: '/donations',    label: 'Donations',    icon: HandHeart },
-      { path: '/projects',     label: 'Projects',     icon: FolderKanban },
-      { path: '/events',       label: 'Events',       icon: CalendarDays },
-      { path: '/crowdfunding', label: 'Crowdfunding', icon: Megaphone },
+      { path: '/donations',              label: 'Donations',    icon: HandHeart },
+      { path: '/dashboard/projects',     label: 'Projects',     icon: FolderKanban },
+      { path: '/dashboard/events',       label: 'Events',       icon: CalendarDays },
+      { path: '/dashboard/crowdfunding', label: 'Crowdfunding', icon: Megaphone },
     ],
   },
   {

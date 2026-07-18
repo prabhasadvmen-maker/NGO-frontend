@@ -68,15 +68,15 @@ export const NewsPage = () => {
         </div>
 
         {/* Category Filters */}
-        <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-wrap gap-2 text-left">
+        <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-wrap gap-4 text-left">
           {['All', 'Education', 'Healthcare', 'Empowerment'].map(c => (
             <button
               key={c}
               onClick={() => setCategory(c)}
-              className={`px-5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer border ${
+              className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all border-0 cursor-pointer shadow-[3px_3px_8px_#e5e4e1,-3px_-3px_8px_#ffffff] ${
                 category === c 
-                  ? 'bg-[#1B5E20] text-white border-[#1B5E20]' 
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+                  ? 'bg-[#1B5E20] text-white shadow-none' 
+                  : 'bg-[#F8F7F4] text-gray-500 hover:text-[#0A1628]'
               }`}
             >
               {c}
@@ -98,18 +98,17 @@ export const NewsPage = () => {
             filteredList.map((art) => (
               <div 
                 key={art._id}
-                className="rounded-2xl overflow-hidden bg-white border border-gray-100 flex flex-col justify-between shadow-lg hover:shadow-xl transition-all duration-300 group text-left"
-                style={{ boxShadow: '6px 6px 12px #DCDCDC, -6px -6px 12px #FFFFFF' }}
+                className="rounded-3xl overflow-hidden bg-[#F8F7F4] flex flex-col justify-between transition-all duration-500 hover:-translate-y-1.5 group text-left border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] hover:shadow-[12px_12px_28px_#e1e0dd,-12px_-12px_28px_#ffffff]"
               >
                 {/* Thumbnail */}
-                <div className="relative h-[200px] overflow-hidden">
+                <div className="relative h-[200px] overflow-hidden bg-gray-150">
                   <img 
                     src={art.coverImageUrl || art.coverImage || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600'} 
                     alt={art.title} 
-                    className="w-full h-full object-cover group-hover:scale-102 transition-transform"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <span className="absolute top-4 left-4 px-2.5 py-0.5 bg-[#1B5E20] text-white text-[8px] font-bold uppercase tracking-widest rounded-full">
+                  <span className="absolute top-4 left-4 px-2.5 py-0.5 bg-[#1B5E20]/90 text-white text-[8px] font-bold uppercase tracking-widest rounded-full shadow-md">
                     {art.category}
                   </span>
                 </div>
@@ -135,13 +134,15 @@ export const NewsPage = () => {
                     </p>
                   </div>
 
-                  <Link 
-                    to={`/news/${art._id}`}
-                    className="inline-flex items-center gap-1 text-[10px] font-extrabold text-[#0A1628] hover:text-[#1B5E20] transition-colors"
-                  >
-                    <span>Read Full Story</span>
-                    <ArrowRight size={12} />
-                  </Link>
+                  <div className="pt-4 border-t border-gray-150">
+                    <Link 
+                      to={`/news/${art._id}`}
+                      className="inline-flex items-center gap-1 text-[10px] font-extrabold text-[#0A1628] hover:text-[#1B5E20] transition-colors"
+                    >
+                      <span>Read Full Story</span>
+                      <ArrowRight size={12} />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))

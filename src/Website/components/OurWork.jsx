@@ -50,7 +50,7 @@ const CauseCard = ({ icon: Icon, title, desc, impact, isLarge }) => {
 
       {/* Hover Clip-path overlay that slides up */}
       <div 
-        className="absolute inset-0 bg-[#1B5E20] p-8 flex flex-col justify-between transition-all duration-500 ease-in-out pointer-events-none"
+        className="absolute inset-0 bg-[#1B5E20] p-8 flex flex-col justify-between transition-all duration-500 ease-in-out pointer-events-none z-20"
         style={{
           clipPath: hovered ? 'circle(150% at 50% 100%)' : 'circle(0% at 50% 100%)',
           transition: 'clip-path 0.6s ease-in-out'
@@ -85,7 +85,7 @@ export const OurWork = ({ pageMode = false }) => {
   return (
     <section 
       ref={ref}
-      className={pageMode ? `relative py-8 bg-transparent reveal ${isVisible ? 'visible' : ''}` : `relative py-32 bg-[#F8F7F4] reveal ${isVisible ? 'visible' : ''}`}
+      className={pageMode ? `relative py-8 bg-transparent reveal ${isVisible ? 'visible' : ''}` : `relative pt-14 pb-28 bg-[#F8F7F4] reveal ${isVisible ? 'visible' : ''}`}
     >
       <div className="max-w-7xl mx-auto px-6 space-y-12">
         {/* Title Header */}

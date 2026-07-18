@@ -66,6 +66,12 @@ export const ContactPage = () => {
     }
   };
 
+  const getCleanMapUrl = (address) => {
+    if (!address) return '';
+    const clean = address.replace(/[()]/g, '').trim();
+    return `https://maps.google.com/maps?q=${encodeURIComponent(clean)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+  };
+
   const defaultAddress = ngoProfile?.address || 'ADVMEN Technologies Pvt. Ltd., Jharsa Village, Sector 38, Gurugram (Gurgaon), Haryana, India';
   const defaultPhone = ngoProfile?.phone || '+91 83750 08009';
   const defaultEmail = ngoProfile?.email || 'hello@advmen.com';
@@ -89,107 +95,8 @@ export const ContactPage = () => {
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-16">
           
-          {/* Left Column: Contact details & Integrated Map */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="space-y-6">
-              <h2 className="font-display font-black text-2xl sm:text-3xl text-[#0A1628]">Contact Information</h2>
-              <p className="text-xs text-gray-500 font-semibold leading-relaxed">
-                Have questions about our programs, audit reports, or want to partner with us? Leave a message, and our local branch team will respond shortly.
-              </p>
-
-              <div className="space-y-4">
-                {/* Helpline Card */}
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
-                  <div className="p-3 bg-[#1B5E20]/10 text-[#1B5E20] rounded-xl flex-shrink-0">
-                    <Phone size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Call Branch Helpline</p>
-                    <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultPhone}</p>
-                  </div>
-                </div>
-
-                {/* Email Card */}
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
-                  <div className="p-3 bg-[#2196F3]/10 text-[#2196F3] rounded-xl flex-shrink-0">
-                    <Mail size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Official Email Desk</p>
-                    <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultEmail}</p>
-                  </div>
-                </div>
-
-                {/* Address Card */}
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
-                  <div className="p-3 bg-[#9C27B0]/10 text-[#9C27B0] rounded-xl flex-shrink-0">
-                    <MapPin size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Headquarters Office</p>
-                    <p className="text-xs font-bold text-[#0A1628] mt-0.5 leading-relaxed">{defaultAddress}</p>
-                  </div>
-                </div>
-
-                {/* Timings Card */}
-                <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
-                  <div className="p-3 bg-[#F97316]/10 text-[#F97316] rounded-xl flex-shrink-0">
-                    <Clock size={18} />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Office Timings</p>
-                    <p className="text-xs font-bold text-[#0A1628] mt-0.5">Mon-Sat, 9AM - 6PM IST</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Integrated Industrial Map */}
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left">Our Location Map</h4>
-              <div className="rounded-3xl overflow-hidden border border-gray-200 shadow-md h-[280px] relative bg-gray-100">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3508.835438883204!2d77.0396825!3d28.4393668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d18721c56f2a3%3A0xe1043329f622eb1f!2sADVMEN%20Technologies%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                  width="100%" 
-                  height="100%" 
-                  className="absolute inset-0 w-full h-full border-0"
-                  allowFullScreen="" 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="HQ Map Location"
-                />
-              </div>
-            </div>
-
-            {/* Social Links */}
-            <div className="space-y-3 pt-6 border-t border-gray-200/50">
-              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Connect with Socials</h4>
-              <div className="flex items-center gap-3">
-                {[
-                  { icon: Facebook, href: 'https://facebook.com' },
-                  { icon: Twitter, href: 'https://twitter.com' },
-                  { icon: Instagram, href: 'https://instagram.com' },
-                  { icon: Linkedin, href: 'https://linkedin.com' }
-                ].map((soc, i) => {
-                  const Icon = soc.icon;
-                  return (
-                    <a
-                      key={i}
-                      href={soc.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-[#1B5E20] hover:text-white hover:border-[#1B5E20] transition-all"
-                    >
-                      <Icon size={16} />
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Enquiry Form */}
-          <div className="lg:col-span-7 p-8 sm:p-10 rounded-3xl bg-white border border-gray-100 flex flex-col justify-between shadow-lg">
+          {/* Left Column: Enquiry Form */}
+          <div className="lg:col-span-7 p-8 sm:p-10 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff]">
             <form onSubmit={handleSubmit} className="space-y-6 text-left">
               <div className="pb-2 border-b border-gray-50">
                 <h3 className="font-display font-black text-xl text-[#0A1628]">Quick Enquiry Desk</h3>
@@ -340,6 +247,109 @@ export const ContactPage = () => {
                 <Send size={14} />
               </button>
             </form>
+          </div>
+
+          {/* Right Column: Contact details & Integrated Map */}
+          <div className="lg:col-span-5 space-y-8">
+            
+            {/* Info Card Container */}
+            <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] text-left space-y-6">
+              <h2 className="font-display font-black text-2xl text-[#0A1628]">Contact Information</h2>
+              
+              <div className="space-y-4">
+                {/* Helpline Card */}
+                <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="p-3 bg-[#1B5E20]/10 text-[#1B5E20] rounded-xl flex-shrink-0">
+                    <Phone size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Call Branch Helpline</p>
+                    <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultPhone}</p>
+                  </div>
+                </div>
+
+                {/* Email Card */}
+                <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="p-3 bg-[#2196F3]/10 text-[#2196F3] rounded-xl flex-shrink-0">
+                    <Mail size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Official Email Desk</p>
+                    <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultEmail}</p>
+                  </div>
+                </div>
+
+                {/* Address Card */}
+                <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="p-3 bg-[#9C27B0]/10 text-[#9C27B0] rounded-xl flex-shrink-0">
+                    <MapPin size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Headquarters Office</p>
+                    <p className="text-xs font-bold text-[#0A1628] mt-0.5 leading-relaxed">{defaultAddress}</p>
+                  </div>
+                </div>
+
+                {/* Timings Card */}
+                <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="p-3 bg-[#F97316]/10 text-[#F97316] rounded-xl flex-shrink-0">
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Office Timings</p>
+                    <p className="text-xs font-bold text-[#0A1628] mt-0.5">Mon-Sat, 9AM - 6PM IST</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Integrated Industrial Map */}
+            <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] text-left space-y-4">
+              <div>
+                <h4 className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest text-left">Our Location Map</h4>
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Find us on Google Maps</p>
+              </div>
+              <div className="p-2 bg-[#F8F7F4] rounded-3xl shadow-[inset_3px_3px_8px_#e5e4e1,inset_-3px_-3px_8px_#ffffff] h-[280px] relative">
+                <div className="w-full h-full rounded-2xl overflow-hidden relative bg-gray-100">
+                  <iframe 
+                    src={getCleanMapUrl(defaultAddress)}
+                    width="100%" 
+                    height="100%" 
+                    className="absolute inset-0 w-full h-full border-0"
+                    allowFullScreen="" 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="HQ Map Location"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] text-left space-y-3">
+              <h4 className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest">Connect with Socials</h4>
+              <div className="flex items-center gap-3">
+                {[
+                  { icon: Facebook, href: 'https://facebook.com' },
+                  { icon: Twitter, href: 'https://twitter.com' },
+                  { icon: Instagram, href: 'https://instagram.com' },
+                  { icon: Linkedin, href: 'https://linkedin.com' }
+                ].map((soc, i) => {
+                  const Icon = soc.icon;
+                  return (
+                    <a
+                      key={i}
+                      href={soc.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full bg-[#F8F7F4] shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] flex items-center justify-center text-gray-400 hover:bg-[#1B5E20] hover:text-white transition-all"
+                    >
+                      <Icon size={16} />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
         </div>

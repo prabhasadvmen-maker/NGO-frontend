@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 import API_BASE_URL from '../../shared/apiConfig';
 import useScrollAnimation from '../hooks/useScrollAnimation';
+import usePublicAPI from '../hooks/usePublicAPI';
 
 export const ContactSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const { data: ngoProfile } = usePublicAPI('/api/ngo-profile');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -62,74 +64,30 @@ export const ContactSection = () => {
     }
   };
 
+  const getCleanMapUrl = (address) => {
+    if (!address) return '';
+    const clean = address.replace(/[()]/g, '').trim();
+    return `https://maps.google.com/maps?q=${encodeURIComponent(clean)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+  };
+
+  const defaultAddress = ngoProfile?.address || 'Savitram Foundation Tower, Gomti Nagar, Lucknow, India';
+  const defaultPhone = ngoProfile?.phone || '+91 99999 88888';
+  const defaultEmail = ngoProfile?.email || 'contact@savitram.org';
+
   return (
     <section 
       ref={ref}
       className={`relative py-32 bg-[#F8F7F4] reveal ${isVisible ? 'visible' : ''}`}
       id="contact-section"
     >
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
         
-        {/* Left Column: Contact details & map placeholder */}
-        <div className="lg:col-span-5 space-y-8 text-left">
-          <div className="inline-block relative">
-            <span className="text-[10px] font-bold tracking-[0.25em] text-[#1B5E20] uppercase">
-              Get in Touch
-            </span>
-            <span className="absolute bottom-[-4px] left-0 w-2/3 h-[2px] bg-[#1B5E20] rounded-full" />
-          </div>
-
-          <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-[#0A1628] leading-tight">
-            We'd Love to <br />
-            <span className="text-[#1B5E20]">Hear From You.</span>
-          </h2>
-
-          <p className="text-xs text-[#64748B] font-semibold leading-relaxed">
-            Have questions about our programs, audit reports, or want to partner with us? Leave a message, and our local branch team will respond shortly.
-          </p>
-
-          {/* Info cards (Neomorphic soft shapes) */}
-          <div className="space-y-4 pt-4">
-            <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-50 shadow-sm">
-              <div className="p-3 bg-[#1B5E20]/10 text-[#1B5E20] rounded-xl flex-shrink-0">
-                <Phone size={18} />
-              </div>
-              <div>
-                <p className="text-[9px] font-bold text-gray-400 uppercase">Call Branch Helpline</p>
-                <p className="text-xs font-bold text-[#0A1628] mt-0.5">+91 99999 88888</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-50 shadow-sm">
-              <div className="p-3 bg-[#2196F3]/10 text-[#2196F3] rounded-xl flex-shrink-0">
-                <Mail size={18} />
-              </div>
-              <div>
-                <p className="text-[9px] font-bold text-gray-400 uppercase">Official Email Desk</p>
-                <p className="text-xs font-bold text-[#0A1628] mt-0.5">contact@savitram.org</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-center p-4 rounded-xl bg-white border border-gray-50 shadow-sm">
-              <div className="p-3 bg-[#9C27B0]/10 text-[#9C27B0] rounded-xl flex-shrink-0">
-                <MapPin size={18} />
-              </div>
-              <div>
-                <p className="text-[9px] font-bold text-gray-400 uppercase">Headquarters Office</p>
-                <p className="text-xs font-bold text-[#0A1628] mt-0.5">Savitram Foundation Tower, Gomti Nagar, Lucknow, India</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Dynamic Form (Liquid Glass + Soft borders) */}
-        <div className="lg:col-span-7 p-8 rounded-3xl bg-white border border-gray-100 flex flex-col justify-between"
-          style={{ boxShadow: '8px 8px 16px #D0D0D0, -8px -8px 16px #FFFFFF' }}>
-          
+        {/* Left Column: Inquiry Form Card */}
+        <div className="lg:col-span-7 p-8 sm:p-10 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] text-left">
           <div className="pb-4 border-b border-gray-100 mb-6 flex items-center justify-between">
             <div>
               <h3 className="text-base font-bold text-[#0A1628]">Quick Inquiry Form</h3>
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Send an direct message to our directors</p>
+              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Send a direct message to our directors</p>
             </div>
             <Clock size={16} className="text-gray-400 animate-spin-slow" />
           </div>
@@ -262,7 +220,7 @@ export const ContactSection = () => {
                 onBlur={() => handleBlur('message')}
                 onChange={handleChange}
                 required
-                rows={4}
+                rows={5}
                 className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
               />
               <label 
@@ -287,6 +245,77 @@ export const ContactSection = () => {
               <Send size={14} />
             </button>
           </form>
+        </div>
+
+        {/* Right Column: Contact details & map placeholder */}
+        <div className="lg:col-span-5 space-y-8 text-left">
+          
+          {/* Info Card Container */}
+          <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] space-y-6">
+            <div>
+              <span className="text-[10px] font-bold tracking-[0.25em] text-[#1B5E20] uppercase">
+                Get in Touch
+              </span>
+              <h2 className="font-display font-extrabold text-2xl text-[#0A1628] leading-tight mt-1">
+                Contact Information
+              </h2>
+            </div>
+
+            {/* Info cards stack */}
+            <div className="space-y-4 pt-2">
+              <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                <div className="p-3 bg-[#1B5E20]/10 text-[#1B5E20] rounded-xl flex-shrink-0">
+                  <Phone size={18} />
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase">Call Branch Helpline</p>
+                  <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultPhone}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                <div className="p-3 bg-[#2196F3]/10 text-[#2196F3] rounded-xl flex-shrink-0">
+                  <Mail size={18} />
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase">Official Email Desk</p>
+                  <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultEmail}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 items-center p-4 rounded-2xl bg-[#F8F7F4] border-0 shadow-[4px_4px_10px_#e5e4e1,-4px_-4px_10px_#ffffff] hover:shadow-[6px_6px_14px_#e1e0dd,-6px_-6px_14px_#ffffff] hover:-translate-y-0.5 transition-all duration-300">
+                <div className="p-3 bg-[#9C27B0]/10 text-[#9C27B0] rounded-xl flex-shrink-0">
+                  <MapPin size={18} />
+                </div>
+                <div>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase">Headquarters Office</p>
+                  <p className="text-xs font-bold text-[#0A1628] mt-0.5 leading-relaxed">{defaultAddress}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Integrated Location Map */}
+          <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] space-y-4">
+            <div>
+              <h4 className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest text-left">Our Location Map</h4>
+              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">Find us on Google Maps</p>
+            </div>
+            <div className="p-2 bg-[#F8F7F4] rounded-3xl shadow-[inset_3px_3px_8px_#e5e4e1,inset_-3px_-3px_8px_#ffffff] h-[280px] relative">
+              <div className="w-full h-full rounded-2xl overflow-hidden relative bg-gray-100">
+                <iframe 
+                  src={getCleanMapUrl(defaultAddress)}
+                  width="100%" 
+                  height="100%" 
+                  className="absolute inset-0 w-full h-full border-0"
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="HQ Map Location"
+                />
+              </div>
+            </div>
+          </div>
 
         </div>
 

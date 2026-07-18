@@ -14,7 +14,7 @@ export const AboutSection = () => {
   return (
     <section 
       ref={ref}
-      className={`relative py-32 overflow-hidden bg-white reveal ${isVisible ? 'visible' : ''}`}
+      className={`relative pt-28 pb-14 overflow-hidden bg-white reveal ${isVisible ? 'visible' : ''}`}
     >
       {/* Background large decorative text */}
       <div className="absolute left-[5%] top-1/2 -translate-y-1/2 select-none text-[10vw] font-black text-gray-500/5 font-display leading-none z-0">

@@ -49,7 +49,7 @@ export const NewsSection = () => {
   return (
     <section 
       ref={ref}
-      className={`relative py-32 bg-[#F8F7F4] reveal ${isVisible ? 'visible' : ''}`}
+      className={`relative pt-32 pb-14 bg-[#F8F7F4] reveal ${isVisible ? 'visible' : ''}`}
     >
       <div className="max-w-7xl mx-auto px-6 space-y-12">
         
@@ -87,8 +87,7 @@ export const NewsSection = () => {
               <div className="w-full h-[450px] bg-gray-100 animate-pulse rounded-2xl" />
             ) : (
               featured && (
-                <div className="rounded-2xl overflow-hidden bg-white border border-gray-100 flex flex-col justify-between shadow-xl transition-all duration-300 hover:shadow-2xl group text-left"
-                  style={{ boxShadow: '8px 8px 16px #D0D0D0, -8px -8px 16px #FFFFFF' }}>
+                <div className="rounded-3xl overflow-hidden bg-[#F8F7F4] flex flex-col justify-between transition-all duration-500 hover:-translate-y-1.5 group text-left border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] hover:shadow-[12px_12px_28px_#e1e0dd,-12px_-12px_28px_#ffffff]">
                   {/* Big Image */}
                   <div className="relative h-[280px] overflow-hidden">
                     <img 
@@ -97,7 +96,7 @@ export const NewsSection = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
-                    <span className="absolute top-4 left-4 px-3 py-1 bg-[#1B5E20] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-md">
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-[#1B5E20]/90 text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-md">
                       {featured.category}
                     </span>
                   </div>
@@ -123,7 +122,7 @@ export const NewsSection = () => {
                       </p>
                     </div>
 
-                    <div className="pt-6 mt-4 border-t border-gray-50">
+                    <div className="pt-6 mt-4 border-t border-gray-150">
                       <Link 
                         to={`/news/${featured._id}`}
                         className="inline-flex items-center gap-2 text-xs font-extrabold text-[#0A1628] hover:text-[#1B5E20] transition-colors"
@@ -139,7 +138,7 @@ export const NewsSection = () => {
           </div>
 
           {/* Right Column: Smaller article stack */}
-          <div className="lg:col-span-5 flex flex-col gap-6 justify-between">
+          <div className="lg:col-span-5 flex flex-col gap-6 justify-center">
             {loading ? (
               [1, 2].map((n) => (
                 <div key={n} className="h-[210px] bg-gray-100 animate-pulse rounded-2xl" />
@@ -148,22 +147,21 @@ export const NewsSection = () => {
               sideArticles.map((art) => (
                 <div 
                   key={art._id}
-                  className="rounded-2xl p-5 bg-white border border-gray-100 flex gap-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 text-left group"
-                  style={{ boxShadow: '6px 6px 12px #DCDCDC, -6px -6px 12px #FFFFFF' }}
+                  className="rounded-3xl p-5 bg-[#F8F7F4] flex gap-5 transition-all duration-500 hover:-translate-y-1.5 text-left group border-0 shadow-[6px_6px_16px_#e5e4e1,-6px_-6px_16px_#ffffff] hover:shadow-[10px_10px_24px_#e1e0dd,-10px_-10px_24px_#ffffff]"
                 >
                   {/* Small Image */}
-                  <div className="w-[120px] h-[120px] rounded-xl overflow-hidden flex-shrink-0">
+                  <div className="w-[140px] h-[140px] rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100">
                     <img 
                       src={art.coverImageUrl || art.coverImage || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600'} 
                       alt={art.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
                   </div>
 
                   {/* Details */}
-                  <div className="flex flex-col justify-between flex-1 py-1">
-                    <div className="space-y-1">
+                  <div className="flex flex-col justify-between flex-1 py-1 text-left">
+                    <div className="space-y-1.5">
                       <span className="text-[8px] font-black uppercase text-[#1B5E20] tracking-widest">{art.category}</span>
                       <h4 className="font-display font-extrabold text-sm text-[#0A1628] leading-snug group-hover:text-[#1B5E20] transition-colors line-clamp-2">
                         {art.title}
@@ -172,11 +170,14 @@ export const NewsSection = () => {
                         <Calendar size={10} />
                         {formatDate(art.createdAt)}
                       </p>
+                      <p className="text-[11px] text-[#64748B] font-medium leading-relaxed line-clamp-2 mt-1.5">
+                        {art.content}
+                      </p>
                     </div>
 
                     <Link 
                       to={`/news/${art._id}`}
-                      className="text-[10px] font-extrabold text-[#0A1628] hover:text-[#1B5E20] transition-colors mt-3"
+                      className="text-[10px] font-extrabold text-[#0A1628] hover:text-[#1B5E20] transition-colors mt-3 block"
                     >
                       Read More
                     </Link>
