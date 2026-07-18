@@ -140,58 +140,46 @@ const AddMember = () => {
     return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
 
-  // Upload Photo Flow (XHR for progress mapping)
+  // Upload Photo Flow via Backend (avoids CORS issues)
   const uploadPhoto = (file, isEdit = false) => {
     return new Promise((resolve, reject) => {
-      const fileName = file.name;
-      const contentType = file.type;
+      const formData = new FormData();
+      formData.append('photo', file);
 
-      // GET Presigned URL from Backend
-      fetch(`${API_BASE}/upload-url?fileName=${encodeURIComponent(fileName)}&contentType=${encodeURIComponent(contentType)}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (!data.success) {
-            throw new Error(data.message || 'Failed to obtain upload URL');
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `${API_BASE}/upload`);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          if (isEdit) {
+            setEditProgress(percent);
+          } else {
+            setUploadProgress(percent);
           }
+        }
+      };
 
-          const { uploadUrl, key } = data;
-
-          // Validate uploadUrl host to prevent open redirect / SSRF vulnerability
-          const parsedUrl = new URL(uploadUrl);
-          if (!parsedUrl.hostname.endsWith('r2.cloudflarestorage.com')) {
-            throw new Error('Security Error: Invalid upload destination domain');
-          }
-
-          // PUT File directly to Cloudflare R2
-          const xhr = new XMLHttpRequest();
-          xhr.open('PUT', uploadUrl);
-          xhr.setRequestHeader('Content-Type', contentType);
-
-          xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable) {
-              const percent = Math.round((e.loaded / e.total) * 100);
-              if (isEdit) {
-                setEditProgress(percent);
-              } else {
-                setUploadProgress(percent);
-              }
-            }
-          };
-
-          xhr.onload = () => {
-            if (xhr.status === 200) {
-              resolve(key);
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.success && data.key) {
+              resolve(data.key);
             } else {
-              reject(new Error('S3/R2 direct upload failed'));
+              reject(new Error(data.message || 'Upload failed'));
             }
-          };
+          } catch (e) {
+            reject(new Error('Invalid server response'));
+          }
+        } else {
+          reject(new Error(`Upload failed with status ${xhr.status}`));
+        }
+      };
 
-          xhr.onerror = () => reject(new Error('Network upload failed'));
-          xhr.send(file);
-        })
-        .catch(err => reject(err));
+      xhr.onerror = () => reject(new Error('Network upload failed'));
+      xhr.send(formData);
     });
   };
 
@@ -665,11 +653,8 @@ const AddMember = () => {
                                 });
                                 const data = await res.json();
                                 if (res.ok && data.success) {
-                                  const memberPortalUrl = `${window.location.origin.replace(window.location.hostname, 'localhost')}/member/dashboard?session=${data.token}`;
-                                  // For production, use the actual frontend URL
-                                  const prodUrl = `https://ngo-frontend-blue.vercel.app/member/dashboard?session=${data.token}`;
-                                  const finalUrl = window.location.hostname === 'localhost' ? memberPortalUrl : prodUrl;
-                                  window.open(finalUrl, '_blank');
+                                  const memberPortalUrl = `${window.location.origin}/member/dashboard?session=${data.token}`;
+                                  window.open(memberPortalUrl, '_blank');
                                   toast.success(`Logged in as ${member.fullName}`);
                                 } else {
                                   toast.error(data.message || 'Failed to login as member');
