@@ -29,6 +29,7 @@ const MembersList = () => {
   const [activeDropdownId, setActiveDropdownId] = useState(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [viewingMember, setViewingMember] = useState(null);
+  const [loggingInMemberId, setLoggingInMemberId] = useState(null);
 
   const fetchMembers = useCallback(async () => {
     if (!token) return;
@@ -110,6 +111,35 @@ const MembersList = () => {
     } catch (err) {
       console.error(err);
       toast.error('Server error deleting member');
+    }
+  };
+
+  const handleLoginAsMember = async (memberId) => {
+    if (!token) {
+      toast.error('Not authenticated');
+      return;
+    }
+
+    setLoggingInMemberId(memberId);
+    try {
+      const res = await fetch(`${API_BASE}/${memberId}/login-as`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      
+      if (data.success && data.token) {
+        const memberDashboardUrl = `https://savitramfoundation.org/member/dashboard?session=${data.token}`;
+        window.open(memberDashboardUrl, '_blank');
+        toast.success('Opening member portal...');
+      } else {
+        toast.error(data.message || 'Failed to generate login link');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Error generating login link');
+    } finally {
+      setLoggingInMemberId(null);
     }
   };
 
@@ -261,9 +291,13 @@ const MembersList = () => {
                       </td>
                       <td className="px-4 py-3.5">
                         {member.email ? (
-                          <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-700 border border-green-200/50">
-                            ✓ Enabled
-                          </span>
+                          <button
+                            onClick={() => handleLoginAsMember(member._id)}
+                            disabled={loggingInMemberId === member._id}
+                            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-green-100 text-green-700 border border-green-200/50 hover:bg-green-200 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {loggingInMemberId === member._id ? 'Loading...' : 'Login'}
+                          </button>
                         ) : (
                           <span className="text-gray-400 text-xs italic">No credentials</span>
                         )}
