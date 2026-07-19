@@ -145,14 +145,14 @@ export const HeroSection = () => {
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Link
               to="/crowdfunding"
-              className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#F97316] text-xs font-extrabold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-orange-500/20"
+              className="btn-primary flex items-center gap-2"
             >
               <span>Donate Now</span>
               <ArrowRight size={14} />
             </Link>
             <Link
               to="/membership"
-              className="flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-white text-xs font-extrabold text-white transition-all duration-300 hover:bg-white hover:text-[#0A1628] bg-transparent"
+              className="btn-secondary flex items-center gap-2"
             >
               <span>Become a Member</span>
             </Link>

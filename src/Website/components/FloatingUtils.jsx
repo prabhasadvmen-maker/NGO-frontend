@@ -50,11 +50,11 @@ export const FloatingUtils = () => {
       const json = await res.json();
       const reply = json.success && json.data?.reply?.trim()
         ? json.data.reply
-        : 'Sorry, I am having trouble responding right now. Please call us at +91 83750 08009.';
+        : 'Sorry, I am having trouble responding right now. Please call us at +91 88600 36008.';
       setMessages(prev => [...prev, { sender: 'bot', text: reply }]);
     } catch (err) {
       console.error('Chat error:', err);
-      setMessages(prev => [...prev, { sender: 'bot', text: 'Network error. Please try again or contact us at +91 83750 08009.' }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: 'Network error. Please try again or contact us at +91 88600 36008.' }]);
     } finally {
       setBotTyping(false);
     }
@@ -63,17 +63,15 @@ export const FloatingUtils = () => {
   return (
     <>
       {/* Back to Top Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={scrollTop}
-          className={`w-12 h-12 rounded-full bg-[#0A1628] text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 cursor-pointer border border-white/10 ${
-            showScroll ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
-          }`}
-          aria-label="Scroll to top"
-        >
-          <ArrowUp size={20} />
-        </button>
-      </div>
+      <button
+        onClick={scrollTop}
+        className={`back-to-top-btn border-0 ${
+          showScroll ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+        }`}
+        aria-label="Scroll to top"
+      >
+        <ArrowUp size={20} />
+      </button>
 
       {/* Left Side: Expandable Chat Widget */}
       <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3">
@@ -95,7 +93,7 @@ export const FloatingUtils = () => {
           {/* WhatsApp */}
           <div className="px-3 py-2 rounded-xl bg-[#0A1628] border border-[#25D366]/40 shadow-lg">
             <a
-              href="https://wa.me/918375008009"
+              href="https://wa.me/918860036008"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 text-white text-xs font-bold hover:text-[#25D366] transition-all cursor-pointer w-full"
@@ -108,7 +106,7 @@ export const FloatingUtils = () => {
           {/* Call Us */}
           <div className="px-3 py-2 rounded-xl bg-[#0A1628] border border-[#2196F3]/40 shadow-lg">
             <a
-              href="tel:+918375008009"
+              href="tel:+918860036008"
               className="flex items-center gap-3 text-white text-xs font-bold hover:text-[#2196F3] transition-all cursor-pointer w-full"
             >
               <Phone size={16} className="text-[#2196F3]" />

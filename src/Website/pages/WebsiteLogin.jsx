@@ -139,7 +139,7 @@ export const WebsiteLogin = () => {
                 to="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert('Password reset feature coming soon. Please contact support at +91 83750 08009');
+                  alert('Password reset feature coming soon. Please contact support at +91 88600 36008');
                 }}
                 className="text-[10px] font-bold text-[#1B5E20] hover:text-[#0A1628] transition-colors uppercase tracking-wider"
               >

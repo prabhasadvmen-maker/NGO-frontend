@@ -70,8 +70,8 @@ export const ContactSection = () => {
     return `https://maps.google.com/maps?q=${encodeURIComponent(clean)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
   };
 
-  const defaultAddress = ngoProfile?.address || 'Savitram Foundation Tower, Gomti Nagar, Lucknow, India';
-  const defaultPhone = ngoProfile?.phone || '+91 99999 88888';
+  const defaultAddress = ngoProfile?.address || 'A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR, Noida, Noida, Gautam Buddha Nagar - 201301, Uttar Pradesh';
+  const defaultPhone = ngoProfile?.phone || '+91 88600 36008';
   const defaultEmail = ngoProfile?.email || 'contact@savitram.org';
 
   return (
@@ -120,13 +120,13 @@ export const ContactSection = () => {
                   onBlur={() => handleBlur('name')}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 outline-none input-focus-polish font-semibold"
                 />
                 <label 
                   htmlFor="name"
                   className={`absolute left-4 top-3 text-xs font-bold tracking-wide transition-all duration-300 pointer-events-none ${
                     focused.name || formData.name 
-                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-white px-1' 
+                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-[#F8F7F4] px-1' 
                       : 'text-gray-400'
                   }`}
                 >
@@ -145,13 +145,13 @@ export const ContactSection = () => {
                   onBlur={() => handleBlur('email')}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 outline-none input-focus-polish font-semibold"
                 />
                 <label 
                   htmlFor="email"
                   className={`absolute left-4 top-3 text-xs font-bold tracking-wide transition-all duration-300 pointer-events-none ${
                     focused.email || formData.email 
-                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-white px-1' 
+                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-[#F8F7F4] px-1' 
                       : 'text-gray-400'
                   }`}
                 >
@@ -171,13 +171,13 @@ export const ContactSection = () => {
                   onFocus={() => handleFocus('phone')}
                   onBlur={() => handleBlur('phone')}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 outline-none input-focus-polish font-semibold"
                 />
                 <label 
                   htmlFor="phone"
                   className={`absolute left-4 top-3 text-xs font-bold tracking-wide transition-all duration-300 pointer-events-none ${
                     focused.phone || formData.phone 
-                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-white px-1' 
+                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-[#F8F7F4] px-1' 
                       : 'text-gray-400'
                   }`}
                 >
@@ -195,13 +195,13 @@ export const ContactSection = () => {
                   onFocus={() => handleFocus('subject')}
                   onBlur={() => handleBlur('subject')}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 outline-none input-focus-polish font-semibold"
                 />
                 <label 
                   htmlFor="subject"
                   className={`absolute left-4 top-3 text-xs font-bold tracking-wide transition-all duration-300 pointer-events-none ${
                     focused.subject || formData.subject 
-                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-white px-1' 
+                      ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-[#F8F7F4] px-1' 
                       : 'text-gray-400'
                   }`}
                 >
@@ -221,13 +221,13 @@ export const ContactSection = () => {
                 onChange={handleChange}
                 required
                 rows={5}
-                className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 focus:outline-none focus:border-[#1B5E20] focus:ring-2 focus:ring-[#1B5E20]/20 transition-all font-semibold"
+                className="w-full px-4 py-3 rounded-xl border border-gray-250 bg-transparent text-xs text-gray-800 outline-none input-focus-polish font-semibold"
               />
               <label 
                 htmlFor="message"
                 className={`absolute left-4 top-3 text-xs font-bold tracking-wide transition-all duration-300 pointer-events-none ${
                   focused.message || formData.message 
-                    ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-white px-1' 
+                    ? 'transform -translate-y-6 text-[10px] text-[#1B5E20] bg-[#F8F7F4] px-1' 
                     : 'text-gray-400'
                 }`}
               >
@@ -239,7 +239,7 @@ export const ContactSection = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-xl bg-[#1B5E20] text-xs font-extrabold text-white flex items-center justify-center gap-2 hover:scale-[1.01] hover:brightness-110 shadow-md shadow-emerald-800/10 cursor-pointer disabled:opacity-50 transition-all"
+              className="w-full btn-primary border-0"
             >
               <span>{loading ? 'Sending Message...' : 'Send Message'}</span>
               <Send size={14} />

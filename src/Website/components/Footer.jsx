@@ -101,12 +101,12 @@ export const Footer = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={subscribed ? "Subscribed!" : "your@email.com"}
                 disabled={subscribed || submitting}
-                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#1B5E20] font-semibold disabled:opacity-75"
+                className="flex-1 px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white placeholder-white/30 outline-none input-focus-polish font-semibold disabled:opacity-75"
               />
               <button 
                 type="submit"
                 disabled={submitting || subscribed}
-                className="px-3 py-2 rounded-lg bg-[#1B5E20] text-white text-xs font-bold hover:brightness-110 transition-all cursor-pointer border-0 disabled:opacity-55"
+                className="px-4 py-2.5 rounded-lg bg-[#F97316] text-white text-xs font-bold hover:bg-[#ea580c] transition-all cursor-pointer border-0 disabled:opacity-55"
               >
                 {subscribed ? 'Joined' : submitting ? '...' : 'Join'}
               </button>
@@ -127,7 +127,7 @@ export const Footer = () => {
               { label: 'Contact Us', path: '/contact' }
             ].map((l, idx) => (
               <li key={idx}>
-                <Link to={l.path} className="hover:text-white transition-colors duration-200">
+                <Link to={l.path} className="hover:text-white hover:translate-x-1.5 transition-all duration-300 block">
                   {l.label}
                 </Link>
               </li>
@@ -146,7 +146,7 @@ export const Footer = () => {
               { label: 'Internships', path: '/volunteer' }
             ].map((l, idx) => (
               <li key={idx}>
-                <Link to={l.path} className="hover:text-white transition-colors duration-200">
+                <Link to={l.path} className="hover:text-white hover:translate-x-1.5 transition-all duration-300 block">
                   {l.label}
                 </Link>
               </li>
@@ -165,7 +165,7 @@ export const Footer = () => {
               { label: 'Refund Policy', path: '/refund' }
             ].map((l, idx) => (
               <li key={idx}>
-                <Link to={l.path} className="hover:text-white transition-colors duration-200">
+                <Link to={l.path} className="hover:text-white hover:translate-x-1.5 transition-all duration-300 block">
                   {l.label}
                 </Link>
               </li>

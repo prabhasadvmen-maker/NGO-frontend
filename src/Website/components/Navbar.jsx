@@ -22,10 +22,19 @@ export const Navbar = () => {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrollWidth, setScrollWidth] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 80);
+      
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (window.scrollY / totalHeight) * 100;
+        setScrollWidth(progress);
+      } else {
+        setScrollWidth(0);
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -38,14 +47,13 @@ export const Navbar = () => {
 
   const navLinks = [
     { label: 'Home', path: '/' },
-    { label: 'Donate', path: '/donate' },
-    { label: 'Events', path: '/events' },
     { label: 'About Us', path: '/about' },
     { label: 'Our Work', path: '/our-work' },
     { label: 'Projects', path: '/projects' },
-    { label: 'Crowdfunding', path: '/crowdfunding' },
+    { label: 'Events', path: '/events' },
     { label: 'News', path: '/news' },
-    { label: 'Contact', path: '/contact' },
+    { label: 'Donate', path: '/donate' },
+    { label: 'Crowdfunding', path: '/crowdfunding' },
   ];
 
   const isHome = location.pathname === '/';
@@ -53,6 +61,7 @@ export const Navbar = () => {
 
   return (
     <>
+      <div className="scroll-progress-bar" style={{ width: `${scrollWidth}%` }} />
       <header className={`fixed top-0 left-0 w-full z-40 transition-transform duration-300 ${
         scrolled ? 'lg:-translate-y-8 shadow-md' : 'translate-y-0'
       }`}>
@@ -61,9 +70,9 @@ export const Navbar = () => {
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             {/* Left: Contact info */}
             <div className="flex items-center gap-6">
-              <a href="tel:+918375008009" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
+              <a href="tel:+918860036008" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
                 <Phone size={11} className="text-white" />
-                <span>+91 83750 08009</span>
+                <span>+91 88600 36008</span>
               </a>
               <a href="mailto:info@savitramfoundation.org" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
                 <Mail size={11} className="text-white" />
@@ -121,26 +130,100 @@ export const Navbar = () => {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-2.5 xl:gap-5 flex-shrink-0">
-              {navLinks.slice(0, 8).map((link) => {
-                const active = location.pathname === link.path;
-                return (
+            <div className="hidden lg:flex items-center gap-3 xl:gap-5.5 flex-shrink-0">
+              {/* Home */}
+              <Link
+                to="/"
+                className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
+                  location.pathname === '/' ? 'text-[#1B5E20]' : 'text-[#334155] hover:text-[#0A1628]'
+                }`}
+              >
+                Home
+                {location.pathname === '/' && (
+                  <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
+                )}
+              </Link>
+
+              {/* About Us */}
+              <Link
+                to="/about"
+                className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
+                  location.pathname === '/about' ? 'text-[#1B5E20]' : 'text-[#334155] hover:text-[#0A1628]'
+                }`}
+              >
+                About Us
+                {location.pathname === '/about' && (
+                  <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
+                )}
+              </Link>
+
+              {/* Our Impact Hover Dropdown */}
+              <div className="relative group/dropdown py-2">
+                <button 
+                  className={`flex items-center gap-0.5 text-[10px] xl:text-xs font-bold uppercase tracking-wider bg-transparent border-0 cursor-pointer transition-colors duration-300 whitespace-nowrap ${
+                    location.pathname === '/our-work' || location.pathname === '/projects' || location.pathname === '/events' || location.pathname === '/news'
+                      ? 'text-[#1B5E20]' 
+                      : 'text-[#334155] hover:text-[#0A1628]'
+                  }`}
+                >
+                  <span>Our Impact</span>
+                  <ChevronDown size={11} />
+                </button>
+                <div className="absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50">
                   <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
-                      active 
-                        ? 'text-[#1B5E20]' 
-                        : 'text-[#334155] hover:text-[#0A1628]'
-                    }`}
+                    to="/our-work"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
                   >
-                    {link.label}
-                    {active && (
-                      <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
-                    )}
+                    Our Work
                   </Link>
-                );
-              })}
+                  <Link
+                    to="/projects"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Projects
+                  </Link>
+                  <Link
+                    to="/events"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Events
+                  </Link>
+                  <Link
+                    to="/news"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    News & Media
+                  </Link>
+                </div>
+              </div>
+
+              {/* Donate Dropdown */}
+              <div className="relative group/dropdown py-2">
+                <button 
+                  className={`flex items-center gap-0.5 text-[10px] xl:text-xs font-bold uppercase tracking-wider bg-transparent border-0 cursor-pointer transition-colors duration-300 whitespace-nowrap ${
+                    location.pathname === '/donate' || location.pathname === '/crowdfunding'
+                      ? 'text-[#1B5E20]' 
+                      : 'text-[#334155] hover:text-[#0A1628]'
+                  }`}
+                >
+                  <span>Donate</span>
+                  <ChevronDown size={11} />
+                </button>
+                <div className="absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50">
+                  <Link
+                    to="/donate"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Direct Donation
+                  </Link>
+                  <Link
+                    to="/crowdfunding"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Crowdfunding
+                  </Link>
+                </div>
+              </div>
 
               {/* Join Us Hover Dropdown Menu */}
               <div className="relative group/dropdown py-2">
@@ -152,7 +235,6 @@ export const Navbar = () => {
                   <span>Join Us</span>
                   <ChevronDown size={11} />
                 </button>
-                {/* Dropdown Box */}
                 <div className="absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50">
                   <Link
                     to="/membership"
@@ -170,25 +252,17 @@ export const Navbar = () => {
               </div>
 
               {/* Contact Link */}
-              {(() => {
-                const link = navLinks[8]; // Contact
-                const active = location.pathname === link.path;
-                return (
-                  <Link
-                    to={link.path}
-                    className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
-                      active 
-                        ? 'text-[#1B5E20]' 
-                        : 'text-[#334155] hover:text-[#0A1628]'
-                    }`}
-                  >
-                    {link.label}
-                    {active && (
-                      <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
-                    )}
-                  </Link>
-                );
-              })()}
+              <Link
+                to="/contact"
+                className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
+                  location.pathname === '/contact' ? 'text-[#1B5E20]' : 'text-[#334155] hover:text-[#0A1628]'
+                }`}
+              >
+                Contact
+                {location.pathname === '/contact' && (
+                  <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
+                )}
+              </Link>
             </div>
 
             {/* CTA Buttons */}

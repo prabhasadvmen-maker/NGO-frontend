@@ -72,8 +72,8 @@ export const ContactPage = () => {
     return `https://maps.google.com/maps?q=${encodeURIComponent(clean)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
   };
 
-  const defaultAddress = ngoProfile?.address || 'ADVMEN Technologies Pvt. Ltd., Jharsa Village, Sector 38, Gurugram (Gurgaon), Haryana, India';
-  const defaultPhone = ngoProfile?.phone || '+91 83750 08009';
+  const defaultAddress = ngoProfile?.address || 'A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR, Noida, Noida, Gautam Buddha Nagar - 201301, Uttar Pradesh';
+  const defaultPhone = ngoProfile?.phone || '+91 88600 36008';
   const defaultEmail = ngoProfile?.email || 'hello@advmen.com';
 
   return (

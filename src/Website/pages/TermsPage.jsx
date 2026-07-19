@@ -56,7 +56,7 @@ export const TermsPage = () => {
             <section className="space-y-2">
               <h3 className="font-display font-bold text-base text-[#0A1628]">6. Contact</h3>
               <p>
-                For terms inquiries, write to our legal desk at Gomti Nagar headquarters, contact@savitram.org.
+                For terms inquiries, write to our legal desk at Noida Sector 62 headquarters, contact@savitram.org.
               </p>
             </section>
           </div>

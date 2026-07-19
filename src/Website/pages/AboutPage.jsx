@@ -112,9 +112,9 @@ export const AboutPage = () => {
                   <MapPin size={18} />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-display font-extrabold text-sm text-[#0A1628]">Lucknow Branch (HQ)</h3>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase">LKO-01</p>
-                  <p className="text-[11px] text-gray-500 font-medium leading-relaxed pt-1">Savitram Foundation Tower, Gomti Nagar, Lucknow, India</p>
+                  <h3 className="font-display font-extrabold text-sm text-[#0A1628]">Noida Branch (HQ)</h3>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase">NDA-01</p>
+                  <p className="text-[11px] text-gray-500 font-medium leading-relaxed pt-1">A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR, Noida, Noida, Gautam Buddha Nagar - 201301, Uttar Pradesh</p>
                 </div>
               </div>
             )}

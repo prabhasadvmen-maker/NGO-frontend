@@ -259,7 +259,7 @@ export const VolunteerPage = () => {
           <div className="rounded-3xl p-12 bg-gradient-to-r from-[#0A1628] to-[#1B5E20] text-white flex flex-col items-center justify-center space-y-4">
             <h2 className="font-display font-black text-3xl sm:text-4xl">Ready to Make a Difference?</h2>
             <p className="text-xs text-white/70 max-w-xl font-semibold leading-relaxed">
-              If you have any questions before applying, feel free to visit our gomti nagar main HQ center or leave a line at our contact helpline desk.
+              If you have any questions before applying, feel free to visit our Noida Sector 62 main HQ center or leave a line at our contact helpline desk.
             </p>
           </div>
         </section>
