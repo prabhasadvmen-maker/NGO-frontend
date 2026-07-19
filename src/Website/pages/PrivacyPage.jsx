@@ -49,7 +49,7 @@ export const PrivacyPage = () => {
             <section className="space-y-2">
               <h3 className="font-display font-bold text-base text-[#0A1628]">5. Contact Us</h3>
               <p>
-                If you have any questions regarding this Privacy Policy, feel free to write to our Noida Sector 62 headquarters desk at contact@savitram.org.
+                If you have any questions regarding this Privacy Policy, feel free to write to our Noida Sector 62 headquarters desk at Support.savitramfoundation@gmail.com.
               </p>
             </section>
           </div>

@@ -42,7 +42,7 @@ export const RefundPage = () => {
             <section className="space-y-2">
               <h3 className="font-display font-bold text-base text-[#0A1628]">4. How to Request a Refund</h3>
               <p>
-                To request checks on transactions, email contact@savitram.org with your Transaction ID, date, donor name, and banking confirmation receipts.
+                To request checks on transactions, email Support.savitramfoundation@gmail.com with your Transaction ID, date, donor name, and banking confirmation receipts.
               </p>
             </section>
 
@@ -56,7 +56,7 @@ export const RefundPage = () => {
             <section className="space-y-2">
               <h3 className="font-display font-bold text-base text-[#0A1628]">6. Contact</h3>
               <p>
-                For cancellation operations, reach out to our helpdesk at Noida Sector 62 headquarters, contact@savitram.org.
+                For cancellation operations, reach out to our helpdesk at Noida Sector 62 headquarters, Support.savitramfoundation@gmail.com.
               </p>
             </section>
           </div>

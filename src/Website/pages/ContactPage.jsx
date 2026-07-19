@@ -74,7 +74,7 @@ export const ContactPage = () => {
 
   const defaultAddress = ngoProfile?.address || 'A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR, Noida, Noida, Gautam Buddha Nagar - 201301, Uttar Pradesh';
   const defaultPhone = ngoProfile?.phone || '+91 88600 36008';
-  const defaultEmail = ngoProfile?.email || 'hello@advmen.com';
+  const defaultEmail = ngoProfile?.email || 'Support.savitramfoundation@gmail.com';
 
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex flex-col justify-between">
