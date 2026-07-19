@@ -97,7 +97,63 @@ export const EventDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex flex-col justify-between">
-      <SEOHead title={event.title} description={event.description?.slice(0, 150)} />
+      <SEOHead 
+        title={event.title} 
+        description={event.description?.slice(0, 150)} 
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://savitramfoundation.org/'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Events',
+                'item': 'https://savitramfoundation.org/events'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 3,
+                'name': event.title,
+                'item': `https://savitramfoundation.org/events/${event._id}`
+              }
+            ]
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Event',
+            'name': event.title,
+            'description': event.description,
+            'startDate': event.startDate,
+            'endDate': event.endDate || event.startDate,
+            'eventStatus': 'https://schema.org/EventScheduled',
+            'eventAttendanceMode': 'https://schema.org/OfflineEventAttendanceMode',
+            'location': {
+              '@type': 'Place',
+              'name': event.location || 'Noida Sector 62',
+              'address': {
+                '@type': 'PostalAddress',
+                'streetAddress': 'A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR',
+                'addressLocality': 'Noida',
+                'addressRegion': 'Uttar Pradesh',
+                'postalCode': '201301',
+                'addressCountry': 'IN'
+              }
+            },
+            'organizer': {
+              '@type': 'NGO',
+              'name': 'SAVITRAM FOUNDATION',
+              'url': 'https://savitramfoundation.org'
+            }
+          }
+        ]}
+      />
       <Navbar />
 
       <main className="flex-grow pt-32 pb-24 text-left">

@@ -1,6 +1,7 @@
 import './App.css';
 import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from './shared/AuthContext';
 import { SidebarProvider } from './shared/SidebarContext';
 import { ToastProvider } from './shared/ToastContext';
@@ -69,15 +70,17 @@ function App() {
   }, []);
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthProvider>
-        <SidebarProvider>
-          <ToastProvider>
-            {isInitializing ? <Preloader /> : <AppContent />}
-          </ToastProvider>
-        </SidebarProvider>
-      </AuthProvider>
-    </Router>
+    <HelmetProvider>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
+          <SidebarProvider>
+            <ToastProvider>
+              {isInitializing ? <Preloader /> : <AppContent />}
+            </ToastProvider>
+          </SidebarProvider>
+        </AuthProvider>
+      </Router>
+    </HelmetProvider>
   );
 }
 

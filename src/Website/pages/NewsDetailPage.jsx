@@ -90,7 +90,58 @@ export const NewsDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex flex-col justify-between">
-      <SEOHead title={article.title} description={article.content?.slice(0, 150)} />
+      <SEOHead 
+        title={article.title} 
+        description={article.content?.slice(0, 150)} 
+        ogType="article"
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://savitramfoundation.org/'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'News',
+                'item': 'https://savitramfoundation.org/news'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 3,
+                'name': article.title,
+                'item': `https://savitramfoundation.org/news/${article.slug}`
+              }
+            ]
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'NewsArticle',
+            'headline': article.title,
+            'description': article.content?.slice(0, 150),
+            'datePublished': article.createdAt,
+            'dateModified': article.updatedAt || article.createdAt,
+            'author': {
+              '@type': 'Organization',
+              'name': 'SAVITRAM FOUNDATION',
+              'url': 'https://savitramfoundation.org'
+            },
+            'publisher': {
+              '@type': 'NGO',
+              'name': 'SAVITRAM FOUNDATION',
+              'logo': {
+                '@type': 'ImageObject',
+                'url': 'https://savitramfoundation.org/NGO logo.jpeg'
+              }
+            }
+          }
+        ]}
+      />
       <Navbar />
 
       <main className="flex-grow pt-32 pb-24 text-left">

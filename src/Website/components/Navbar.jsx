@@ -336,14 +336,14 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Menu Links */}
-        <div className="flex-grow py-6 overflow-y-auto flex flex-col gap-4 text-left">
+        <div className="flex-grow py-5 overflow-y-auto flex flex-col gap-3 text-left">
           {navLinks.slice(0, 8).map((link) => {
             const active = location.pathname === link.path;
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+                className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
                   active ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
                 }`}
               >
@@ -352,12 +352,12 @@ export const Navbar = () => {
             );
           })}
           
-          <div className="h-[1px] bg-white/5 my-2" />
+          <div className="h-[1px] bg-white/5 my-1" />
 
           {/* Join Us sublinks inside mobile menu drawer */}
           <Link
             to="/membership"
-            className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+            className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
               location.pathname === '/membership' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
             }`}
           >
@@ -365,7 +365,7 @@ export const Navbar = () => {
           </Link>
           <Link
             to="/volunteer"
-            className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+            className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
               location.pathname === '/volunteer' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
             }`}
           >
@@ -375,7 +375,7 @@ export const Navbar = () => {
           {/* Contact sublink inside mobile menu drawer */}
           <Link
             to="/contact"
-            className={`text-xl font-bold uppercase tracking-wider transition-all duration-300 ${
+            className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
               location.pathname === '/contact' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
             }`}
           >

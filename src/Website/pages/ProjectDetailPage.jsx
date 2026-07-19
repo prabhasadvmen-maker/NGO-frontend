@@ -96,7 +96,34 @@ export const ProjectDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4] flex flex-col justify-between">
-      <SEOHead title={p.title} description={p.description?.slice(0, 150)} />
+      <SEOHead 
+        title={p.title} 
+        description={p.description?.slice(0, 150)} 
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://savitramfoundation.org/'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Projects',
+              'item': 'https://savitramfoundation.org/projects'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 3,
+              'name': p.title,
+              'item': `https://savitramfoundation.org/projects/${p._id}`
+            }
+          ]
+        }}
+      />
       <Navbar />
 
       <main className="flex-grow pt-32 pb-24 text-left">
