@@ -20,7 +20,7 @@ export const EventsPage = () => {
       location: 'Community Hall, Sector 4, Lucknow',
       type: 'Offline',
       capacity: 200,
-      registeredCount: 45,
+      registrationsCount: 45,
       status: 'Planned',
       branch: { name: 'Lucknow Branch' }
     },
@@ -32,7 +32,7 @@ export const EventsPage = () => {
       location: 'Malihabad outskirts, Lucknow',
       type: 'Offline',
       capacity: 100,
-      registeredCount: 82,
+      registrationsCount: 82,
       status: 'Planned',
       branch: { name: 'Lucknow Branch' }
     },
@@ -44,7 +44,7 @@ export const EventsPage = () => {
       location: 'Delhi Skill Center, Okhla',
       type: 'Offline',
       capacity: 50,
-      registeredCount: 50,
+      registrationsCount: 50,
       status: 'Completed',
       branch: { name: 'Delhi Branch' }
     }
@@ -183,7 +183,7 @@ export const EventsPage = () => {
                           {ev.capacity > 0 && (
                             <div className="flex items-center gap-1.5 text-gray-400">
                               <Users size={14} className="flex-shrink-0" />
-                              <span>{ev.registeredCount || 0} / {ev.capacity} Registered</span>
+                              <span>{ev.registrationsCount || ev.registeredCount || 0} / {ev.capacity} Registered</span>
                             </div>
                           )}
                         </div>

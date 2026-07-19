@@ -3,7 +3,9 @@ import SEOHead from '../components/SEOHead';
 import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
 import ImpactStrip from '../components/ImpactStrip';
+import DonateSection from '../components/DonateSection';
 import AboutSection from '../components/AboutSection';
+import EventsSection from '../components/EventsSection';
 import OurWork from '../components/OurWork';
 import ImpactJourney from '../components/ImpactJourney';
 import ProjectsSection from '../components/ProjectsSection';
@@ -32,6 +34,12 @@ export const HomePage = () => {
 
       {/* Stats Counter Band */}
       <ImpactStrip />
+
+      {/* Donation Checkout Section */}
+      <DonateSection />
+
+      {/* Upcoming Events Grid */}
+      <EventsSection />
 
       {/* About Description Editorial */}
       <AboutSection />

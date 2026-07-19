@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 
 // Lazy loading all pages for performance
 const HomePage = lazy(() => import('./pages/HomePage'));
+const DonatePage = lazy(() => import('./pages/DonatePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const OurWorkPage = lazy(() => import('./pages/OurWorkPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
@@ -34,6 +35,7 @@ const wrapSuspense = (Component) => (
 
 export const WebsiteRoutes = () => [
   <Route key="home" path="/" element={wrapSuspense(HomePage)} />,
+  <Route key="donate" path="/donate" element={wrapSuspense(DonatePage)} />,
   <Route key="about" path="/about" element={wrapSuspense(AboutPage)} />,
   <Route key="our-work" path="/our-work" element={wrapSuspense(OurWorkPage)} />,
   <Route key="project-detail" path="/projects/:id" element={wrapSuspense(ProjectDetailPage)} />,

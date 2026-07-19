@@ -38,10 +38,11 @@ export const Navbar = () => {
 
   const navLinks = [
     { label: 'Home', path: '/' },
+    { label: 'Donate', path: '/donate' },
+    { label: 'Events', path: '/events' },
     { label: 'About Us', path: '/about' },
     { label: 'Our Work', path: '/our-work' },
     { label: 'Projects', path: '/projects' },
-    { label: 'Events', path: '/events' },
     { label: 'Crowdfunding', path: '/crowdfunding' },
     { label: 'News', path: '/news' },
     { label: 'Contact', path: '/contact' },
@@ -96,38 +97,38 @@ export const Navbar = () => {
         }`}>
           <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
             {/* Logo Brand */}
-            <Link to="/" className="flex items-center gap-3 group">
+            <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
               <img
                 src="/NGO logo.jpeg"
                 alt="Savitram Foundation Logo"
-                className="w-12 h-12 rounded-full object-cover border border-gray-150 transition-transform duration-300 group-hover:scale-105"
+                className="w-10 h-10 xl:w-12 xl:h-12 rounded-full object-cover border border-gray-150 transition-transform duration-300 group-hover:scale-105"
               />
               <div className="flex flex-col text-left">
-                <span className="font-display font-extrabold tracking-tight text-xl text-[#0A1628] leading-none">
+                <span className="font-display font-extrabold tracking-tight text-lg xl:text-xl text-[#0A1628] leading-none">
                   SAVITRAM
                 </span>
                 <div className="flex items-center gap-1 mt-0.5">
                   <span className="h-[1.5px] w-2 bg-[#F97316]" />
-                  <span className="text-[9px] font-bold text-[#1B5E20] tracking-[0.18em] uppercase leading-none">
+                  <span className="text-[8px] xl:text-[9px] font-bold text-[#1B5E20] tracking-[0.15em] xl:tracking-[0.18em] uppercase leading-none">
                     FOUNDATION
                   </span>
                   <span className="h-[1.5px] w-2 bg-[#F97316]" />
                 </div>
-                <span className="text-[8px] font-semibold text-gray-500 uppercase tracking-widest leading-none mt-1">
+                <span className="hidden xl:block text-[8px] font-semibold text-gray-500 uppercase tracking-widest leading-none mt-1">
                   Together We Can
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-6">
-              {navLinks.slice(0, 7).map((link) => {
+            <div className="hidden lg:flex items-center gap-2.5 xl:gap-5 flex-shrink-0">
+              {navLinks.slice(0, 8).map((link) => {
                 const active = location.pathname === link.path;
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
+                    className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
                       active 
                         ? 'text-[#1B5E20]' 
                         : 'text-[#334155] hover:text-[#0A1628]'
@@ -144,7 +145,7 @@ export const Navbar = () => {
               {/* Join Us Hover Dropdown Menu */}
               <div className="relative group/dropdown py-2">
                 <button 
-                  className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider bg-transparent border-0 cursor-pointer transition-colors duration-300 ${
+                  className={`flex items-center gap-0.5 text-[10px] xl:text-xs font-bold uppercase tracking-wider bg-transparent border-0 cursor-pointer transition-colors duration-300 whitespace-nowrap ${
                     isJoinActive ? 'text-[#1B5E20]' : 'text-[#334155] hover:text-[#0A1628]'
                   }`}
                 >
@@ -170,12 +171,12 @@ export const Navbar = () => {
 
               {/* Contact Link */}
               {(() => {
-                const link = navLinks[7]; // Contact
+                const link = navLinks[8]; // Contact
                 const active = location.pathname === link.path;
                 return (
                   <Link
                     to={link.path}
-                    className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${
+                    className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
                       active 
                         ? 'text-[#1B5E20]' 
                         : 'text-[#334155] hover:text-[#0A1628]'
@@ -191,11 +192,11 @@ export const Navbar = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-2 xl:gap-4 flex-shrink-0">
               {user ? (
                 <Link
                   to={user.role === 'super_admin' ? '/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1B5E20] text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-xl border border-[#1B5E20] text-[10px] xl:text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all whitespace-nowrap"
                 >
                   <User size={14} />
                   <span>My Portal</span>
@@ -203,7 +204,7 @@ export const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1B5E20] text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-xl border border-[#1B5E20] text-[10px] xl:text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all whitespace-nowrap"
                 >
                   <User size={14} />
                   <span>Login</span>
@@ -211,7 +212,7 @@ export const Navbar = () => {
               )}
               <Link
                 to="/crowdfunding"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0A1628] text-xs font-extrabold text-white transition-all hover:scale-105 hover:bg-[#091424] shadow-none"
+                className="flex items-center gap-1.5 px-3 py-2 xl:px-5 xl:py-2.5 rounded-xl bg-[#0A1628] text-[10px] xl:text-xs font-extrabold text-white transition-all hover:scale-105 hover:bg-[#091424] shadow-none whitespace-nowrap"
               >
                 <Heart size={14} className="text-white fill-white" />
                 <span>Donate Now</span>
@@ -262,7 +263,7 @@ export const Navbar = () => {
 
         {/* Mobile Menu Links */}
         <div className="flex-grow py-6 overflow-y-auto flex flex-col gap-4 text-left">
-          {navLinks.slice(0, 7).map((link) => {
+          {navLinks.slice(0, 8).map((link) => {
             const active = location.pathname === link.path;
             return (
               <Link
