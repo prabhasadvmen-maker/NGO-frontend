@@ -7,6 +7,7 @@ import { SidebarProvider } from './shared/SidebarContext';
 import { ToastProvider } from './shared/ToastContext';
 import ProtectedRoute from './shared/ProtectedRoute';
 import Preloader from './Website/components/Preloader';
+import ScrollToTop from './shared/ScrollToTop';
 
 // Dashboard Routes
 import SuperAdminRoutes from './superadmin/routes/SuperAdminRoutes';
@@ -73,6 +74,7 @@ function App() {
   return (
     <HelmetProvider>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ScrollToTop />
         <AuthProvider>
           <SidebarProvider>
             <ToastProvider>

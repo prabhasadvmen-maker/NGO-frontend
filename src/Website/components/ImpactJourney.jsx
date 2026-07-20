@@ -122,7 +122,7 @@ export const ImpactJourney = () => {
         {/* Vertical Timeline Wrapper */}
         <div className="relative space-y-16 py-8">
           {/* Vertical central timeline line with glowing gradient */}
-          <div className="absolute left-[20px] md:left-1/2 top-0 h-full w-[2px] bg-gradient-to-b from-gray-500/20 via-orange-500/40 to-[#F59E0B] -translate-x-[20px] md:-translate-x-1/2 z-0" />
+          <div className="absolute left-[20px] md:left-1/2 top-0 h-full w-[2px] bg-gradient-to-b from-gray-500/20 via-orange-500/40 to-[#F59E0B] -translate-x-1/2 z-0" />
           
           {steps.map((step, idx) => (
             <TimelineNode key={idx} step={step} index={idx} />

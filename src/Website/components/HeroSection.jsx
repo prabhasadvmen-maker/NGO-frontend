@@ -64,7 +64,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[92vh] pt-32 pb-20 flex items-center overflow-hidden bg-[#F8F7F4]">
+    <section className="relative min-h-[85vh] sm:min-h-[92vh] pt-24 pb-20 sm:pt-32 sm:pb-24 flex items-center overflow-hidden bg-[#F8F7F4]">
       {/* Hidden prefetch block to load all slides in advance */}
       <div className="hidden" aria-hidden="true">
         {sliderImages.map((img, idx) => (
@@ -89,7 +89,7 @@ export const HeroSection = () => {
             <img
               src={img.imageUrlResolved || img.imageUrl}
               alt={img.alt || 'Savitram Banner'}
-              className={`w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${
+              className={`w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out ${
                 index === currentIndex ? 'scale-105' : 'scale-100'
               }`}
               loading="eager"
@@ -97,13 +97,13 @@ export const HeroSection = () => {
             />
           </div>
         ))}
-        {/* Soft dark navy vignette overlay: darkens the left side slightly for maximum readability of white text */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628]/65 via-[#0A1628]/25 to-transparent z-10 pointer-events-none" />
+        {/* Soft dark navy vignette overlay: darkens the background slightly for maximum readability of white text */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628]/75 via-[#0A1628]/50 to-[#0A1628]/60 sm:bg-gradient-to-r sm:from-[#0A1628]/70 sm:via-[#0A1628]/35 sm:to-transparent z-10 pointer-events-none" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-30 w-full">
         {/* Typography Content Container - Clean Background None */}
-        <div className="max-w-2xl space-y-8 text-left animate-fade-in py-4 sm:py-6 bg-transparent border-0 shadow-none">
+        <div className="max-w-2xl space-y-5 sm:space-y-8 text-left animate-fade-in py-4 sm:py-6 bg-transparent border-0 shadow-none">
           {/* Eyebrow */}
           <div className="inline-block relative">
             <span className="text-[10px] font-extrabold tracking-[0.25em] text-[#F97316] uppercase">
@@ -159,7 +159,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Clean Trust badges */}
-          <div className="flex flex-wrap items-center gap-5 pt-4 text-xs font-bold text-white/80">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5 pt-2 sm:pt-4 text-xs font-bold text-white/80 pb-6 sm:pb-0">
             {[
               'Govt. Registered NGO',
               'Section 80G Tax Exempt',

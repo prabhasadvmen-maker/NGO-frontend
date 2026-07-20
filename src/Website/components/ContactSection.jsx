@@ -251,7 +251,7 @@ export const ContactSection = () => {
         <div className="lg:col-span-5 space-y-8 text-left">
           
           {/* Info Card Container */}
-          <div className="p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] space-y-6">
+          <div className="p-5 sm:p-8 rounded-3xl bg-[#F8F7F4] border-0 shadow-[8px_8px_20px_#e5e4e1,-8px_-8px_20px_#ffffff] space-y-6">
             <div>
               <span className="text-[10px] font-bold tracking-[0.25em] text-[#1B5E20] uppercase">
                 Get in Touch
@@ -267,9 +267,9 @@ export const ContactSection = () => {
                 <div className="p-3 bg-[#1B5E20]/10 text-[#1B5E20] rounded-xl flex-shrink-0">
                   <Phone size={18} />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[9px] font-bold text-gray-400 uppercase">Call Branch Helpline</p>
-                  <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultPhone}</p>
+                  <p className="text-xs font-bold text-[#0A1628] mt-0.5 break-all">{defaultPhone}</p>
                 </div>
               </div>
 
@@ -277,9 +277,9 @@ export const ContactSection = () => {
                 <div className="p-3 bg-[#2196F3]/10 text-[#2196F3] rounded-xl flex-shrink-0">
                   <Mail size={18} />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[9px] font-bold text-gray-400 uppercase">Official Email Desk</p>
-                  <p className="text-xs font-bold text-[#0A1628] mt-0.5">{defaultEmail}</p>
+                  <p className="text-xs font-bold text-[#0A1628] mt-0.5 break-all">{defaultEmail}</p>
                 </div>
               </div>
 
@@ -287,9 +287,9 @@ export const ContactSection = () => {
                 <div className="p-3 bg-[#9C27B0]/10 text-[#9C27B0] rounded-xl flex-shrink-0">
                   <MapPin size={18} />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[9px] font-bold text-gray-400 uppercase">Headquarters Office</p>
-                  <p className="text-xs font-bold text-[#0A1628] mt-0.5 leading-relaxed">{defaultAddress}</p>
+                  <p className="text-xs font-bold text-[#0A1628] mt-0.5 leading-relaxed break-words">{defaultAddress}</p>
                 </div>
               </div>
             </div>
