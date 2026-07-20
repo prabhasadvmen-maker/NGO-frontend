@@ -110,7 +110,10 @@ export const Navbar = () => {
               <img
                 src="/NGO logo.jpeg"
                 alt="Savitram Foundation Logo"
-                className="w-10 h-10 xl:w-12 xl:h-12 rounded-full object-cover border border-gray-150 transition-transform duration-300 group-hover:scale-105"
+                className="w-10 h-10 xl:w-12 xl:h-12 rounded-full object-cover border border-gray-155 transition-transform duration-300 group-hover:scale-105"
+                decoding="async"
+                width="48"
+                height="48"
               />
               <div className="flex flex-col text-left">
                 <span className="font-display font-extrabold tracking-tight text-lg xl:text-xl text-[#0A1628] leading-none">
@@ -316,6 +319,9 @@ export const Navbar = () => {
               src="/NGO logo.jpeg"
               alt="Savitram Logo"
               className="w-10 h-10 rounded-full object-cover border border-white/10"
+              decoding="async"
+              width="40"
+              height="40"
             />
             <div className="flex flex-col text-left">
               <span className="font-display font-extrabold tracking-tight text-base text-white leading-none">

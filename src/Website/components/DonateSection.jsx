@@ -376,6 +376,10 @@ export const DonateSection = () => {
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop"
                   alt="Child in rural village"
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="384"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/95 via-[#0A1628]/40 to-transparent" />
                 

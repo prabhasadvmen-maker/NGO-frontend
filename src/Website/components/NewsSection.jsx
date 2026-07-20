@@ -95,6 +95,9 @@ export const NewsSection = () => {
                       alt={featured.title} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
+                      decoding="async"
+                      width="600"
+                      height="280"
                     />
                     <span className="absolute top-4 left-4 px-3 py-1 bg-[#1B5E20]/90 text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-md">
                       {featured.category}
@@ -156,6 +159,9 @@ export const NewsSection = () => {
                       alt={art.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
+                      decoding="async"
+                      width="140"
+                      height="140"
                     />
                   </div>
 

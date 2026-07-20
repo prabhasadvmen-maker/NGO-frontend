@@ -58,7 +58,11 @@ export const WebsiteLogin = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#F8F7F4] overflow-x-hidden">
-      <SEOHead title="Portal Login" description="Access the SAVITRAM FOUNDATION NGO Management System portals for Super Admins, Branch Admins, and Members." />
+      <SEOHead 
+        title="Portal Login" 
+        description="Access the SAVITRAM FOUNDATION NGO Management System portals for Super Admins, Branch Admins, and Members." 
+        noindex={true}
+      />
       <Navbar />
 
       <div className="flex-1 flex items-center justify-center pt-32 pb-20 px-6">

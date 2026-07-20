@@ -78,6 +78,9 @@ export const AboutSection = () => {
               alt="Community service" 
               className="w-full h-full object-cover"
               loading="lazy"
+              decoding="async"
+              width="280"
+              height="340"
             />
           </div>
 
@@ -88,6 +91,9 @@ export const AboutSection = () => {
               alt="Children smile" 
               className="w-full h-full object-cover"
               loading="lazy"
+              decoding="async"
+              width="200"
+              height="240"
             />
           </div>
 

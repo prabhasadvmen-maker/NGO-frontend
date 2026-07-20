@@ -150,7 +150,7 @@ export const FloatingUtils = () => {
           {/* Header */}
           <div className="px-4 py-3 bg-[#1B5E20] flex items-center justify-between text-white flex-shrink-0">
             <div className="flex items-center gap-2.5">
-              <img src="/NGO logo.jpeg" alt="Logo" className="w-7 h-7 rounded-lg object-cover" />
+              <img src="/NGO logo.jpeg" alt="Savitram Foundation Logo" className="w-7 h-7 rounded-lg object-cover" decoding="async" width="28" height="28" />
               <div>
                 <p className="font-display font-extrabold text-xs tracking-wide leading-none">Savitram AI</p>
                 <p className="text-[9px] text-white/70 font-semibold mt-0.5">Powered by Groq · Mixtral</p>

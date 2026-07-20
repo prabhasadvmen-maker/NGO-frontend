@@ -131,6 +131,10 @@ export const ProjectsPage = () => {
                       src={getProjectImage(proj.title)}
                       alt={proj.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                      decoding="async"
+                      width="384"
+                      height="192"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     

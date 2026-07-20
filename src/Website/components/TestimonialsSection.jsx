@@ -167,6 +167,10 @@ export const TestimonialsSection = () => {
                             src={item.avatarUrlResolved || item.avatar} 
                             alt={item.name} 
                             className="w-10 h-10 rounded-full object-cover border border-[#1B5E20]/40 flex-shrink-0"
+                            loading="lazy"
+                            decoding="async"
+                            width="40"
+                            height="40"
                           />
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0">

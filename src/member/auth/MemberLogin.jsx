@@ -5,6 +5,8 @@ import { COLORS } from '../../shared/colors';
 import { useAuth } from '../../shared/AuthContext';
 import { useToast } from '../../shared/ToastContext';
 
+import SEOHead from '../../Website/components/SEOHead';
+
 const MemberLogin = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -30,6 +32,7 @@ const MemberLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: COLORS.light }}>
+      <SEOHead title="Member Login" noindex={true} />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-20 w-20 mx-auto rounded-full object-cover border-4 mb-4" style={{ borderColor: COLORS.primary }} />

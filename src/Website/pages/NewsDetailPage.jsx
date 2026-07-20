@@ -182,6 +182,10 @@ export const NewsDetailPage = () => {
               src={article.coverImageUrl || article.coverImage || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200'} 
               alt={article.title} 
               className="w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
+              width="800"
+              height="380"
             />
           </div>
 
@@ -221,6 +225,10 @@ export const NewsDetailPage = () => {
                         src={art.coverImageUrl || art.coverImage || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600'} 
                         alt={art.title} 
                         className="w-full h-full object-cover group-hover:scale-102 transition-transform"
+                        loading="lazy"
+                        decoding="async"
+                        width="80"
+                        height="80"
                       />
                     </div>
                     <div className="flex flex-col justify-between flex-grow py-0.5 text-left">

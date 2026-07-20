@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { COLORS } from '../../shared/colors';
 import { useToast } from '../../shared/ToastContext';
 import API_BASE_URL from '../../shared/apiConfig';
+import SEOHead from '../../Website/components/SEOHead';
 
 const MemberRegister = () => {
   const navigate = useNavigate();
@@ -103,6 +104,7 @@ const MemberRegister = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: COLORS.light }}>
+      <SEOHead title="Member Registration" noindex={true} />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-20 w-20 mx-auto rounded-full object-cover border-4 mb-4" style={{ borderColor: COLORS.primary }} />

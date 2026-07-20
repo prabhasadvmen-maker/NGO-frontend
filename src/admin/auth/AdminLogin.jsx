@@ -1,9 +1,11 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Loader } from 'lucide-react';
 import { useToast } from '../../shared/ToastContext';
 import { useAuth } from '../../shared/AuthContext';
 import { COLORS } from '../../shared/colors';
+
+import SEOHead from '../../Website/components/SEOHead';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -50,6 +52,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: COLORS.light }}>
+      <SEOHead title="Admin Login" noindex={true} />
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-20 w-20 mx-auto mb-4 rounded-full object-cover" />

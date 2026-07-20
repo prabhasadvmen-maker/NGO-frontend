@@ -58,6 +58,9 @@ export const GalleryPage = () => {
                     alt={ph.caption || 'Gallery moment'} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
+                    decoding="async"
+                    width="384"
+                    height="256"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/45 to-transparent flex flex-col justify-end p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <p className="text-white text-xs font-bold text-left leading-relaxed">

@@ -11,8 +11,11 @@ export const Preloader = () => {
         {/* Logo */}
         <img 
           src="/NGO logo.jpeg" 
-          alt="Savitram Foundation" 
+          alt="Savitram Foundation Logo" 
           className="preloader-logo-image"
+          decoding="async"
+          width="120"
+          height="120"
         />
       </div>
       

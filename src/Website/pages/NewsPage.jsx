@@ -107,6 +107,9 @@ export const NewsPage = () => {
                     alt={art.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    decoding="async"
+                    width="384"
+                    height="200"
                   />
                   <span className="absolute top-4 left-4 px-2.5 py-0.5 bg-[#1B5E20]/90 text-white text-[8px] font-bold uppercase tracking-widest rounded-full shadow-md">
                     {art.category}

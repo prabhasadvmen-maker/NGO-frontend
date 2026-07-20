@@ -9,7 +9,8 @@ export const SEOHead = ({
   ogType = 'website', 
   ogImage, 
   jsonLd,
-  noindex = false
+  noindex = false,
+  schemaType
 }) => {
   const location = useLocation();
   const currentOrigin = 'https://savitramfoundation.org';
@@ -24,42 +25,91 @@ export const SEOHead = ({
     ? (ogImage.startsWith('http') ? ogImage : `${currentOrigin}${ogImage}`)
     : `${currentOrigin}/NGO logo.jpeg`;
 
-  // Default Organization & NGO Schema for the homepage
-  const defaultOrgSchema = currentPath === '/' ? {
-    '@context': 'https://schema.org',
-    '@type': 'NGO',
-    'name': 'SAVITRAM FOUNDATION',
-    'alternateName': 'Savitram Foundation NGO',
-    'url': currentOrigin,
-    'logo': `${currentOrigin}/NGO logo.jpeg`,
-    'contactPoint': {
-      '@type': 'ContactPoint',
-      'telephone': '+91-8860036008',
-      'contactType': 'customer support',
-      'areaServed': 'IN',
-      'availableLanguage': 'English'
-    },
-    'address': {
-      '@type': 'PostalAddress',
-      'streetAddress': 'A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR',
-      'addressLocality': 'Noida',
-      'addressRegion': 'Uttar Pradesh',
-      'postalCode': '201301',
-      'addressCountry': 'IN'
-    }
-  } : null;
+  // Default schemas
+  const schemas = [];
 
-  // Default WebSite Schema for the homepage
-  const defaultWebsiteSchema = currentPath === '/' ? {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    'name': 'SAVITRAM FOUNDATION',
-    'url': currentOrigin
-  } : null;
+  // NGO / Organization Schema
+  if (currentPath === '/' || schemaType === 'NGO' || schemaType === 'Organization') {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'NGO',
+      'name': 'SAVITRAM FOUNDATION',
+      'alternateName': 'Savitram Foundation NGO',
+      'url': currentOrigin,
+      'logo': `${currentOrigin}/NGO logo.jpeg`,
+      'contactPoint': {
+        '@type': 'ContactPoint',
+        'telephone': '+91-8860036008',
+        'contactType': 'customer support',
+        'areaServed': 'IN',
+        'availableLanguage': 'English'
+      },
+      'address': {
+        '@type': 'PostalAddress',
+        'streetAddress': 'A-13, GRAPHIX 2 SECTOR 62, UPPER GROUND FLOOR',
+        'addressLocality': 'Noida',
+        'addressRegion': 'Uttar Pradesh',
+        'postalCode': '201301',
+        'addressCountry': 'IN'
+      }
+    });
+  }
+
+  // WebSite Schema
+  if (currentPath === '/' || schemaType === 'WebSite') {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': 'SAVITRAM FOUNDATION',
+      'url': currentOrigin
+    });
+  }
+
+  // ContactPage Schema
+  if (schemaType === 'ContactPage' || currentPath === '/contact') {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      'name': title || 'Contact SAVITRAM FOUNDATION',
+      'url': canonical,
+      'description': siteDesc
+    });
+  }
+
+  // DonatePage / DonateAction Schema
+  if (schemaType === 'DonatePage' || currentPath === '/donate') {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': title || 'Donate and Support SAVITRAM FOUNDATION',
+      'url': canonical,
+      'potentialAction': {
+        '@type': 'DonateAction',
+        'recipient': {
+          '@type': 'NGO',
+          'name': 'SAVITRAM FOUNDATION',
+          'url': currentOrigin
+        }
+      }
+    });
+  }
+
+  // Custom passed jsonLd schemas
+  if (jsonLd) {
+    if (Array.isArray(jsonLd)) {
+      schemas.push(...jsonLd);
+    } else {
+      schemas.push(jsonLd);
+    }
+  }
 
   return (
-    <Helmet>
+    <Helmet htmlAttributes={{ lang: 'en' }}>
       {/* Primary HTML Meta Tags */}
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="theme-color" content="#1B5E20" />
+      
       <title>{siteTitle}</title>
       <meta name="description" content={siteDesc} />
       <link rel="canonical" href={canonical} />
@@ -87,21 +137,11 @@ export const SEOHead = ({
       <meta name="twitter:image" content={absoluteImageUrl} />
 
       {/* Injected structured JSON-LD data */}
-      {defaultOrgSchema && (
-        <script type="application/ld+json">
-          {JSON.stringify(defaultOrgSchema)}
+      {schemas.map((schema, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(schema)}
         </script>
-      )}
-      {defaultWebsiteSchema && (
-        <script type="application/ld+json">
-          {JSON.stringify(defaultWebsiteSchema)}
-        </script>
-      )}
-      {jsonLd && (
-        <script type="application/ld+json">
-          {JSON.stringify(jsonLd)}
-        </script>
-      )}
+      ))}
     </Helmet>
   );
 };

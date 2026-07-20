@@ -53,6 +53,10 @@ export const Footer = () => {
               src="/NGO logo.jpeg"
               alt="Savitram Foundation Logo"
               className="w-10 h-10 rounded-xl object-cover shadow-lg"
+              loading="lazy"
+              decoding="async"
+              width="40"
+              height="40"
             />
             <div className="flex flex-col">
               <span className="font-display font-extrabold tracking-tight text-lg text-white">

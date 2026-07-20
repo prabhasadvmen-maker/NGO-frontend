@@ -26,6 +26,7 @@ const Public_Projects = lazy(() => import('./Website/pages/ProjectsPage'));
 const Public_Events = lazy(() => import('./Website/pages/EventsPage'));
 const Public_Crowdfunding = lazy(() => import('./Website/pages/CrowdfundingPage'));
 const Public_Login = lazy(() => import('./Website/pages/WebsiteLogin'));
+const NotFoundPage = lazy(() => import('./Website/pages/NotFoundPage'));
 
 const wrapSuspense = (Component) => (
   <Suspense fallback={<Preloader />}>
@@ -52,8 +53,8 @@ function AppContent() {
       {AdminRoutes()}
       {MemberRoutes()}
 
-      {/* Catch-all fallback redirects to the main Home Page */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Catch-all fallback directs to the SEO-friendly 404 page */}
+      <Route path="*" element={wrapSuspense(NotFoundPage)} />
     </Routes>
   );
 }
