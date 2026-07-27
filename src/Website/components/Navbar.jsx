@@ -74,9 +74,9 @@ export const Navbar = () => {
                 <Phone size={11} className="text-white" />
                 <span>+91 88600 36008</span>
               </a>
-              <a href="mailto:Support.savitramfoundation@gmail.com" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
+              <a href="mailto:info@savitramfoundation.org" className="flex items-center gap-1.5 hover:text-green-400 transition-colors">
                 <Mail size={11} className="text-white" />
-                <span>Support.savitramfoundation@gmail.com</span>
+                <span>info@savitramfoundation.org</span>
               </a>
             </div>
 
