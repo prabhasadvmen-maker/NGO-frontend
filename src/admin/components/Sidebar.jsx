@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, UserPlus, Clock, ClipboardList,
@@ -7,7 +7,7 @@ import {
   Megaphone, Award, CreditCard, ArrowUpCircle, ArrowDownCircle,
   ArrowLeftRight, BarChart3, Globe, Home, Newspaper, Image, MessageSquare,
   Mail, Phone, MessageCircle, Bell, FileText, User, Settings, HelpCircle,
-  ChevronDown, ChevronRight, Menu, X
+  ChevronDown, ChevronRight, Menu, X, Utensils, ExternalLink, MapPin
 } from 'lucide-react';
 import { COLORS } from '../../shared/colors';
 import { useSidebar } from '../../shared/SidebarContext';
@@ -30,9 +30,10 @@ const NAV_GROUPS = [
   {
     label: 'Donations', icon: HandHeart,
     items: [
-      { path: '/admin/donations',          label: 'All Donations',     icon: HandHeart },
-      { path: '/admin/donations/pending',  label: 'Pending Donations', icon: Clock },
-      { path: '/admin/donations/receipts', label: 'Donation Receipts', icon: Receipt },
+      { path: '/admin/donations',          label: 'All Donations',         icon: HandHeart },
+      { path: '/admin/food-donations',     label: 'Food Donation',         icon: Utensils },
+      { path: '/admin/donations/pending',  label: 'Pending Donations',     icon: Clock },
+      { path: '/admin/donations/receipts', label: 'Donation Receipts',     icon: Receipt },
     ],
   },
   {
@@ -48,6 +49,7 @@ const NAV_GROUPS = [
       { path: '/admin/volunteers',              label: 'All Volunteers',        icon: Users },
       { path: '/admin/volunteers/applications', label: 'Volunteer Applications',icon: ClipboardList },
       { path: '/admin/volunteers/attendance',   label: 'Attendance',            icon: CalendarCheck },
+      { path: '/volunteer/food-donation',       label: 'Volunteer Portal ↗',    icon: ExternalLink, external: true },
     ],
   },
   {
@@ -121,6 +123,12 @@ const NAV_GROUPS = [
     label: 'Forms', icon: FileText,
     items: [
       { path: '/admin/forms', label: 'Forms Submissions', icon: FileText },
+    ],
+  },
+  {
+    label: 'Location Master', icon: MapPin,
+    items: [
+      { path: '/admin/locations', label: 'Locations List', icon: MapPin },
     ],
   },
 ];
@@ -237,7 +245,19 @@ const Sidebar = () => {
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(item.path);
-                    return (
+                    return item.external ? (
+                      <a key={item.path} href={item.path} target="_blank" rel="noopener noreferrer"
+                        onClick={() => setIsMobileOpen(false)}
+                        title={isCollapsed ? item.label : undefined}
+                        className={`flex items-center rounded-lg transition-all duration-200 hover:bg-white/10 hover:text-white ${isCollapsed ? 'justify-center p-3' : 'gap-3 px-3 py-2'}`}
+                        style={{
+                          backgroundColor: active ? 'rgba(255,255,255,0.18)' : 'transparent',
+                          color: active ? '#fff' : 'rgba(255,255,255,0.85)',
+                        }}>
+                        <Icon size={18} style={{ flexShrink: 0 }} />
+                        {!isCollapsed && <span className="text-sm font-semibold truncate">{item.label}</span>}
+                      </a>
+                    ) : (
                       <Link key={item.path} to={item.path}
                         ref={active ? activeRef : null}
                         onClick={() => setIsMobileOpen(false)}

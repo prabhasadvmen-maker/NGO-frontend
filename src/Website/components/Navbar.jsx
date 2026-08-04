@@ -13,7 +13,8 @@ import {
   Twitter, 
   Youtube, 
   Linkedin, 
-  ChevronDown 
+  ChevronDown,
+  Users
 } from 'lucide-react';
 import { useAuth } from '../../shared/AuthContext';
 
@@ -57,7 +58,7 @@ export const Navbar = () => {
   ];
 
   const isHome = location.pathname === '/';
-  const isJoinActive = location.pathname === '/membership' || location.pathname === '/volunteer';
+  const isJoinActive = location.pathname === '/membership' || location.pathname === '/volunteer' || location.pathname === '/volunteer/login' || location.pathname === '/volunteer/signup';
 
   return (
     <>
@@ -220,6 +221,12 @@ export const Navbar = () => {
                     Direct Donation
                   </Link>
                   <Link
+                    to="/food-donation"
+                    className="block px-4 py-2.5 text-xs font-bold text-[#1B5E20] hover:bg-green-50/50 transition-colors"
+                  >
+                    Food Donation
+                  </Link>
+                  <Link
                     to="/crowdfunding"
                     className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
                   >
@@ -228,7 +235,7 @@ export const Navbar = () => {
                 </div>
               </div>
 
-              {/* Join Us Hover Dropdown Menu */}
+              {/* Join Us Hover Dropdown Menu - UPDATED */}
               <div className="relative group/dropdown py-2">
                 <button 
                   className={`flex items-center gap-0.5 text-[10px] xl:text-xs font-bold uppercase tracking-wider bg-transparent border-0 cursor-pointer transition-colors duration-300 whitespace-nowrap ${
@@ -238,19 +245,40 @@ export const Navbar = () => {
                   <span>Join Us</span>
                   <ChevronDown size={11} />
                 </button>
-                <div className="absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50">
-                  <Link
-                    to="/membership"
-                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
-                  >
-                    Become a Member
-                  </Link>
-                  <Link
-                    to="/volunteer"
-                    className="block px-4 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors"
-                  >
-                    Become a Volunteer
-                  </Link>
+                <div className="absolute top-full left-0 w-56 bg-white border border-gray-100 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50">
+                  {/* Membership Section */}
+                  <div className="px-4 py-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Membership</p>
+                    <Link
+                      to="/membership"
+                      className="block px-3 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors rounded-lg"
+                    >
+                      Become a Member
+                    </Link>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-[1px] bg-slate-100 my-1" />
+
+                  {/* Volunteer Section */}
+                  <div className="px-4 py-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <Users size={12} />
+                      Volunteer Portal
+                    </p>
+                    <Link
+                      to="/volunteer/signup"
+                      className="block px-3 py-2.5 text-xs font-bold text-[#334155] hover:text-[#1B5E20] hover:bg-green-50/50 transition-colors rounded-lg"
+                    >
+                      Register as Volunteer
+                    </Link>
+                    <Link
+                      to="/volunteer/login"
+                      className="block px-3 py-2.5 text-xs font-bold text-[#1B5E20] hover:bg-green-50/50 transition-colors rounded-lg"
+                    >
+                      Volunteer Login
+                    </Link>
+                  </div>
                 </div>
               </div>
 
@@ -308,7 +336,7 @@ export const Navbar = () => {
         </nav>
       </header>
 
-      {/* Mobile Nav Overlay Menu - Redesigned to support close icon & custom styles */}
+      {/* Mobile Nav Overlay Menu */}
       <div className={`fixed inset-0 z-[999] bg-gradient-to-br from-[#0A1628] via-[#0A1628] to-[#1B5E20]/30 flex flex-col justify-between p-6 transition-transform duration-500 ease-out lg:hidden ${
         mobileOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
@@ -360,7 +388,7 @@ export const Navbar = () => {
           
           <div className="h-[1px] bg-white/5 my-1" />
 
-          {/* Join Us sublinks inside mobile menu drawer */}
+          {/* Membership */}
           <Link
             to="/membership"
             className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
@@ -369,16 +397,32 @@ export const Navbar = () => {
           >
             Become a Member
           </Link>
+
+          {/* Volunteer Section */}
+          <div className="h-[1px] bg-white/5 my-1" />
+          <p className="text-xs font-black text-green-400 uppercase tracking-wider flex items-center gap-1 mt-2">
+            <Users size={14} />
+            Volunteer Portal
+          </p>
           <Link
-            to="/volunteer"
+            to="/volunteer/signup"
             className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
-              location.pathname === '/volunteer' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
+              location.pathname === '/volunteer/signup' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
             }`}
           >
-            Become a Volunteer
+            Register as Volunteer
+          </Link>
+          <Link
+            to="/volunteer/login"
+            className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
+              location.pathname === '/volunteer/login' ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Volunteer Login
           </Link>
 
-          {/* Contact sublink inside mobile menu drawer */}
+          {/* Contact */}
+          <div className="h-[1px] bg-white/5 my-1" />
           <Link
             to="/contact"
             className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${

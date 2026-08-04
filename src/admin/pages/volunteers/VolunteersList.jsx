@@ -39,6 +39,14 @@ const ActionMenu = ({ volunteer, onView, onEdit, onDelete, onApprove, onReject }
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const handleLogin = () => {
+    if (volunteer.status !== 'Active') {
+      alert('Only Active volunteers can access the dashboard');
+      return;
+    }
+    window.location.href = `/volunteer-dashboard/${volunteer._id}`;
+  };
+
   return (
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen(p => !p)} className="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Actions">
@@ -46,6 +54,9 @@ const ActionMenu = ({ volunteer, onView, onEdit, onDelete, onApprove, onReject }
       </button>
       {open && (
         <div className="absolute right-0 mt-1 w-44 rounded-xl border border-gray-100 bg-white shadow-lg z-10 overflow-hidden">
+          <button onClick={() => { handleLogin(); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" title={volunteer.status !== 'Active' ? 'Only Active volunteers can login' : ''}>
+            <ArrowRight size={14} className="text-purple-600" /> Login as Volunteer
+          </button>
           <button onClick={() => { onView(volunteer); setOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
             <Eye size={14} className="text-blue-500" /> View Details
           </button>
@@ -71,6 +82,7 @@ const ActionMenu = ({ volunteer, onView, onEdit, onDelete, onApprove, onReject }
     </div>
   );
 };
+
 
 const VolunteersList = () => {
   const { token } = useAuth();
@@ -129,6 +141,7 @@ const VolunteersList = () => {
     availability: 'Part-time',
     branch: '',
     status: 'Pending',
+    password: '',
     profilePhoto: null
   });
 
@@ -147,6 +160,7 @@ const VolunteersList = () => {
     availability: 'Part-time',
     branch: '',
     status: 'Pending',
+    password: '',
     profilePhoto: null
   });
 
@@ -637,8 +651,13 @@ const VolunteersList = () => {
                       <td className="px-3.5 py-3">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border">
-                            {volunteer.photoUrl ? (
-                              <img src={volunteer.photoUrl} alt="" className="h-full w-full object-cover" />
+                            {volunteer.photoUrl || (volunteer.profilePhoto && volunteer.profilePhoto.startsWith('http')) ? (
+                              <img 
+                                src={volunteer.photoUrl || volunteer.profilePhoto} 
+                                alt={volunteer.fullName} 
+                                className="h-full w-full object-cover" 
+                                onError={(e) => { e.target.style.display = 'none'; }}
+                              />
                             ) : (
                               <User size={18} className="text-gray-500" />
                             )}
@@ -793,6 +812,15 @@ const VolunteersList = () => {
                   className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Password (Optional)</label>
+                <input type="password" placeholder="Default: Last 4 digits + Savitram" value={addForm.password}
+                  onChange={e => setAddForm(p => ({ ...p, password: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Date of Birth</label>
                 <input type="date" value={addForm.dateOfBirth}
@@ -1085,6 +1113,15 @@ const VolunteersList = () => {
                   className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Password (Optional)</label>
+                <input type="password" placeholder="Leave empty to keep current" value={editForm.password}
+                  onChange={e => setEditForm(p => ({ ...p, password: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none focus:border-green-500 bg-gray-50" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Date of Birth</label>
                 <input type="date" value={editForm.dateOfBirth}

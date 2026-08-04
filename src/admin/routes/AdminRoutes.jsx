@@ -15,6 +15,7 @@ const MembersList = lazy(() => import('../pages/members/MembersList'));
 const MemberApproval = lazy(() => import('../pages/members/MemberApproval'));
 const MembershipRequests = lazy(() => import('../pages/members/MembershipRequests'));
 const DonationsList = lazy(() => import('../pages/donations/DonationsList'));
+const FoodDonationDashboard = lazy(() => import('../pages/fooddonation/FoodDonationDashboard'));
 const PendingDonations = lazy(() => import('../pages/donations/PendingDonations'));
 const DonationReceipts = lazy(() => import('../pages/donations/DonationReceipts'));
 const EventsList = lazy(() => import('../pages/events/EventsList'));
@@ -39,6 +40,7 @@ const VolunteerAttendance = lazy(() => import('../pages/volunteers/Attendance'))
 const ProjectsList = lazy(() => import('../pages/projects/ProjectsList'));
 const ProjectProgress = lazy(() => import('../pages/projects/ProjectProgress'));
 const ProjectExpenses = lazy(() => import('../pages/projects/ProjectExpenses'));
+const LocationsList = lazy(() => import('../pages/locations/LocationsList'));
 
 const lazyWrap = (Component, props = {}) => (
   <Suspense fallback={
@@ -56,11 +58,13 @@ const AdminRoutes = () => [
   <Route key="admin-login" path="/admin/login" element={lazyWrap(AdminLogin)} />,
   <Route key="admin-autologin" path="/admin/autologin" element={lazyWrap(AdminAutoLogin)} />,
   <Route key="admin-dashboard" path="/admin/dashboard" element={AD(Dashboard)} />,
+  <Route key="admin-locations" path="/admin/locations" element={AD(LocationsList)} />,
   <Route key="admin-members" path="/admin/members" element={AD(MembersList)} />,
   <Route key="admin-members-add" path="/admin/members/add" element={AD(AddMember)} />,
   <Route key="admin-members-approval" path="/admin/members/approval" element={AD(MemberApproval)} />,
   <Route key="admin-members-requests" path="/admin/members/requests" element={AD(MembershipRequests)} />,
   <Route key="admin-donations" path="/admin/donations" element={AD(DonationsList)} />,
+  <Route key="admin-food-donations" path="/admin/food-donations" element={AD(FoodDonationDashboard)} />,
   <Route key="admin-donations-pending" path="/admin/donations/pending" element={AD(PendingDonations)} />,
   <Route key="admin-donations-receipts" path="/admin/donations/receipts" element={AD(DonationReceipts)} />,
   <Route key="admin-beneficiaries" path="/admin/beneficiaries" element={AD(BeneficiariesList)} />,

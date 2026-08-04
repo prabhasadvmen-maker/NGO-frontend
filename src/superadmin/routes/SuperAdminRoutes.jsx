@@ -14,6 +14,7 @@ const Members = lazy(() => import('../pages/Members'));
 const Volunteers = lazy(() => import('../pages/Volunteers'));
 const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
 const Donations = lazy(() => import('../pages/Donations'));
+const FoodDonationAnalytics = lazy(() => import('../pages/FoodDonationAnalytics'));
 const Projects = lazy(() => import('../pages/Projects'));
 const Events = lazy(() => import('../pages/Events'));
 const Crowdfunding = lazy(() => import('../pages/Crowdfunding'));
@@ -59,6 +60,7 @@ const SuperAdminRoutes = () => [
   <Route key="users-volunteers" path="/users/volunteers" element={SA(Volunteers)} />,
   <Route key="users-beneficiaries" path="/users/beneficiaries" element={SA(Beneficiaries)} />,
   <Route key="donations" path="/donations" element={SA(Donations)} />,
+  <Route key="food-donations-analytics" path="/superadmin/food-donations/analytics" element={SA(FoodDonationAnalytics)} />,
   <Route key="projects" path="/dashboard/projects" element={SA(Projects)} />,
   <Route key="events" path="/dashboard/events" element={SA(Events)} />,
   <Route key="crowdfunding" path="/dashboard/crowdfunding" element={SA(Crowdfunding)} />,

@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './shared/AuthContext';
 import { SidebarProvider } from './shared/SidebarContext';
 import { ToastProvider } from './shared/ToastContext';
 import ProtectedRoute from './shared/ProtectedRoute';
+import VolunteerProtectedRoute from './shared/VolunteerProtectedRoute';
 import Preloader from './Website/components/Preloader';
 import ScrollToTop from './shared/ScrollToTop';
 
@@ -27,6 +28,11 @@ const Public_Projects = lazy(() => import('./Website/pages/ProjectsPage'));
 const Public_Events = lazy(() => import('./Website/pages/EventsPage'));
 const Public_Crowdfunding = lazy(() => import('./Website/pages/CrowdfundingPage'));
 const Public_Login = lazy(() => import('./Website/pages/WebsiteLogin'));
+const VolunteerDashboard = lazy(() => import('./volunteer/pages/VolunteerDashboard'));
+const VolunteerFoodDonationDashboard = lazy(() => import('./volunteer/pages/FoodDonationDashboard'));
+const VolunteerMyAssignments = lazy(() => import('./volunteer/pages/MyAssignments'));
+const VolunteerCollectionInterface = lazy(() => import('./volunteer/pages/CollectionInterface'));
+const VolunteerDistributionInterface = lazy(() => import('./volunteer/pages/DistributionInterface'));
 const NotFoundPage = lazy(() => import('./Website/pages/NotFoundPage'));
 
 const wrapSuspense = (Component) => (
@@ -42,6 +48,64 @@ function AppContent() {
       <Route path="/projects" element={wrapSuspense(Public_Projects)} />
       <Route path="/events" element={wrapSuspense(Public_Events)} />
       <Route path="/crowdfunding" element={wrapSuspense(Public_Crowdfunding)} />
+
+      {/* Volunteer Dashboard & Food Rescue Portal (Protected) */}
+      <Route
+        path="/volunteer-dashboard/:id"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerDashboard)}
+          </VolunteerProtectedRoute>
+        }
+      />
+      <Route
+        path="/volunteer/dashboard"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerDashboard)}
+          </VolunteerProtectedRoute>
+        }
+      />
+      <Route
+        path="/volunteer/food-donations"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerFoodDonationDashboard)}
+          </VolunteerProtectedRoute>
+        }
+      />
+      <Route
+        path="/volunteer/food-donation"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerFoodDonationDashboard)}
+          </VolunteerProtectedRoute>
+        }
+      />
+      <Route
+        path="/volunteer/food-donation/my-assignments"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerMyAssignments)}
+          </VolunteerProtectedRoute>
+        }
+      />
+      <Route
+        path="/volunteer/food-donation/:id/collect"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerCollectionInterface)}
+          </VolunteerProtectedRoute>
+        }
+      />
+      <Route
+        path="/volunteer/food-donation/:id/distribute"
+        element={
+          <VolunteerProtectedRoute>
+            {wrapSuspense(VolunteerDistributionInterface)}
+          </VolunteerProtectedRoute>
+        }
+      />
 
       {/* Login Page */}
       <Route path="/login" element={wrapSuspense(Public_Login)} />

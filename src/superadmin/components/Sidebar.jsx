@@ -6,7 +6,7 @@ import {
   DollarSign, FolderKanban, CalendarDays, Megaphone,
   Award, CreditCard, Wallet, BarChart3, Globe, MessageSquare,
   Image, FileText, ClipboardList, Settings, Database,
-  Plug, Bot, User, HelpCircle, ChevronDown, ChevronRight, Gift
+  Plug, Bot, User, HelpCircle, ChevronDown, ChevronRight, Gift, ExternalLink
 } from 'lucide-react';
 import { COLORS } from '../../shared/colors';
 import { useSidebar } from '../../shared/SidebarContext';
@@ -29,10 +29,11 @@ const NAV_GROUPS = [
   {
     label: 'Users',
     items: [
-      { path: '/users/admins',        label: 'Admins',        icon: ShieldCheck },
-      { path: '/users/members',       label: 'Members',       icon: Users },
-      { path: '/users/volunteers',    label: 'Volunteers',    icon: UserCheck },
-      { path: '/users/beneficiaries', label: 'Beneficiaries', icon: Heart },
+      { path: '/users/admins',        label: 'Admins',             icon: ShieldCheck },
+      { path: '/users/members',       label: 'Members',            icon: Users },
+      { path: '/users/volunteers',    label: 'Volunteers',         icon: UserCheck },
+      { path: '/users/beneficiaries', label: 'Beneficiaries',      icon: Heart },
+      { path: '/volunteer/food-donation', label: 'Volunteer Portal ↗', icon: ExternalLink, external: true },
     ],
   },
   {
@@ -176,7 +177,16 @@ const Sidebar = () => {
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(item.path);
-                    return (
+                    return item.external ? (
+                      <a key={item.path} href={item.path} target="_blank" rel="noopener noreferrer"
+                        onClick={() => setIsMobileOpen(false)}
+                        title={isCollapsed ? item.label : undefined}
+                        className={`flex items-center rounded-lg transition-all duration-200 hover:bg-white/10 hover:text-white ${isCollapsed ? 'justify-center p-3' : 'gap-3 px-3 py-2'}`}
+                        style={{ backgroundColor: active ? 'rgba(255,255,255,0.18)' : 'transparent', color: active ? '#fff' : 'rgba(255,255,255,0.85)' }}>
+                        <Icon size={18} style={{ flexShrink: 0 }} />
+                        {!isCollapsed && <span className="text-sm font-semibold truncate">{item.label}</span>}
+                      </a>
+                    ) : (
                       <Link key={item.path} to={item.path}
                         ref={active ? activeRef : null}
                         onClick={() => setIsMobileOpen(false)}
