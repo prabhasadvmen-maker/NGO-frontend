@@ -82,9 +82,8 @@ export default function MyAssignments() {
   const currentList = getTabDonations();
 
   const handleLogout = () => {
-    localStorage.removeItem('savitram_volunteer_token');
-    localStorage.removeItem('savitram_volunteer_user');
-    navigate('/volunteer/login');
+    localStorage.clear();
+    window.location.href = '/volunteer/login';
   };
 
   return (
