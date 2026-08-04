@@ -8,7 +8,18 @@ export default class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+    const isChunkLoadError = 
+      error?.name === 'ChunkLoadError' ||
+      error?.message?.includes('dynamically imported module') ||
+      error?.message?.includes('Failed to fetch') ||
+      error?.message?.includes('Expected a JavaScript-or-Wasm module script');
+
+    if (isChunkLoadError && !sessionStorage.getItem('chunk_reload_attempted')) {
+      sessionStorage.setItem('chunk_reload_attempted', 'true');
+      window.location.reload();
+    }
+
+    return { hasError: true, error, isChunkLoadError };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -17,10 +28,12 @@ export default class ErrorBoundary extends React.Component {
   }
 
   handleReload = () => {
+    sessionStorage.removeItem('chunk_reload_attempted');
     window.location.reload();
   };
 
   handleGoHome = () => {
+    sessionStorage.removeItem('chunk_reload_attempted');
     window.location.href = '/';
   };
 

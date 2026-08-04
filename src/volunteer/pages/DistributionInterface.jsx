@@ -10,10 +10,13 @@ import PhotoUpload from '../components/PhotoUpload';
 
 const getAuthToken = () => {
   return (
+    localStorage.getItem('savitram_volunteer_token') ||
     localStorage.getItem('savitram_admin_token') ||
     localStorage.getItem('savitram_superadmin_token') ||
     localStorage.getItem('savitram_member_token') ||
     localStorage.getItem('token') ||
+    localStorage.getItem('adminToken') ||
+    localStorage.getItem('volunteerToken') ||
     ''
   );
 };
