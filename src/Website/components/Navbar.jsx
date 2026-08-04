@@ -24,6 +24,26 @@ export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrollWidth, setScrollWidth] = useState(0);
+  const [volunteerUser, setVolunteerUser] = useState(null);
+  const [volDropdownOpen, setVolDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const volStr = localStorage.getItem('savitram_volunteer_user');
+    if (volStr) {
+      try {
+        setVolunteerUser(JSON.parse(volStr));
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setVolunteerUser(null);
+    }
+  }, [location.pathname]);
+
+  const handleVolunteerLogout = () => {
+    localStorage.clear();
+    window.location.href = '/volunteer/login';
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -298,7 +318,83 @@ export const Navbar = () => {
 
             {/* CTA Buttons */}
             <div className="hidden lg:flex items-center gap-2 xl:gap-4 flex-shrink-0">
-              {user ? (
+              {volunteerUser ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setVolDropdownOpen(!volDropdownOpen)}
+                    className="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100/80 transition-all cursor-pointer shadow-xs"
+                  >
+                    <div className="relative">
+                      {volunteerUser.profilePhotoUrl || volunteerUser.profilePhoto ? (
+                        <img
+                          src={volunteerUser.profilePhotoUrl || volunteerUser.profilePhoto}
+                          alt={volunteerUser.fullName || volunteerUser.name || 'Volunteer'}
+                          className="w-8 h-8 rounded-full object-cover border border-emerald-600"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#1B5E20] text-white flex items-center justify-center font-black text-xs">
+                          {(volunteerUser.fullName || volunteerUser.name || 'V').charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+                    </div>
+                    <div className="text-left hidden xl:block">
+                      <p className="text-xs font-black text-[#1B5E20] leading-tight truncate max-w-[120px]">
+                        {volunteerUser.fullName || volunteerUser.name || 'Volunteer'}
+                      </p>
+                      <p className="text-[10px] text-slate-500 font-medium truncate max-w-[130px]">
+                        {volunteerUser.email || 'Volunteer'}
+                      </p>
+                    </div>
+                    <ChevronDown size={14} className="text-[#1B5E20]" />
+                  </button>
+
+                  {volDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200 shadow-xl z-50 overflow-hidden divide-y divide-slate-100 text-left">
+                      <div className="p-4 bg-emerald-900 text-white">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-black text-sm border-2 border-emerald-400 flex-shrink-0">
+                            {(volunteerUser.fullName || volunteerUser.name || 'V').charAt(0).toUpperCase()}
+                          </div>
+                          <div className="overflow-hidden">
+                            <p className="text-xs font-black text-white truncate">{volunteerUser.fullName || volunteerUser.name || 'Volunteer'}</p>
+                            <p className="text-[11px] text-emerald-200 truncate">{volunteerUser.email || ''}</p>
+                            {volunteerUser.mobileNumber && (
+                              <p className="text-[10px] text-emerald-300 font-medium">📞 {volunteerUser.mobileNumber}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="py-1">
+                        <Link
+                          to="/volunteer/food-donation/my-assignments"
+                          onClick={() => setVolDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+                        >
+                          <span>🚚 My Rescue Assignments</span>
+                        </Link>
+                        <Link
+                          to="/volunteer/food-donation"
+                          onClick={() => setVolDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-emerald-700 hover:bg-emerald-50 transition-colors"
+                        >
+                          <span>🍲 Available Food Requests</span>
+                        </Link>
+                      </div>
+
+                      <div className="p-2 bg-slate-50">
+                        <button
+                          onClick={handleVolunteerLogout}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-extrabold text-red-600 hover:bg-red-100/60 rounded-xl transition-colors cursor-pointer"
+                        >
+                          <span>Log Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : user ? (
                 <Link
                   to={user.role === 'super_admin' ? '/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-xl border border-[#1B5E20] text-[10px] xl:text-xs font-bold text-[#1B5E20] hover:bg-[#1B5E20]/5 transition-all whitespace-nowrap"

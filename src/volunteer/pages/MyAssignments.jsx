@@ -95,15 +95,40 @@ export default function MyAssignments() {
         {/* Top Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
           <div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-900 flex items-center justify-center shadow-xs">
-                <Truck size={24} />
+            <div className="flex items-center gap-4">
+              <div className="relative flex-shrink-0">
+                {volunteerInfo?.profilePhotoUrl || volunteerInfo?.profilePhoto ? (
+                  <img
+                    src={volunteerInfo.profilePhotoUrl || volunteerInfo.profilePhoto}
+                    alt={volunteerInfo?.fullName || volunteerInfo?.name || 'Volunteer'}
+                    className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-600 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-2xl bg-[#1B5E20] text-white flex items-center justify-center font-black text-xl shadow-md">
+                    {(volunteerInfo?.fullName || volunteerInfo?.name || 'V').charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" title="Active Rescue Volunteer" />
               </div>
-              <div>
-                <h1 className="text-2xl font-black text-slate-900 tracking-tight">My Food Rescue Assignments</h1>
-                <p className="text-xs text-slate-500 font-medium">
-                  {volunteerInfo?.name && `${volunteerInfo.name} -`} Manage your active pickups, upload verification photos, and record distributions.
-                </p>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-2xl font-black text-slate-900 tracking-tight">My Food Rescue Assignments</h1>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-[#1B5E20] font-extrabold text-[10px] uppercase tracking-wider">
+                    {volunteerInfo?.fullName || volunteerInfo?.name || 'Volunteer'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-slate-600 flex-wrap font-medium">
+                  {volunteerInfo?.email && (
+                    <span className="flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700 font-bold">
+                      ✉️ {volunteerInfo.email}
+                    </span>
+                  )}
+                  {(volunteerInfo?.mobileNumber || volunteerInfo?.mobile) && (
+                    <span className="flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700 font-bold">
+                      📞 {volunteerInfo.mobileNumber || volunteerInfo.mobile}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
