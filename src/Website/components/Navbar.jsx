@@ -26,6 +26,7 @@ export const Navbar = () => {
   const [scrollWidth, setScrollWidth] = useState(0);
   const [volunteerUser, setVolunteerUser] = useState(null);
   const [volDropdownOpen, setVolDropdownOpen] = useState(false);
+  const [volImgError, setVolImgError] = useState(false);
 
   useEffect(() => {
     const volStr = localStorage.getItem('savitram_volunteer_user');
@@ -325,17 +326,25 @@ export const Navbar = () => {
                     className="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100/80 transition-all cursor-pointer shadow-xs"
                   >
                     <div className="relative">
-                      {volunteerUser.profilePhotoUrl || volunteerUser.profilePhoto ? (
-                        <img
-                          src={volunteerUser.profilePhotoUrl || volunteerUser.profilePhoto}
-                          alt={volunteerUser.fullName || volunteerUser.name || 'Volunteer'}
-                          className="w-8 h-8 rounded-full object-cover border border-emerald-600"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-[#1B5E20] text-white flex items-center justify-center font-black text-xs">
-                          {(volunteerUser.fullName || volunteerUser.name || 'V').charAt(0).toUpperCase()}
-                        </div>
-                      )}
+                      {(() => {
+                        const photoSrc = volunteerUser.profilePhotoUrl || volunteerUser.profilePhoto;
+                        const isRealUrl = photoSrc && typeof photoSrc === 'string' && (photoSrc.startsWith('http://') || photoSrc.startsWith('https://') || photoSrc.startsWith('data:image'));
+                        if (isRealUrl && !volImgError) {
+                          return (
+                            <img
+                              src={photoSrc}
+                              alt={volunteerUser.fullName || volunteerUser.name || 'Volunteer'}
+                              onError={() => setVolImgError(true)}
+                              className="w-8 h-8 rounded-full object-cover border border-emerald-600"
+                            />
+                          );
+                        }
+                        return (
+                          <div className="w-8 h-8 rounded-full bg-[#1B5E20] text-white flex items-center justify-center font-black text-xs">
+                            {(volunteerUser.fullName || volunteerUser.name || 'V').charAt(0).toUpperCase()}
+                          </div>
+                        );
+                      })()}
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
                     </div>
                     <div className="text-left hidden xl:block">

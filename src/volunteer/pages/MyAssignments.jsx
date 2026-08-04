@@ -26,6 +26,7 @@ export default function MyAssignments() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [volunteerInfo, setVolunteerInfo] = useState(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const userStr = localStorage.getItem('savitram_volunteer_user');
@@ -97,17 +98,25 @@ export default function MyAssignments() {
           <div>
             <div className="flex items-center gap-4">
               <div className="relative flex-shrink-0">
-                {volunteerInfo?.profilePhotoUrl || volunteerInfo?.profilePhoto ? (
-                  <img
-                    src={volunteerInfo.profilePhotoUrl || volunteerInfo.profilePhoto}
-                    alt={volunteerInfo?.fullName || volunteerInfo?.name || 'Volunteer'}
-                    className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-600 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-14 h-14 rounded-2xl bg-[#1B5E20] text-white flex items-center justify-center font-black text-xl shadow-md">
-                    {(volunteerInfo?.fullName || volunteerInfo?.name || 'V').charAt(0).toUpperCase()}
-                  </div>
-                )}
+                {(() => {
+                  const photoSrc = volunteerInfo?.profilePhotoUrl || volunteerInfo?.profilePhoto;
+                  const isRealUrl = photoSrc && typeof photoSrc === 'string' && (photoSrc.startsWith('http://') || photoSrc.startsWith('https://') || photoSrc.startsWith('data:image'));
+                  if (isRealUrl && !imgError) {
+                    return (
+                      <img
+                        src={photoSrc}
+                        alt={volunteerInfo?.fullName || volunteerInfo?.name || 'Volunteer'}
+                        onError={() => setImgError(true)}
+                        className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-600 shadow-sm"
+                      />
+                    );
+                  }
+                  return (
+                    <div className="w-14 h-14 rounded-2xl bg-[#1B5E20] text-white flex items-center justify-center font-black text-xl shadow-md border-2 border-emerald-600">
+                      {(volunteerInfo?.fullName || volunteerInfo?.name || 'V').charAt(0).toUpperCase()}
+                    </div>
+                  );
+                })()}
                 <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" title="Active Rescue Volunteer" />
               </div>
               <div className="space-y-1">
