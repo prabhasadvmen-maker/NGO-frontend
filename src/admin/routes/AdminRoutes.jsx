@@ -41,6 +41,9 @@ const ProjectsList = lazy(() => import('../pages/projects/ProjectsList'));
 const ProjectProgress = lazy(() => import('../pages/projects/ProjectProgress'));
 const ProjectExpenses = lazy(() => import('../pages/projects/ProjectExpenses'));
 const LocationsList = lazy(() => import('../pages/locations/LocationsList'));
+const CoursesList = lazy(() => import('../pages/courses/CoursesList'));
+const EnrollmentsList = lazy(() => import('../pages/courses/EnrollmentsList'));
+const CertificatesList = lazy(() => import('../pages/courses/CertificatesList'));
 
 const lazyWrap = (Component, props = {}) => (
   <Suspense fallback={
@@ -59,6 +62,9 @@ const AdminRoutes = () => [
   <Route key="admin-autologin" path="/admin/autologin" element={lazyWrap(AdminAutoLogin)} />,
   <Route key="admin-dashboard" path="/admin/dashboard" element={AD(Dashboard)} />,
   <Route key="admin-locations" path="/admin/locations" element={AD(LocationsList)} />,
+  <Route key="admin-courses" path="/admin/courses" element={AD(CoursesList)} />,
+  <Route key="admin-courses-enrollments" path="/admin/courses/enrollments" element={AD(EnrollmentsList)} />,
+  <Route key="admin-courses-certificates" path="/admin/courses/certificates" element={AD(CertificatesList)} />,
   <Route key="admin-members" path="/admin/members" element={AD(MembersList)} />,
   <Route key="admin-members-add" path="/admin/members/add" element={AD(AddMember)} />,
   <Route key="admin-members-approval" path="/admin/members/approval" element={AD(MemberApproval)} />,

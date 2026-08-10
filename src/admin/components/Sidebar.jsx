@@ -7,7 +7,8 @@ import {
   Megaphone, Award, CreditCard, ArrowUpCircle, ArrowDownCircle,
   ArrowLeftRight, BarChart3, Globe, Home, Newspaper, Image, MessageSquare,
   Mail, Phone, MessageCircle, Bell, FileText, User, Settings, HelpCircle,
-  ChevronDown, ChevronRight, Menu, X, Utensils, ExternalLink, MapPin
+  ChevronDown, ChevronRight, Menu, X, Utensils, ExternalLink, MapPin,
+  GraduationCap, BookOpen
 } from 'lucide-react';
 import { COLORS } from '../../shared/colors';
 import { useSidebar } from '../../shared/SidebarContext';
@@ -73,6 +74,14 @@ const NAV_GROUPS = [
     items: [
       { path: '/admin/crowdfunding',               label: 'Campaigns',       icon: Megaphone },
       { path: '/admin/crowdfunding/contributions', label: 'Contributions',   icon: HandHeart },
+    ],
+  },
+  {
+    label: 'Courses', icon: GraduationCap,
+    items: [
+      { path: '/admin/courses',              label: 'Courses Directory',   icon: GraduationCap },
+      { path: '/admin/courses/enrollments',  label: 'Enrollments',         icon: FileText },
+      { path: '/admin/courses/certificates', label: 'Course Certificates', icon: Award },
     ],
   },
   {

@@ -33,6 +33,9 @@ const VolunteerMyAssignments = lazy(() => import('../volunteer/pages/MyAssignmen
 const VolunteerCollectionInterface = lazy(() => import('../volunteer/pages/CollectionInterface'));
 const VolunteerDistributionInterface = lazy(() => import('../volunteer/pages/DistributionInterface'));
 
+const CoursesPage = lazy(() => import('./pages/CoursesPage'));
+const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'));
+
 const wrapSuspense = (Component) => (
   <React.Suspense fallback={
     <div className="flex items-center justify-center h-screen bg-[#0A1628]">
@@ -45,6 +48,8 @@ const wrapSuspense = (Component) => (
 
 export const WebsiteRoutes = () => [
   <Route key="home" path="/" element={wrapSuspense(HomePage)} />,
+  <Route key="courses" path="/courses" element={wrapSuspense(CoursesPage)} />,
+  <Route key="course-detail" path="/courses/:id" element={wrapSuspense(CourseDetailPage)} />,
   <Route key="donate" path="/donate" element={wrapSuspense(DonatePage)} />,
   <Route key="food-donation" path="/food-donation" element={wrapSuspense(FoodDonationPage)} />,
   <Route key="food-donation-donate" path="/food-donation/donate" element={wrapSuspense(DonationFormPage)} />,

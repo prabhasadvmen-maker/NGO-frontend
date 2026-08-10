@@ -303,6 +303,19 @@ export const Navbar = () => {
                 </div>
               </div>
 
+              {/* Courses Link - Placed Next to Join Us */}
+              <Link
+                to="/courses"
+                className={`relative text-[10px] xl:text-xs font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap ${
+                  location.pathname === '/courses' ? 'text-[#1B5E20]' : 'text-[#334155] hover:text-[#0A1628]'
+                }`}
+              >
+                Courses
+                {location.pathname === '/courses' && (
+                  <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-[#1B5E20] rounded-full" />
+                )}
+              </Link>
+
               {/* Contact Link */}
               <Link
                 to="/contact"
