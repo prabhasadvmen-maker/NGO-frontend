@@ -10,6 +10,7 @@ import { Footer } from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import FloatingUtils from '../components/FloatingUtils';
 import API_BASE_URL from '../../shared/apiConfig';
+import axios from 'axios';
 
 const CATEGORY_OPTIONS = [
   'Artificial Intelligence',
@@ -27,69 +28,6 @@ const CATEGORY_OPTIONS = [
   'Electrician & Repair',
   'Organic Farming',
   'Soft Skills'
-];
-
-const FALLBACK_COURSES = [
-  {
-    _id: 'sample-1',
-    title: 'Computer Literacy & Office Automation',
-    description: 'Master basic computer skills, MS Office suite, internet browsing, and digital transactions for career opportunities.',
-    category: 'Computer Literacy',
-    instructor: 'Ramesh Verma',
-    duration: '3 Months',
-    totalLessons: 36,
-    mode: 'Offline',
-    language: 'Hindi + English',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80',
-    totalSeats: 50,
-    enrolledCount: 38,
-    eligibility: '10th Pass',
-    ageMin: 15,
-    ageMax: 45,
-    level: 'Beginner',
-    status: 'Active',
-    syllabus: ['Computer Fundamentals & Windows OS', 'MS Word & Document Creation', 'MS Excel & Data Analysis', 'Internet Safety & Email Communication']
-  },
-  {
-    _id: 'sample-2',
-    title: 'Artificial Intelligence & Prompt Engineering Masterclass',
-    description: 'Learn ChatGPT, Gemini, Claude, AI image generation, and automation tools to build practical tech skills.',
-    category: 'Artificial Intelligence',
-    instructor: 'Anil Kumar Singh',
-    duration: '1 Month',
-    totalLessons: 16,
-    mode: 'Online',
-    language: 'Hindi + English',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop&q=80',
-    totalSeats: 100,
-    enrolledCount: 65,
-    eligibility: 'Anyone',
-    ageMin: 14,
-    ageMax: 50,
-    level: 'Beginner',
-    status: 'Active',
-    syllabus: ['Intro to Generative AI', 'Prompt Engineering Patterns', 'AI Content & Graphic Tools', 'Automating Daily Tasks with AI']
-  },
-  {
-    _id: 'sample-3',
-    title: 'Vocational Tailoring & Garment Designing',
-    description: 'Comprehensive hands-on training in measuring, cutting, stitching, and boutique management for self-employment.',
-    category: 'Tailoring & Crafts',
-    instructor: 'Sunita Sharma',
-    duration: '4 Months',
-    totalLessons: 48,
-    mode: 'Offline',
-    language: 'Hindi',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop&q=80',
-    totalSeats: 30,
-    enrolledCount: 22,
-    eligibility: 'Anyone',
-    ageMin: 16,
-    ageMax: 55,
-    level: 'Beginner',
-    status: 'Active',
-    syllabus: ['Fabric Knowledge & Measuring', 'Basic Stitching & Sewing Machine Operation', 'Pattern Cutting & Designer Blouse', 'Boutique Business Basics']
-  }
 ];
 
 export default function CoursesPage() {
@@ -125,22 +63,20 @@ export default function CoursesPage() {
   const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (categoryFilter) params.append('category', categoryFilter);
-      if (modeFilter) params.append('mode', modeFilter);
-      if (levelFilter) params.append('level', levelFilter);
+      const params = {};
+      if (categoryFilter) params.category = categoryFilter;
+      if (modeFilter) params.mode = modeFilter;
+      if (levelFilter) params.level = levelFilter;
 
-      const res = await fetch(`${API_BASE_URL}/api/public/courses?${params.toString()}`);
-      const data = await res.json();
-
-      if (data?.success && Array.isArray(data.data) && data.data.length > 0) {
-        setCourses(data.data);
+      const res = await axios.get(`${API_BASE_URL}/api/public/courses`, { params });
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        setCourses(res.data.data);
       } else {
-        setCourses(FALLBACK_COURSES);
+        setCourses([]);
       }
     } catch (err) {
       console.error('Failed to fetch public courses:', err);
-      setCourses(FALLBACK_COURSES);
+      setCourses([]);
     } finally {
       setLoading(false);
     }

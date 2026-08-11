@@ -76,6 +76,7 @@ export const Navbar = () => {
     { label: 'News', path: '/news' },
     { label: 'Donate', path: '/donate' },
     { label: 'Crowdfunding', path: '/crowdfunding' },
+    { label: 'Courses', path: '/courses' }
   ];
 
   const isHome = location.pathname === '/';
@@ -489,17 +490,22 @@ export const Navbar = () => {
 
         {/* Mobile Menu Links */}
         <div className="flex-grow py-5 overflow-y-auto flex flex-col gap-3 text-left">
-          {navLinks.slice(0, 8).map((link) => {
+          {navLinks.map((link) => {
             const active = location.pathname === link.path;
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 ${
+                className={`text-base font-extrabold uppercase tracking-wider transition-all duration-300 flex items-center justify-between ${
                   active ? 'text-green-400 translate-x-2' : 'text-white/70 hover:text-white'
                 }`}
               >
-                {link.label}
+                <span>{link.label}</span>
+                {link.path === '/courses' && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white uppercase tracking-wider">
+                    FREE
+                  </span>
+                )}
               </Link>
             );
           })}

@@ -10,94 +10,12 @@ import { Footer } from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import FloatingUtils from '../components/FloatingUtils';
 import API_BASE_URL from '../../shared/apiConfig';
-
-const FALLBACK_COURSES = [
-  {
-    _id: 'sample-1',
-    title: 'Computer Literacy & Office Automation',
-    description: 'Master basic computer skills, MS Office suite, internet browsing, and digital transactions for career opportunities. Designed specifically for beginners and rural youth seeking job-readiness.',
-    category: 'Computer Literacy',
-    instructor: 'Ramesh Verma',
-    duration: '3 Months',
-    totalLessons: 36,
-    mode: 'Offline',
-    language: 'Hindi + English',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80',
-    totalSeats: 50,
-    enrolledCount: 38,
-    eligibility: '10th Pass',
-    ageMin: 15,
-    ageMax: 45,
-    startDate: '2026-08-15',
-    endDate: '2026-11-15',
-    level: 'Beginner',
-    status: 'Active',
-    syllabus: [
-      'Module 1: Computer Fundamentals & Operating System Basics',
-      'Module 2: MS Word & Professional Document Creation',
-      'Module 3: MS Excel Data Handling & Financial Spreadsheet Basics',
-      'Module 4: Internet Safety, Email Etiquette & Digital Payments'
-    ]
-  },
-  {
-    _id: 'sample-2',
-    title: 'Artificial Intelligence & Prompt Engineering Masterclass',
-    description: 'Learn ChatGPT, Gemini, Claude, AI image generation, and automation tools to build practical tech skills and stand out in modern job markets.',
-    category: 'Artificial Intelligence',
-    instructor: 'Anil Kumar Singh',
-    duration: '1 Month',
-    totalLessons: 16,
-    mode: 'Online',
-    language: 'Hindi + English',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop&q=80',
-    totalSeats: 100,
-    enrolledCount: 65,
-    eligibility: 'Anyone',
-    ageMin: 14,
-    ageMax: 50,
-    startDate: '2026-08-20',
-    endDate: '2026-09-20',
-    level: 'Beginner',
-    status: 'Active',
-    syllabus: [
-      'Module 1: Introduction to Generative AI & Large Language Models',
-      'Module 2: Effective Prompt Engineering & Problem Solving Patterns',
-      'Module 3: AI Media Generation Tools (Images, Audio, Transcripts)',
-      'Module 4: Automating Workflows & Building AI-Powered Projects'
-    ]
-  },
-  {
-    _id: 'sample-3',
-    title: 'Vocational Tailoring & Garment Designing',
-    description: 'Comprehensive hands-on training in measuring, cutting, stitching, and boutique management aimed at economic self-reliance for women.',
-    category: 'Tailoring & Crafts',
-    instructor: 'Sunita Sharma',
-    duration: '4 Months',
-    totalLessons: 48,
-    mode: 'Offline',
-    language: 'Hindi',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop&q=80',
-    totalSeats: 30,
-    enrolledCount: 22,
-    eligibility: 'Anyone',
-    ageMin: 16,
-    ageMax: 55,
-    startDate: '2026-09-01',
-    endDate: '2026-12-30',
-    level: 'Beginner',
-    status: 'Active',
-    syllabus: [
-      'Module 1: Fabric Knowledge, Measurements & Sewing Tools',
-      'Module 2: Basic & Advanced Stitching Techniques',
-      'Module 3: Pattern Drafting for Blouses & Suits',
-      'Module 4: Quality Finishing & Micro-Boutique Entrepreneurship'
-    ]
-  }
-];
+import axios from 'axios';
 
 export default function CourseDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -124,18 +42,15 @@ export default function CourseDetailPage() {
   const fetchCourse = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/public/courses/${id}`);
-      const data = await res.json();
-      if (data?.success && data.data) {
-        setCourse(data.data);
+      const res = await axios.get(`${API_BASE_URL}/api/public/courses/${id}`);
+      if (res.data?.success && res.data.data) {
+        setCourse(res.data.data);
       } else {
-        const foundFallback = FALLBACK_COURSES.find(c => c._id === id) || FALLBACK_COURSES[0];
-        setCourse(foundFallback);
+        setCourse(null);
       }
     } catch (err) {
       console.error('Failed to fetch course detail:', err);
-      const foundFallback = FALLBACK_COURSES.find(c => c._id === id) || FALLBACK_COURSES[0];
-      setCourse(foundFallback);
+      setCourse(null);
     } finally {
       setLoading(false);
     }
