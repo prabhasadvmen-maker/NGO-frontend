@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import {
@@ -280,17 +280,132 @@ const DonationsList = () => {
   };
 
   const handlePrint = () => {
-    const printContent = document.getElementById('receipt-print-area').innerHTML;
+    const numberToWords = (num) => {
+      const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+      const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+      const inWords = (n) => {
+          if ((n = n.toString()).length > 9) return 'overflow';
+          let m = ('000000000' + n).slice(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+          if (!m) return;
+          let str = '';
+          str += (m[1] != 0) ? (a[Number(m[1])] || b[m[1][0]] + ' ' + a[m[1][1]]) + 'Crore ' : '';
+          str += (m[2] != 0) ? (a[Number(m[2])] || b[m[2][0]] + ' ' + a[m[2][1]]) + 'Lakh ' : '';
+          str += (m[3] != 0) ? (a[Number(m[3])] || b[m[3][0]] + ' ' + a[m[3][1]]) + 'Thousand ' : '';
+          str += (m[4] != 0) ? (a[Number(m[4])] || b[m[4][0]] + ' ' + a[m[4][1]]) + 'Hundred ' : '';
+          str += (m[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(m[5])] || b[m[5][0]] + ' ' + a[m[5][1]]) : '';
+          return str.trim();
+      };
+      return inWords(num);
+    };
+
+    const dateStr = new Date(viewingDonation.donationDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const amountStr = viewingDonation.amount.toLocaleString('en-IN');
+    const amountWords = numberToWords(viewingDonation.amount) + ' Only';
+
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <html>
         <head>
           <title>Donation Receipt - ${viewingDonation?.receiptNumber}</title>
-          <script src="https://cdn.tailwindcss.com"></script>
+          <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #333; }
+            .receipt-wrapper { max-width: 800px; margin: 20px auto; padding: 40px; border: 2px solid #1e3a8a; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            @media print {
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+              .receipt-wrapper { margin: 0; padding: 20px; border: 2px solid #1e3a8a; box-shadow: none; max-width: 100%; }
+            }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo-section { display: flex; align-items: center; gap: 20px; }
+            .logo-section img { width: 100px; height: 100px; object-fit: contain; border-radius: 50%; border: 1px solid #ccc; }
+            .trust-info h1 { margin: 0 0 5px 0; color: #1e3a8a; font-size: 28px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+            .trust-info p { margin: 2px 0; font-size: 13px; color: #555; }
+            .receipt-meta { text-align: right; }
+            .receipt-meta .badge { display: inline-block; padding: 4px 12px; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 16px; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
+            .receipt-meta p { margin: 4px 0; font-size: 14px; font-weight: bold; font-family: monospace; color: #444; }
+            
+            .content { margin-bottom: 40px; }
+            .info-row { display: flex; margin-bottom: 20px; font-size: 15px; line-height: 1.6; }
+            .info-label { width: 220px; font-weight: 600; color: #555; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; }
+            .info-value { flex: 1; font-weight: 700; color: #111; border-bottom: 1px dashed #ccc; padding-bottom: 2px; }
+            
+            .amount-box { margin-top: 30px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; }
+            .amount-box .main-amount { font-size: 24px; font-weight: 900; color: #1e3a8a; margin-bottom: 5px; }
+            .amount-box .words-amount { font-size: 14px; color: #475569; font-weight: 600; font-style: italic; }
+            
+            .footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px; }
+            .notes { font-size: 12px; color: #64748b; line-height: 1.5; max-width: 60%; }
+            .notes p { margin: 3px 0; }
+            .signature { text-align: center; width: 200px; }
+            .sig-line { border-bottom: 1px dashed #94a3b8; height: 40px; margin-bottom: 10px; }
+            .sig-text { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+          </style>
         </head>
-        <body onload="window.print();window.close()">
-          <div class="max-w-3xl mx-auto border p-8 rounded-lg mt-10 bg-white">
-            ${printContent}
+        <body onload="setTimeout(() => { window.print(); window.close(); }, 300)">
+          <div class="receipt-wrapper">
+            <div class="header">
+              <div class="logo-section">
+                <img src="${window.location.origin}/NGO%20logo.jpeg" alt="Logo" onerror="this.style.display='none'" />
+                <div class="trust-info">
+                  <h1>Savitram Foundation</h1>
+                  <p><strong>Regd No.</strong> ADV/2024/99124</p>
+                  <p>A non-profit organization dedicated to social welfare.</p>
+                </div>
+              </div>
+              <div class="receipt-meta">
+                <div class="badge">DONATION RECEIPT</div>
+                <p>Receipt No: ${viewingDonation?.receiptNumber}</p>
+                <p>Date: ${dateStr}</p>
+              </div>
+            </div>
+            
+            <div class="content">
+              <div class="info-row">
+                <div class="info-label">Received with thanks from</div>
+                <div class="info-value">${viewingDonation?.donorName}</div>
+              </div>
+              ${viewingDonation?.donorPhone ? `
+              <div class="info-row">
+                <div class="info-label">Contact Number</div>
+                <div class="info-value">${viewingDonation.donorPhone}</div>
+              </div>` : ''}
+              ${viewingDonation?.donorEmail ? `
+              <div class="info-row">
+                <div class="info-label">Email Address</div>
+                <div class="info-value">${viewingDonation.donorEmail}</div>
+              </div>` : ''}
+              <div class="info-row">
+                <div class="info-label">Donation Purpose</div>
+                <div class="info-value">${viewingDonation?.purpose}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Payment Mode</div>
+                <div class="info-value" style="text-transform: capitalize;">${viewingDonation?.paymentMethod ? viewingDonation.paymentMethod.replace('_', ' ') : 'Online Payment'}</div>
+              </div>
+              ${viewingDonation?.transactionId ? `
+              <div class="info-row">
+                <div class="info-label">Transaction Reference</div>
+                <div class="info-value" style="font-family: monospace;">${viewingDonation.transactionId}</div>
+              </div>` : ''}
+              
+              <div class="amount-box">
+                <div class="main-amount">₹${amountStr}</div>
+                <div class="words-amount">Rupees ${amountWords}</div>
+              </div>
+            </div>
+            
+            <div class="footer">
+              <div class="notes">
+                <p style="font-weight: bold; color: #334155; margin-bottom: 5px;">Important Notes:</p>
+                <p>1. All donations are tax exempted under Section 80G of Income Tax Act.</p>
+                <p>2. This is a computer generated receipt and requires no physical signature.</p>
+                <p>3. Thank you for your generous contribution towards our cause.</p>
+              </div>
+              <div class="signature">
+                <div class="sig-line"></div>
+                <div class="sig-text">Authorized Signatory</div>
+                <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">Savitram Foundation</div>
+              </div>
+            </div>
           </div>
         </body>
       </html>

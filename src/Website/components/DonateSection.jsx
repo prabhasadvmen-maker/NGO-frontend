@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Wallet, User, Mail, Phone, IndianRupee, Globe2 } from 'lucide-react';
+import { Heart, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Wallet, User, Mail, Phone, IndianRupee, Globe2, Download, X } from 'lucide-react';
 import API_BASE_URL from '../../shared/apiConfig';
 import axios from 'axios';
 
 export const DonateSection = () => {
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null); // 'success' or 'error'
+  const [status, setStatus] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successData, setSuccessData] = useState(null);
   
-  // Donation Selection State
-  const [donationType, setDonationType] = useState('Monthly'); // 'Monthly' or 'One-time'
-  const [selectedAmount, setSelectedAmount] = useState('800'); // '800', '1000', '1500', 'other'
+  const [donationType, setDonationType] = useState('Monthly');
+  const [selectedAmount, setSelectedAmount] = useState('800');
   const [customAmount, setCustomAmount] = useState('');
 
-  // Form Fields State
   const [formData, setFormData] = useState({
     donorName: '',
     donorEmail: '',
@@ -38,14 +36,12 @@ export const DonateSection = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Load Razorpay script with proper security headers
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
     script.async = true;
     script.defer = true;
     script.crossOrigin = 'anonymous';
-    script.integrity = '';
     script.onload = () => {
       console.log('✅ Razorpay script loaded');
     };
@@ -59,6 +55,111 @@ export const DonateSection = () => {
       }
     };
   }, []);
+
+  const generateReceiptPDF = (data) => {
+    const { donorName, amount, receiptNumber, transactionId, donationDate } = data;
+    const formattedDate = new Date(donationDate).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Donation Receipt - ${receiptNumber}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+    .receipt { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header { text-align: center; border-bottom: 3px solid #1B5E20; padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { color: #1B5E20; margin: 0; font-size: 28px; }
+    .header p { color: #666; margin: 5px 0 0 0; }
+    .section { margin: 20px 0; }
+    .section-title { font-weight: bold; color: #1B5E20; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
+    .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .row:last-child { border-bottom: none; }
+    .label { color: #666; font-weight: 500; }
+    .value { color: #1B5E20; font-weight: bold; }
+    .amount-section { background: #1B5E20; color: white; padding: 30px; text-align: center; border-radius: 8px; margin: 30px 0; }
+    .amount-label { font-size: 14px; opacity: 0.9; }
+    .amount-value { font-size: 48px; font-weight: bold; margin: 10px 0; }
+    .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; }
+    .footer p { margin: 5px 0; }
+    @media print { body { background: white; } .receipt { box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <div class="receipt">
+    <div class="header">
+      <h1>SAVITRAM FOUNDATION</h1>
+      <p>Donation Receipt</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Donor Information</div>
+      <div class="row">
+        <span class="label">Name:</span>
+        <span class="value">${donorName}</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Receipt Details</div>
+      <div class="row">
+        <span class="label">Receipt Number:</span>
+        <span class="value">${receiptNumber}</span>
+      </div>
+      <div class="row">
+        <span class="label">Transaction ID:</span>
+        <span class="value">${transactionId}</span>
+      </div>
+      <div class="row">
+        <span class="label">Date:</span>
+        <span class="value">${formattedDate}</span>
+      </div>
+    </div>
+
+    <div class="amount-section">
+      <div class="amount-label">Donation Amount</div>
+      <div class="amount-value">₹${amount.toLocaleString('en-IN')}</div>
+    </div>
+
+    <div class="section">
+      <p style="text-align: center; color: #1B5E20; font-weight: bold; margin: 20px 0;">
+        Thank you for your generous contribution!
+      </p>
+      <p style="text-align: center; color: #666; font-size: 13px;">
+        Your donation will help us continue our mission of healthcare, education, and community development.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>SAVITRAM FOUNDATION</p>
+      <p>A-13, GRAPHIX 2 SECTOR 62, Noida, Uttar Pradesh - 201301</p>
+      <p>Email: Support.savitramfoundation@gmail.com | Phone: 8860036008</p>
+      <p style="margin-top: 20px;">This receipt has been generated digitally and is valid without signature.</p>
+    </div>
+  </div>
+
+  <script>
+    window.print();
+  </script>
+</body>
+</html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Donation-Receipt-${receiptNumber}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
 
   const handleDonateSubmit = async (e) => {
     e.preventDefault();
@@ -82,7 +183,6 @@ export const DonateSection = () => {
     setLoading(true);
 
     try {
-      // Step 1: Create Razorpay Order
       const orderRes = await axios.post(`${API_BASE_URL}/api/payments/create-order`, {
         amount: finalAmount,
         donorName: formData.donorName,
@@ -97,10 +197,9 @@ export const DonateSection = () => {
 
       const { orderId, keyId } = orderRes.data;
 
-      // Step 2: Open Razorpay Checkout
       const options = {
         key: keyId,
-        amount: finalAmount * 100, // paise
+        amount: finalAmount * 100,
         currency: 'INR',
         name: 'SAVITRAM FOUNDATION',
         description: `${donationType} Donation - ${formData.purpose}`,
@@ -111,7 +210,6 @@ export const DonateSection = () => {
           contact: formData.donorPhone,
         },
         handler: async (response) => {
-          // Step 3: Verify Payment
           try {
             const verifyRes = await axios.post(`${API_BASE_URL}/api/payments/verify-payment`, {
               razorpay_order_id: orderId,
@@ -127,12 +225,13 @@ export const DonateSection = () => {
             if (verifyRes.data.success) {
               setStatus('success');
               setSuccessData({
-                donorName: formData.donorName,
-                amount: finalAmount,
+                donorName: verifyRes.data.donorName,
+                amount: verifyRes.data.amount,
                 receiptNumber: verifyRes.data.receiptNumber,
-                transactionId: response.razorpay_payment_id,
+                transactionId: verifyRes.data.transactionId,
+                donationDate: verifyRes.data.donationDate,
               });
-              // Reset form
+              
               setFormData({
                 donorName: '',
                 donorEmail: '',
@@ -142,6 +241,7 @@ export const DonateSection = () => {
                 notes: ''
               });
               setCustomAmount('');
+              setSelectedAmount('800');
             } else {
               setStatus('error');
               setErrorMessage('Payment verification failed. Please contact support.');
@@ -172,14 +272,74 @@ export const DonateSection = () => {
     }
   };
 
+  const closeSuccessModal = () => {
+    setStatus(null);
+    setSuccessData(null);
+  };
+
+  if (status === 'success' && successData) {
+    return (
+      <section className="py-20 text-left bg-transparent fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+        <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl animate-fadeIn">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-black text-[#1B5E20]">🎉 Donation Successful!</h2>
+            <button onClick={closeSuccessModal} className="text-gray-400 hover:text-gray-600">
+              <X size={24} />
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+              <p className="text-sm text-gray-700">
+                Thank you, <span className="font-bold text-[#1B5E20]">{successData.donorName}</span>!
+              </p>
+              <p className="text-2xl font-black text-[#1B5E20] mt-2">
+                ₹{successData.amount.toLocaleString('en-IN')}
+              </p>
+              <p className="text-xs text-gray-600 mt-2">
+                Your donation has been received and a receipt has been sent to your email.
+              </p>
+            </div>
+
+            <div className="space-y-3 p-4 bg-gray-50 rounded-2xl">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Receipt Number:</span>
+                <span className="font-bold text-[#1B5E20] select-all">{successData.receiptNumber}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Transaction ID:</span>
+                <span className="font-bold text-[#1B5E20] select-all text-xs">{successData.transactionId}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => generateReceiptPDF(successData)}
+              className="w-full py-3 rounded-xl bg-[#1B5E20] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#0d3d15] transition-all"
+            >
+              <Download size={18} />
+              Download Receipt
+            </button>
+
+            <button
+              onClick={closeSuccessModal}
+              className="w-full py-3 rounded-xl bg-gray-200 text-gray-800 font-bold text-sm hover:bg-gray-300 transition-all"
+            >
+              Close
+            </button>
+
+            <p className="text-xs text-center text-gray-600">
+              A detailed receipt has been sent to your email. You can download it anytime from your email.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 text-left bg-transparent">
       <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Main Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
-          {/* Left: Donation Form & Options */}
           <div className="lg:col-span-7 bg-white rounded-3xl p-8 border border-gray-100 shadow-xl"
             style={{ boxShadow: '0 20px 40px -15px rgba(0,0,0,0.06)' }}>
             
@@ -198,23 +358,6 @@ export const DonateSection = () => {
               </p>
             </div>
 
-            {/* Status Banner */}
-            {status === 'success' && successData && (
-              <div className="mb-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 space-y-2">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="text-emerald-600 flex-shrink-0" size={20} />
-                  <span className="font-bold text-sm">Donation Received Successfully!</span>
-                </div>
-                <p className="text-xs leading-relaxed font-semibold">
-                  Thank you, <span className="font-extrabold">{successData.donorName}</span>! Your payment of <span className="font-extrabold">₹{successData.amount.toLocaleString()}</span> has been recorded.
-                </p>
-                <div className="pt-2 border-t border-emerald-250/20 text-[10px] font-semibold text-emerald-600 space-y-1">
-                  <p>Receipt Number: <span className="font-bold select-all">{successData.receiptNumber}</span></p>
-                  <p>Transaction ID: <span className="font-bold select-all">{successData.transactionId}</span></p>
-                </div>
-              </div>
-            )}
-
             {status === 'error' && (
               <div className="mb-6 p-4 rounded-2xl bg-orange-50 border border-orange-100 text-orange-800 flex items-start gap-2.5">
                 <AlertCircle className="text-orange-600 mt-0.5 flex-shrink-0" size={18} />
@@ -226,8 +369,6 @@ export const DonateSection = () => {
             )}
 
             <form onSubmit={handleDonateSubmit} className="space-y-6">
-              
-              {/* 1. Toggle Donation Type */}
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Donation Frequency</label>
                 <div className="grid grid-cols-2 gap-3 bg-[#F8F7F4] p-1.5 rounded-2xl border border-gray-100">
@@ -256,7 +397,6 @@ export const DonateSection = () => {
                 </div>
               </div>
 
-              {/* 2. Amount Selection Cards */}
               <div className="space-y-3">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Select Amount (INR)</label>
                 <div className="grid grid-cols-4 gap-3">
@@ -283,252 +423,121 @@ export const DonateSection = () => {
                         : 'bg-white text-gray-700 border-gray-250 hover:bg-[#F8F7F4]'
                     }`}
                   >
-                    <span className="text-xs">OTHER</span>
+                    <span className="text-xs">Other</span>
                   </button>
                 </div>
+              </div>
 
-                {/* Custom Amount Input Field */}
-                {selectedAmount === 'other' && (
-                  <div className="relative pt-1 animate-fadeIn">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center text-gray-500 font-bold">
-                      <IndianRupee size={16} />
-                    </div>
-                    <input
-                      type="number"
-                      placeholder="Enter custom amount"
-                      value={customAmount}
-                      onChange={(e) => setCustomAmount(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50 font-bold"
-                    />
-                  </div>
-                )}
+              {selectedAmount === 'other' && (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Custom Amount</label>
+                  <input
+                    type="number"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value)}
+                    placeholder="Enter amount in INR"
+                    min="1"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-[#1B5E20] outline-none text-sm font-semibold"
+                  />
+                </div>
+              )}
 
-                {/* Dynamic Impact Statement */}
-                <div className="p-4 rounded-2xl bg-[#1B5E20]/5 border border-[#1B5E20]/10 text-xs font-semibold text-[#1B5E20] flex items-center gap-2">
-                  <Heart size={14} className="text-[#1B5E20] fill-[#1B5E20]/20" />
-                  <span>Impact: {getImpactMessage()}</span>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Your Full Name *</label>
+                <input
+                  type="text"
+                  name="donorName"
+                  value={formData.donorName}
+                  onChange={handleFieldChange}
+                  placeholder="Enter your full name"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-[#1B5E20] outline-none text-sm font-semibold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Email Address</label>
+                  <input
+                    type="email"
+                    name="donorEmail"
+                    value={formData.donorEmail}
+                    onChange={handleFieldChange}
+                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-[#1B5E20] outline-none text-sm font-semibold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Phone Number</label>
+                  <input
+                    type="tel"
+                    name="donorPhone"
+                    value={formData.donorPhone}
+                    onChange={handleFieldChange}
+                    placeholder="+91 XXXXX XXXXX"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-[#1B5E20] outline-none text-sm font-semibold"
+                  />
                 </div>
               </div>
 
-              {/* 3. Donor Personal Information */}
-              <div className="space-y-4 pt-2">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-gray-100 pb-2">Donor Information</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Full Name */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Full Name *</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="donorName"
-                        placeholder="E.g., Rajesh Kumar"
-                        value={formData.donorName}
-                        onChange={handleFieldChange}
-                        required
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50"
-                      />
-                      <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                    </div>
-                  </div>
-
-                  {/* Email Address */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Email Address</label>
-                    <div className="relative">
-                      <input
-                        type="email"
-                        name="donorEmail"
-                        placeholder="rajesh@example.com"
-                        value={formData.donorEmail}
-                        onChange={handleFieldChange}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50"
-                      />
-                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                    </div>
-                  </div>
-
-                  {/* Phone Number */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Phone Number (For Razorpay)</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="donorPhone"
-                        placeholder="9876543210"
-                        value={formData.donorPhone}
-                        onChange={handleFieldChange}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50"
-                      />
-                      <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                    </div>
-                  </div>
-
-                  {/* Purpose */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Donation Purpose</label>
-                    <select
-                      name="purpose"
-                      value={formData.purpose}
-                      onChange={handleFieldChange}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50 cursor-pointer"
-                    >
-                      <option value="General">General Fund</option>
-                      <option value="Education">Education & Literacy</option>
-                      <option value="Medical">Medical Aid & Health</option>
-                      <option value="Disaster Relief">Disaster Relief</option>
-                    </select>
-                  </div>
-
-                  {/* Payment Method - Razorpay Only */}
-                  <div className="space-y-1 sm:col-span-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Payment Method</label>
-                    <div className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm font-bold text-gray-700 flex items-center gap-2">
-                      <ShieldCheck size={16} className="text-[#1B5E20]" />
-                      <span>Razorpay Secure Checkout (UPI, Card, NetBanking, Wallet)</span>
-                    </div>
-                  </div>
-
-                  {/* Custom Notes */}
-                  <div className="space-y-1 sm:col-span-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Notes (Optional)</label>
-                    <textarea
-                      name="notes"
-                      rows="2"
-                      placeholder="Write a message or notes about your donation..."
-                      value={formData.notes}
-                      onChange={handleFieldChange}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50"
-                    />
-                  </div>
-
-                  {/* Razorpay Info */}
-                  <div className="space-y-1 sm:col-span-2 p-3 rounded-xl bg-blue-50 border border-blue-100 text-[10px] font-semibold text-blue-700">
-                    <p>💳 <span className="font-bold">Powered by Razorpay:</span> India's most trusted payment gateway. Your payment is 100% secure and encrypted.</p>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Donation Purpose</label>
+                <select
+                  name="purpose"
+                  value={formData.purpose}
+                  onChange={handleFieldChange}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-[#1B5E20] outline-none text-sm font-semibold bg-white cursor-pointer"
+                >
+                  <option value="General">General Fund</option>
+                  <option value="Education">Education</option>
+                  <option value="Medical">Medical Aid</option>
+                  <option value="Disaster Relief">Disaster Relief</option>
+                </select>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-2xl text-sm font-extrabold text-white transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg flex items-center justify-center gap-2 border-0 disabled:opacity-60"
-                style={{ backgroundColor: '#F97316' }} // Custom Orange Accent
+                className="w-full py-4 rounded-xl bg-[#1B5E20] text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#0d3d15] transition-all disabled:opacity-50 cursor-pointer"
               >
                 {loading ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    Processing...
+                  </>
                 ) : (
                   <>
-                    <span>PROCEED & DONATE NOW</span>
-                    <ArrowRight size={16} />
+                    <Heart size={18} />
+                    Donate Now
                   </>
                 )}
               </button>
-
-              {/* Secure Checkout details */}
-              <div className="flex items-center justify-center gap-2 text-gray-400 font-bold text-[10px] uppercase">
-                <ShieldCheck size={14} className="text-[#1B5E20]" />
-                <span>Secure 256-bit SSL encrypted connection via Razorpay</span>
-              </div>
             </form>
           </div>
 
-          {/* Right: UNICEF Styled Story Card */}
-          <div className="lg:col-span-5 space-y-8 lg:sticky lg:top-36">
-            
-            {/* Media Story Card */}
-            <div className="rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-xl relative"
-              style={{ boxShadow: '0 20px 40px -15px rgba(0,0,0,0.06)' }}>
-              <div className="h-96 w-full relative">
-                <img
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop"
-                  alt="Child in rural village"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="384"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/95 via-[#0A1628]/40 to-transparent" />
-                
-                {/* Floating promise quote inside cover */}
-                <div className="absolute bottom-6 left-6 right-6 text-white text-left space-y-2">
-                  <span className="text-[10px] text-orange-400 font-black uppercase tracking-wider block">UNICEF Styled Outreach</span>
-                  <h2 className="font-display font-black text-2xl leading-tight">
-                    Your PROMISE can change a child's story.
-                  </h2>
-                  <p className="text-[11px] text-gray-300 font-medium leading-relaxed">
-                    "Access to clean health checkups and basic education represents the absolute baseline of a dignified childhood."
-                  </p>
-                </div>
-              </div>
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-gradient-to-br from-[#1B5E20] to-[#0d3d15] rounded-3xl p-8 text-white">
+              <h3 className="text-xl font-black mb-4">Your Impact</h3>
+              <p className="text-sm leading-relaxed opacity-90">{getImpactMessage()}</p>
             </div>
 
-            {/* Impact Stats Card */}
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-md space-y-4"
-              style={{ boxShadow: '6px 6px 12px #DCDCDC, -6px -6px 12px #FFFFFF' }}>
-              <div className="flex items-center gap-2 border-b border-gray-50 pb-3">
-                <Globe2 className="text-[#1B5E20]" size={18} />
-                <h3 className="text-xs font-bold text-[#0A1628] uppercase tracking-wider">Our Cumulative Impact</h3>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 text-left">
-                <div>
-                  <span className="text-xl font-black text-[#1B5E20] block">12,500+</span>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase mt-0.5 block leading-none">Lives Impacted</span>
+            <div className="space-y-4">
+              {[
+                { icon: ShieldCheck, title: 'Secure Payment', desc: 'Powered by Razorpay' },
+                { icon: CheckCircle2, title: 'Instant Receipt', desc: 'Digital receipt via email' },
+                { icon: Globe2, title: 'Tax Exempted', desc: 'Section 80G compliant' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex gap-4 p-4 bg-white rounded-2xl border border-gray-100">
+                  <item.icon className="text-[#1B5E20] flex-shrink-0" size={24} />
+                  <div>
+                    <p className="font-bold text-sm text-gray-800">{item.title}</p>
+                    <p className="text-xs text-gray-500">{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-xl font-black text-[#1B5E20] block">35+</span>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase mt-0.5 block leading-none">Audited Projects</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-
         </div>
-
-        {/* Bottom Section: Why Monthly Support Matters */}
-        <div className="mt-20 border-t border-gray-200/50 pt-16 space-y-12">
-          <div className="max-w-2xl text-left space-y-3">
-            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#0A1628]">
-              Why does monthly support matter?
-            </h2>
-            <p className="text-xs text-gray-500 font-semibold leading-relaxed">
-              By donating monthly, you enable the SAVITRAM FOUNDATION to allocate funds systematically, ensure consistent logistics, and plan large-scale audits and healthcare setups beforehand.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            {[
-              {
-                title: 'Long-term Planning',
-                desc: 'Sustainable development campaigns like setting up schools, hiring local doctors, and installing water filtration devices take months. Monthly support keeps these campaigns running continuously.',
-                icon: <Wallet className="text-[#1B5E20]" size={20} />
-              },
-              {
-                title: 'Direct Allocation',
-                desc: 'Directing your donations directly to local branches allows local departments to quickly resolve urgent requirements, such as purchasing medicines or educational stationary.',
-                icon: <User className="text-[#1B5E20]" size={20} />
-              },
-              {
-                title: 'Transparency Audits',
-                desc: 'We are committed to absolute financial clarity. Every single rupee received is accounted for, and our financial balance sheets and audit metrics are fully public and visible.',
-                icon: <ShieldCheck className="text-[#1B5E20]" size={20} />
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-white border border-gray-50 p-6 rounded-2xl shadow-sm space-y-3"
-                style={{ boxShadow: '6px 6px 12px #EFEFEF, -6px -6px 12px #FFFFFF' }}>
-                <div className="w-10 h-10 rounded-xl bg-[#1B5E20]/5 flex items-center justify-center">
-                  {item.icon}
-                </div>
-                <h3 className="font-display font-extrabold text-base text-[#0A1628]">{item.title}</h3>
-                <p className="text-xs text-gray-550 font-medium leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
       </div>
     </section>
   );

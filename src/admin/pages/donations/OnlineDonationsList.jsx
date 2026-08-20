@@ -1,48 +1,90 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Loader2, ArrowLeft, Printer, Eye, X, FileText } from 'lucide-react';
+import {
+  Zap, IndianRupee, Loader2, Search, X, Eye, FileText, Printer, Phone, Mail
+} from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../../shared/AuthContext';
 import { useToast } from '../../../shared/ToastContext';
 import API_BASE_URL from '../../../shared/apiConfig';
 
-const API_BASE = `${API_BASE_URL}/api/admin/donations`;
+const API_BASE = `${API_BASE_URL}/api/admin/donations/online`;
 
-const DonationReceipts = () => {
+const OnlineDonationsList = () => {
   const { token, user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const [donations, setDonations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [viewingDonation, setViewingDonation] = useState(null);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [stats, setStats] = useState({
+    totalCount: 0,
+    completedCount: 0,
+    pendingCount: 0,
+    totalAmount: 0
+  });
 
-  const fetchReceipts = useCallback(async () => {
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [filterPurpose, setFilterPurpose] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10);
+
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewingDonation, setViewingDonation] = useState(null);
+
+  const fetchDonations = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}?paymentStatus=completed&limit=100`, {
+      const statusParam = filterStatus ? `&paymentStatus=${filterStatus}` : '';
+      const purposeParam = filterPurpose ? `&purpose=${encodeURIComponent(filterPurpose)}` : '';
+      const startParam = startDate ? `&startDate=${startDate}` : '';
+      const endParam = endDate ? `&endDate=${endDate}` : '';
+      
+      const url = `${API_BASE}/all?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}${statusParam}${purposeParam}${startParam}${endParam}`;
+      const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (data.success) {
         setDonations(data.data);
+        if (data.pagination) {
+          setTotalPages(data.pagination.totalPages);
+        }
       }
     } catch (err) {
       console.error(err);
-      toast.error('Failed to load completed donation receipts');
+      toast.error('Failed to fetch online donations');
     } finally {
       setLoading(false);
     }
-  }, [token, toast]);
+  }, [token, page, limit, search, filterStatus, filterPurpose, startDate, endDate, toast]);
+
+  const fetchStats = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_BASE}/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStats(data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [token]);
 
   useEffect(() => {
-    fetchReceipts();
-  }, [fetchReceipts]);
+    fetchDonations();
+    fetchStats();
+  }, [fetchDonations, fetchStats]);
 
-  const handleOpenReceipt = (donation) => {
+  const handleOpenViewModal = (donation) => {
     setViewingDonation(donation);
     setIsViewModalOpen(true);
   };
@@ -184,81 +226,210 @@ const DonationReceipts = () => {
   return (
     <Layout>
       <div className="space-y-6 pb-10">
-        {/* Back Link */}
-        <button
-          onClick={() => navigate('/admin/donations')}
-          className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-green-800 transition-colors border-0 bg-transparent cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          Back to list
-        </button>
-
-        {/* Title */}
+        {/* Header */}
         <div className="text-left">
-          <h1 className="text-2xl font-extrabold text-gray-800 tracking-tight">Donation Receipts</h1>
-          <p className="text-xs text-gray-400 font-bold mt-1">Generate, print, and download receipt invoices for completed transactions</p>
+          <h1 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+            <Zap className="text-blue-600" size={28} />
+            Online Donations (Razorpay)
+          </h1>
+          <p className="text-xs text-gray-400 font-bold mt-1">All website donations received through Razorpay payment gateway</p>
         </div>
 
-        {/* Receipts Table */}
+        {/* Stats Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+          {[
+            { label: 'Total Collected', value: `₹${stats.totalAmount.toLocaleString('en-IN')}`, color: '#2196F3', sub: 'From online payments' },
+            { label: 'Total Transactions', value: stats.totalCount, color: '#FF9800', sub: 'All online donations' },
+            { label: 'Completed', value: stats.completedCount, color: '#4CAF50', sub: 'Verified payments' },
+            { label: 'Pending', value: stats.pendingCount, color: '#F44336', sub: 'Awaiting verification' }
+          ].map((card, idx) => (
+            <div 
+              key={idx} 
+              className="rounded-3xl p-5 bg-white flex items-center gap-4 transition-all duration-300 hover:scale-[1.01] border border-gray-100 shadow-sm"
+            >
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${card.color}10` }}>
+                <IndianRupee size={20} style={{ color: card.color }} />
+              </div>
+              <div>
+                <p className="text-xl font-black text-gray-800 leading-tight">{card.value}</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">{card.label}</p>
+                <p className="text-[9px] text-gray-400 font-semibold mt-0.5">{card.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Filters */}
+        <div className="rounded-3xl p-5 bg-white border border-gray-100 shadow-sm space-y-4 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+            <div className="space-y-1 md:col-span-2 lg:col-span-2">
+              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Search</label>
+              <input
+                type="text"
+                placeholder="Donor name, email, receipt..."
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                className="w-full px-4 py-2.5 rounded-xl text-xs outline-none border border-gray-200 focus:border-blue-500 transition-colors bg-gray-50/50 font-semibold text-gray-700"
+              />
+            </div>
+
+            <div className="space-y-1 md:col-span-1 lg:col-span-1">
+              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Status</label>
+              <select
+                value={filterStatus}
+                onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
+                className="w-full px-4 py-2.5 rounded-xl text-xs outline-none border border-gray-200 focus:border-blue-500 transition-colors bg-gray-50/50 bg-transparent cursor-pointer font-semibold text-gray-600"
+              >
+                <option value="">All Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+
+            <div className="space-y-1 md:col-span-1 lg:col-span-1">
+              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Purpose</label>
+              <select
+                value={filterPurpose}
+                onChange={(e) => { setFilterPurpose(e.target.value); setPage(1); }}
+                className="w-full px-4 py-2.5 rounded-xl text-xs outline-none border border-gray-200 focus:border-blue-500 transition-colors bg-gray-50/50 bg-transparent cursor-pointer font-semibold text-gray-600"
+              >
+                <option value="">All Purposes</option>
+                <option value="General">General</option>
+                <option value="Education">Education</option>
+                <option value="Medical">Medical Aid</option>
+                <option value="Disaster Relief">Disaster Relief</option>
+              </select>
+            </div>
+
+            <div className="space-y-1 md:col-span-2 lg:col-span-2">
+              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Date Range</label>
+              <div className="flex gap-2">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+                  className="flex-1 px-3 py-2.5 rounded-xl text-xs outline-none border border-gray-200 focus:border-blue-500 transition-colors bg-gray-50/50 font-semibold"
+                />
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+                  className="flex-1 px-3 py-2.5 rounded-xl text-xs outline-none border border-gray-200 focus:border-blue-500 transition-colors bg-gray-50/50 font-semibold"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* List Table */}
         <div className="rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-sm text-left">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="animate-spin text-green-600" size={32} />
+              <Loader2 className="animate-spin text-blue-600" size={32} />
             </div>
           ) : donations.length === 0 ? (
-            <div className="text-center py-20 text-gray-400 font-bold text-xs uppercase tracking-wider">No completed donations found to generate receipts.</div>
+            <div className="text-center py-20 text-gray-400 font-bold text-xs uppercase tracking-wider">No online donations yet.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b bg-gray-50 border-gray-150">
-                    {['Receipt No', 'Donor Name', 'Amount', 'Date', 'Purpose', 'Payment Method', 'Action'].map((h, i) => (
-                      <th key={i} className="px-5 py-3.5 text-left text-[10px] font-bold uppercase tracking-wider text-gray-450">{h}</th>
+                    {['#', 'Receipt No', 'Donor', 'Contact', 'Purpose', 'Amount', 'Status', 'Date', 'Action'].map((h) => (
+                      <th key={h} className="px-5 py-3.5 text-left text-[10px] font-bold uppercase tracking-wider text-gray-500">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 font-semibold text-gray-655">
-                  {donations.map(donation => (
+                <tbody className="divide-y divide-gray-100 font-semibold text-gray-600">
+                  {donations.map((donation, idx) => (
                     <tr key={donation._id} className="hover:bg-gray-50/30 transition-colors">
-                      <td className="px-5 py-4 font-mono font-bold text-green-850">{donation.receiptNumber}</td>
-                      <td className="px-5 py-4 font-bold text-gray-800">{donation.donorName}</td>
-                      <td className="px-5 py-4 font-black text-gray-850">₹{donation.amount.toLocaleString('en-IN')}</td>
-                      <td className="px-5 py-4 text-gray-600 font-semibold">
-                        {new Date(donation.donationDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      <td className="px-5 py-4 text-gray-400 font-bold">{(page - 1) * limit + idx + 1}</td>
+                      <td className="px-5 py-4 font-bold text-gray-800">{donation.receiptNumber}</td>
+                      <td className="px-5 py-4">
+                        <p className="font-extrabold text-gray-800">{donation.donorName}</p>
                       </td>
-                      <td className="px-5 py-4 font-semibold text-gray-600">{donation.purpose}</td>
-                      <td className="px-5 py-4 capitalize font-semibold text-gray-600">{donation.paymentMethod.replace('_', ' ')}</td>
+                      <td className="px-5 py-4">
+                        <div className="space-y-0.5">
+                          {donation.donorPhone ? (
+                            <p className="text-gray-700 font-bold text-xs flex items-center gap-1">
+                              <Phone size={11} className="text-gray-400" /> {donation.donorPhone}
+                            </p>
+                          ) : null}
+                          {donation.donorEmail ? (
+                            <p className="text-gray-400 text-[10px] flex items-center gap-1 max-w-[150px] truncate" title={donation.donorEmail}>
+                              <Mail size={11} className="text-gray-300" /> {donation.donorEmail}
+                            </p>
+                          ) : null}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className="px-2 py-0.5 text-[10px] font-extrabold rounded bg-blue-50 text-blue-700 border border-blue-150">
+                          {donation.purpose}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 font-black text-gray-800 text-sm">
+                        ₹{donation.amount.toLocaleString('en-IN')}
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                          donation.paymentStatus === 'completed' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'
+                        }`}>
+                          {donation.paymentStatus}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 text-gray-600 text-[10px]">
+                        {new Date(donation.donationDate).toLocaleDateString('en-IN')}
+                      </td>
                       <td className="px-5 py-4">
                         <button
-                          onClick={() => handleOpenReceipt(donation)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg font-bold text-xs cursor-pointer border-0 hover:bg-gray-200 transition-colors font-semibold"
+                          onClick={() => handleOpenViewModal(donation)}
+                          className="p-1.5 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer border-0 bg-transparent"
+                          title="View Receipt"
                         >
-                          <Eye size={12} />
-                          View Receipt
+                          <Eye size={16} className="text-blue-500" />
                         </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Pagination */}
+              <div className="px-6 py-4 flex items-center justify-between border-t border-gray-100">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                  className="px-4 py-2 text-xs font-bold text-gray-500 rounded-xl cursor-pointer hover:bg-gray-50 disabled:opacity-50 border-0 bg-transparent"
+                >
+                  Previous
+                </button>
+                <span className="text-xs font-bold text-gray-500">Page {page} of {totalPages}</span>
+                <button
+                  disabled={page === totalPages}
+                  onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                  className="px-4 py-2 text-xs font-bold text-gray-500 rounded-xl cursor-pointer hover:bg-gray-50 disabled:opacity-50 border-0 bg-transparent"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Invoice Modal Overlay */}
+      {/* View Receipt Modal */}
       {isViewModalOpen && viewingDonation && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 overflow-y-auto no-scrollbar">
           <div className="w-full max-w-2xl bg-white border border-gray-100 shadow-2xl relative rounded-3xl p-6 md:p-8 space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
               <h3 className="text-base font-extrabold text-gray-800 flex items-center gap-2">
-                <FileText size={20} className="text-green-700" />
+                <FileText size={20} className="text-blue-600" />
                 Donation Receipt
               </h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handlePrint}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-0 bg-green-800 text-white font-bold text-xs cursor-pointer hover:bg-green-700 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-0 bg-blue-600 text-white font-bold text-xs cursor-pointer hover:bg-blue-700 transition-colors"
                 >
                   <Printer size={14} />
                   Print
@@ -269,23 +440,22 @@ const DonationReceipts = () => {
               </div>
             </div>
 
-            {/* Scrollable Wrapper */}
             <div className="max-h-[60vh] overflow-y-auto pr-2">
-              <div id="receipt-print-area" className="p-6 bg-white border border-gray-200 rounded-xl space-y-8 text-left font-sans">
+              <div id="receipt-print-area" className="p-6 bg-white border border-gray-200 rounded-xl space-y-8 text-left">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <img src="/NGO logo.jpeg" alt="NGO Logo" className="h-12 w-12 rounded-full object-cover border" />
                     <div>
-                      <h2 className="text-sm font-extrabold text-green-950 tracking-wide uppercase">SAVITRAM FOUNDATION</h2>
+                      <h2 className="text-sm font-extrabold text-blue-950 tracking-wide uppercase">SAVITRAM FOUNDATION</h2>
                       <p className="text-[9px] text-gray-400 font-semibold tracking-wider">Regd No. ADV/2024/99124</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="inline-block px-3 py-1 rounded bg-green-50 text-green-800 text-[10px] font-black uppercase tracking-wider border border-green-100">
-                      TAX EXEMPTED
+                    <span className="inline-block px-3 py-1 rounded bg-blue-50 text-blue-800 text-[10px] font-black uppercase tracking-wider border border-blue-100">
+                      ONLINE PAYMENT
                     </span>
-                    <p className="text-[10px] text-gray-450 mt-2 font-mono font-bold">Receipt: {viewingDonation.receiptNumber}</p>
-                    <p className="text-[10px] text-gray-450 font-mono font-bold">
+                    <p className="text-[10px] text-gray-500 mt-2 font-mono font-bold">Receipt: {viewingDonation.receiptNumber}</p>
+                    <p className="text-[10px] text-gray-500 font-mono font-bold">
                       Date: {new Date(viewingDonation.donationDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                     </p>
                   </div>
@@ -300,23 +470,21 @@ const DonationReceipts = () => {
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-gray-400 uppercase block">Donation Amount</span>
-                    <span className="font-black text-green-800 text-base block">₹{viewingDonation.amount.toLocaleString('en-IN')}</span>
+                    <span className="font-black text-blue-800 text-base block">₹{viewingDonation.amount.toLocaleString('en-IN')}</span>
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-gray-400 uppercase block">Payment Mode</span>
-                    <span className="font-semibold text-gray-700 capitalize block">{viewingDonation.paymentMethod}</span>
+                    <span className="font-semibold text-gray-700 capitalize block">Razorpay Online Payment</span>
                   </div>
                   {viewingDonation.transactionId && (
                     <div>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase block">Transaction Reference ID</span>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase block">Transaction ID</span>
                       <span className="font-mono text-gray-600 block text-[11px]">{viewingDonation.transactionId}</span>
                     </div>
                   )}
                   <div>
-                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Assigned Branch</span>
-                    <span className="font-bold text-gray-800 block">
-                      {viewingDonation.branch?.name || user?.branch?.name || 'Central Head Office'}
-                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Purpose</span>
+                    <span className="font-bold text-gray-800 block">{viewingDonation.purpose}</span>
                   </div>
                 </div>
 
@@ -352,4 +520,4 @@ const DonationReceipts = () => {
   );
 };
 
-export default DonationReceipts;
+export default OnlineDonationsList;

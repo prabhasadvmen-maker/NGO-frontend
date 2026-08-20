@@ -8,7 +8,7 @@ import {
   ArrowLeftRight, BarChart3, Globe, Home, Newspaper, Image, MessageSquare,
   Mail, Phone, MessageCircle, Bell, FileText, User, Settings, HelpCircle,
   ChevronDown, ChevronRight, Menu, X, Utensils, ExternalLink, MapPin,
-  GraduationCap, BookOpen
+  GraduationCap, BookOpen, Zap
 } from 'lucide-react';
 import { COLORS } from '../../shared/colors';
 import { useSidebar } from '../../shared/SidebarContext';
@@ -32,6 +32,7 @@ const NAV_GROUPS = [
     label: 'Donations', icon: HandHeart,
     items: [
       { path: '/admin/donations',          label: 'All Donations',         icon: HandHeart },
+      { path: '/admin/donations/online',   label: 'Online Donations',      icon: Zap },
       { path: '/admin/food-donations',     label: 'Food Donation',         icon: Utensils },
       { path: '/admin/donations/pending',  label: 'Pending Donations',     icon: Clock },
       { path: '/admin/donations/receipts', label: 'Donation Receipts',     icon: Receipt },
