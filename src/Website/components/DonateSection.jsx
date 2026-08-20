@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Wallet, User, Mail, Phone, IndianRupee, Globe2 } from 'lucide-react';
 import API_BASE_URL from '../../shared/apiConfig';
+import axios from 'axios';
 
 export const DonateSection = () => {
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,28 @@ export const DonateSection = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Load Razorpay script with proper security headers
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.defer = true;
+    script.crossOrigin = 'anonymous';
+    script.integrity = '';
+    script.onload = () => {
+      console.log('✅ Razorpay script loaded');
+    };
+    script.onerror = () => {
+      console.error('❌ Failed to load Razorpay script');
+    };
+    document.head.appendChild(script);
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, []);
+
   const handleDonateSubmit = async (e) => {
     e.preventDefault();
     setStatus(null);
@@ -58,45 +81,92 @@ export const DonateSection = () => {
 
     setLoading(true);
 
-    const submissionData = {
-      donorName: formData.donorName,
-      donorEmail: formData.donorEmail || undefined,
-      donorPhone: formData.donorPhone || undefined,
-      amount: finalAmount,
-      paymentMethod: formData.paymentMethod,
-      purpose: formData.purpose,
-      notes: formData.notes || `${donationType} Donation`,
-    };
-
     try {
-      const res = await fetch(`${API_BASE_URL}/api/public/donate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionData)
+      // Step 1: Create Razorpay Order
+      const orderRes = await axios.post(`${API_BASE_URL}/api/payments/create-order`, {
+        amount: finalAmount,
+        donorName: formData.donorName,
+        donorEmail: formData.donorEmail,
+        donorPhone: formData.donorPhone,
+        purpose: formData.purpose,
       });
-      const data = await res.json();
-      
-      if (res.ok && data.success) {
-        setStatus('success');
-        setSuccessData(data.data);
-        // Reset form
-        setFormData({
-          donorName: '',
-          donorEmail: '',
-          donorPhone: '',
-          paymentMethod: 'online',
-          purpose: 'General',
-          notes: ''
-        });
-        setCustomAmount('');
-      } else {
-        setStatus('error');
-        setErrorMessage(data.message || 'Failed to record donation. Please try again.');
+
+      if (!orderRes.data.success) {
+        throw new Error('Failed to create payment order');
       }
+
+      const { orderId, keyId } = orderRes.data;
+
+      // Step 2: Open Razorpay Checkout
+      const options = {
+        key: keyId,
+        amount: finalAmount * 100, // paise
+        currency: 'INR',
+        name: 'SAVITRAM FOUNDATION',
+        description: `${donationType} Donation - ${formData.purpose}`,
+        order_id: orderId,
+        prefill: {
+          name: formData.donorName,
+          email: formData.donorEmail,
+          contact: formData.donorPhone,
+        },
+        handler: async (response) => {
+          // Step 3: Verify Payment
+          try {
+            const verifyRes = await axios.post(`${API_BASE_URL}/api/payments/verify-payment`, {
+              razorpay_order_id: orderId,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              donorName: formData.donorName,
+              donorEmail: formData.donorEmail,
+              donorPhone: formData.donorPhone,
+              amount: finalAmount,
+              purpose: formData.purpose,
+            });
+
+            if (verifyRes.data.success) {
+              setStatus('success');
+              setSuccessData({
+                donorName: formData.donorName,
+                amount: finalAmount,
+                receiptNumber: verifyRes.data.receiptNumber,
+                transactionId: response.razorpay_payment_id,
+              });
+              // Reset form
+              setFormData({
+                donorName: '',
+                donorEmail: '',
+                donorPhone: '',
+                paymentMethod: 'online',
+                purpose: 'General',
+                notes: ''
+              });
+              setCustomAmount('');
+            } else {
+              setStatus('error');
+              setErrorMessage('Payment verification failed. Please contact support.');
+            }
+          } catch (verifyErr) {
+            console.error('Payment verification error:', verifyErr);
+            setStatus('error');
+            setErrorMessage('Payment verification error. Please contact support.');
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            setStatus('error');
+            setErrorMessage('Payment cancelled. Please try again.');
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
-      console.error('Donation submit error:', err);
+      console.error('Donation error:', err);
       setStatus('error');
-      setErrorMessage('Network or server connectivity issue. Please try again later.');
+      setErrorMessage(err.response?.data?.message || 'Payment initiation failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -280,7 +350,7 @@ export const DonateSection = () => {
 
                   {/* Phone Number */}
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Phone Number</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase">Phone Number (For Razorpay)</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -301,7 +371,7 @@ export const DonateSection = () => {
                       name="purpose"
                       value={formData.purpose}
                       onChange={handleFieldChange}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50 bg-transparent cursor-pointer"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50 cursor-pointer"
                     >
                       <option value="General">General Fund</option>
                       <option value="Education">Education & Literacy</option>
@@ -310,19 +380,13 @@ export const DonateSection = () => {
                     </select>
                   </div>
 
-                  {/* Payment Method */}
+                  {/* Payment Method - Razorpay Only */}
                   <div className="space-y-1 sm:col-span-2">
                     <label className="text-[10px] font-bold text-gray-400 uppercase">Payment Method</label>
-                    <select
-                      name="paymentMethod"
-                      value={formData.paymentMethod}
-                      onChange={handleFieldChange}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50 bg-transparent cursor-pointer"
-                    >
-                      <option value="online">Online Secure Checkout (UPI, Card, NetBanking)</option>
-                      <option value="bank_transfer">Direct Bank Transfer</option>
-                      <option value="cash">Cash / Cheque Pick up</option>
-                    </select>
+                    <div className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm font-bold text-gray-700 flex items-center gap-2">
+                      <ShieldCheck size={16} className="text-[#1B5E20]" />
+                      <span>Razorpay Secure Checkout (UPI, Card, NetBanking, Wallet)</span>
+                    </div>
                   </div>
 
                   {/* Custom Notes */}
@@ -337,6 +401,11 @@ export const DonateSection = () => {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1B5E20] outline-none text-sm bg-gray-50/50"
                     />
                   </div>
+
+                  {/* Razorpay Info */}
+                  <div className="space-y-1 sm:col-span-2 p-3 rounded-xl bg-blue-50 border border-blue-100 text-[10px] font-semibold text-blue-700">
+                    <p>💳 <span className="font-bold">Powered by Razorpay:</span> India's most trusted payment gateway. Your payment is 100% secure and encrypted.</p>
+                  </div>
                 </div>
               </div>
 
@@ -344,7 +413,7 @@ export const DonateSection = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-2xl text-sm font-extrabold text-white transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg flex items-center justify-center gap-2 border-0"
+                className="w-full py-4 rounded-2xl text-sm font-extrabold text-white transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg flex items-center justify-center gap-2 border-0 disabled:opacity-60"
                 style={{ backgroundColor: '#F97316' }} // Custom Orange Accent
               >
                 {loading ? (
@@ -360,7 +429,7 @@ export const DonateSection = () => {
               {/* Secure Checkout details */}
               <div className="flex items-center justify-center gap-2 text-gray-400 font-bold text-[10px] uppercase">
                 <ShieldCheck size={14} className="text-[#1B5E20]" />
-                <span>Secure 256-bit SSL encrypted connection</span>
+                <span>Secure 256-bit SSL encrypted connection via Razorpay</span>
               </div>
             </form>
           </div>
