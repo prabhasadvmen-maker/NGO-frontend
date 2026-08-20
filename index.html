@@ -5,9 +5,9 @@
     <link rel="icon" type="image/jpeg" href="/NGO logo.jpeg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Security Headers -->
+    <!-- Security Headers - Relaxed for API calls -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://localhost:5000 https://savitramfoundation.org https://savitramfoundation.com https://www.savitramfoundation.org https://www.savitramfoundation.com; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: http:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://localhost:5000 https://savitramfoundation.org https://savitramfoundation.com https://www.savitramfoundation.org https://www.savitramfoundation.com https://checkout.razorpay.com https://api.razorpay.com https://lumberjack.razorpay.com https://nominatim.openstreetmap.org; frame-src https://checkout.razorpay.com https://api.razorpay.com;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: http:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: http://localhost:5000; frame-src https://checkout.razorpay.com https://api.razorpay.com;" />
     <meta http-equiv="Permissions-Policy" content="accelerometer=(), gyroscope=(), magnetometer=(), payment=*" />
     
     <!-- Preconnect for performance optimization -->
