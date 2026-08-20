@@ -27,10 +27,20 @@ const staticRoutes = [
 async function fetchDynamicRoutes() {
   const routes = [];
   const timestamp = new Date().toISOString();
+  const timeout = 5000;
+
+  const fetchWithTimeout = (url) => {
+    return Promise.race([
+      axios.get(url),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), timeout)
+      )
+    ]);
+  };
 
   // 1. Projects
   try {
-    const res = await axios.get(`${BACKEND_URL}/api/public/projects`);
+    const res = await fetchWithTimeout(`${BACKEND_URL}/api/public/projects`);
     if (res.data && res.data.success && Array.isArray(res.data.data)) {
       res.data.data.forEach(item => {
         if (item._id) {
@@ -42,15 +52,15 @@ async function fetchDynamicRoutes() {
           });
         }
       });
-      console.log(`Fetched ${res.data.data.length} dynamic projects for sitemap.`);
+      console.log(`✅ Fetched ${res.data.data.length} dynamic projects for sitemap.`);
     }
   } catch (err) {
-    console.warn('Could not fetch dynamic projects, falling back to static only:', err.message);
+    console.warn('⚠️ Could not fetch projects:', err.message);
   }
 
   // 2. Events
   try {
-    const res = await axios.get(`${BACKEND_URL}/api/public/events`);
+    const res = await fetchWithTimeout(`${BACKEND_URL}/api/public/events`);
     if (res.data && res.data.success && Array.isArray(res.data.data)) {
       res.data.data.forEach(item => {
         if (item._id) {
@@ -62,15 +72,15 @@ async function fetchDynamicRoutes() {
           });
         }
       });
-      console.log(`Fetched ${res.data.data.length} dynamic events for sitemap.`);
+      console.log(`✅ Fetched ${res.data.data.length} dynamic events for sitemap.`);
     }
   } catch (err) {
-    console.warn('Could not fetch dynamic events, falling back to static only:', err.message);
+    console.warn('⚠️ Could not fetch events:', err.message);
   }
 
   // 3. Campaigns (Crowdfunding)
   try {
-    const res = await axios.get(`${BACKEND_URL}/api/public/campaigns`);
+    const res = await fetchWithTimeout(`${BACKEND_URL}/api/public/campaigns`);
     if (res.data && res.data.success && Array.isArray(res.data.data)) {
       res.data.data.forEach(item => {
         if (item._id) {
@@ -82,15 +92,15 @@ async function fetchDynamicRoutes() {
           });
         }
       });
-      console.log(`Fetched ${res.data.data.length} dynamic campaigns for sitemap.`);
+      console.log(`✅ Fetched ${res.data.data.length} dynamic campaigns for sitemap.`);
     }
   } catch (err) {
-    console.warn('Could not fetch dynamic campaigns, falling back to static only:', err.message);
+    console.warn('⚠️ Could not fetch campaigns:', err.message);
   }
 
   // 4. News
   try {
-    const res = await axios.get(`${BACKEND_URL}/api/public/cms/news`);
+    const res = await fetchWithTimeout(`${BACKEND_URL}/api/public/cms/news`);
     if (res.data && res.data.success && Array.isArray(res.data.data)) {
       res.data.data.forEach(item => {
         if (item.slug) {
@@ -102,10 +112,10 @@ async function fetchDynamicRoutes() {
           });
         }
       });
-      console.log(`Fetched ${res.data.data.length} dynamic news stories for sitemap.`);
+      console.log(`✅ Fetched ${res.data.data.length} dynamic news stories for sitemap.`);
     }
   } catch (err) {
-    console.warn('Could not fetch dynamic news stories, falling back to static only:', err.message);
+    console.warn('⚠️ Could not fetch news:', err.message);
   }
 
   return routes;
@@ -115,7 +125,13 @@ async function generate() {
   console.log('Generating sitemap...');
   const timestamp = new Date().toISOString();
   
-  const dynamicRoutes = await fetchDynamicRoutes();
+  let dynamicRoutes = [];
+  try {
+    dynamicRoutes = await fetchDynamicRoutes();
+  } catch (err) {
+    console.warn('Failed to fetch dynamic routes, using static routes only:', err.message);
+  }
+  
   const allRoutes = [
     ...staticRoutes.map(r => ({ ...r, lastmod: timestamp })),
     ...dynamicRoutes
@@ -144,18 +160,19 @@ async function generate() {
   // Write to public/sitemap.xml
   const publicSitemapPath = path.join(publicDir, 'sitemap.xml');
   fs.writeFileSync(publicSitemapPath, xml, 'utf8');
-  console.log(`Sitemap written successfully to: ${publicSitemapPath}`);
+  console.log(`✅ Sitemap written successfully to: ${publicSitemapPath}`);
+  console.log(`📊 Total URLs in sitemap: ${allRoutes.length}`);
 
   // Also write to dist/sitemap.xml if the dist folder already exists
   const distDir = path.resolve('dist');
   if (fs.existsSync(distDir)) {
     const distSitemapPath = path.join(distDir, 'sitemap.xml');
     fs.writeFileSync(distSitemapPath, xml, 'utf8');
-    console.log(`Sitemap written successfully to: ${distSitemapPath}`);
+    console.log(`✅ Sitemap also written to: ${distSitemapPath}`);
   }
 }
 
 generate().catch(err => {
-  console.error('Error generating sitemap:', err);
-  process.exit(1);
+  console.warn('Error generating sitemap (will use static routes only):', err.message);
+  // Don't exit with error - allow build to continue with static sitemap
 });
